@@ -17,10 +17,12 @@
 		0699B9062C9101B1002011E3 /* Free_BeeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9052C9101B1002011E3 /* Free_BeeUITests.swift */; };
 		0699B9082C9101B1002011E3 /* Free_BeeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9072C9101B1002011E3 /* Free_BeeUITestsLaunchTests.swift */; };
 		0699B91B2C910802002011E3 /* GameLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B91A2C910802002011E3 /* GameLoader.swift */; };
-		0699B91F2C911885002011E3 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B91E2C911885002011E3 /* Game.swift */; };
+		0699B91F2C911885002011E3 /* GameExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B91E2C911885002011E3 /* GameExtension.swift */; };
 		0699B9212C911D8B002011E3 /* LetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9202C911D8B002011E3 /* LetterView.swift */; };
 		0699B9252C911EBA002011E3 /* Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9242C911EBA002011E3 /* Previews.swift */; };
 		0699B9262C9125EA002011E3 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9172C910637002011E3 /* GameView.swift */; };
+		06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */; };
+		06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,9 +57,11 @@
 		0699B9072C9101B1002011E3 /* Free_BeeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Free_BeeUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		0699B9172C910637002011E3 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameView.swift; path = source/Game/GameView.swift; sourceTree = SOURCE_ROOT; };
 		0699B91A2C910802002011E3 /* GameLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoader.swift; sourceTree = "<group>"; };
-		0699B91E2C911885002011E3 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		0699B91E2C911885002011E3 /* GameExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameExtension.swift; sourceTree = "<group>"; };
 		0699B9202C911D8B002011E3 /* LetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterView.swift; sourceTree = "<group>"; };
 		0699B9242C911EBA002011E3 /* Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Previews.swift; sourceTree = "<group>"; };
+		06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
+		06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterHoneycomb.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,9 +153,11 @@
 		0699B9162C91061B002011E3 /* Game */ = {
 			isa = PBXGroup;
 			children = (
-				0699B91E2C911885002011E3 /* Game.swift */,
+				0699B91E2C911885002011E3 /* GameExtension.swift */,
 				0699B9172C910637002011E3 /* GameView.swift */,
 				0699B9202C911D8B002011E3 /* LetterView.swift */,
+				06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */,
+				06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -296,11 +302,13 @@
 			files = (
 				0699B91B2C910802002011E3 /* GameLoader.swift in Sources */,
 				0699B8EF2C9101B0002011E3 /* Persistence.swift in Sources */,
-				0699B91F2C911885002011E3 /* Game.swift in Sources */,
+				0699B91F2C911885002011E3 /* GameExtension.swift in Sources */,
 				0699B8E82C9101AF002011E3 /* ContentView.swift in Sources */,
+				06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */,
 				0699B9262C9125EA002011E3 /* GameView.swift in Sources */,
 				0699B9252C911EBA002011E3 /* Previews.swift in Sources */,
 				0699B8F22C9101B0002011E3 /* Free_Bee.xcdatamodeld in Sources */,
+				06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */,
 				0699B8E62C9101AF002011E3 /* Free_BeeApp.swift in Sources */,
 				0699B9212C911D8B002011E3 /* LetterView.swift in Sources */,
 			);
