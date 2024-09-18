@@ -16,18 +16,16 @@ struct LetterView: View {
    let isCenter: Bool
    let onTap: (Character) -> Void
    
-   @GestureState var isDetectingLongPress = false
+   @GestureState private var isDetectingLongPress = false
    
    var longPress: some Gesture {
       LongPressGesture(minimumDuration: 9999)
-         .updating($isDetectingLongPress) { currentState, gestureState,
-            _ in
+         .updating($isDetectingLongPress) { currentState, gestureState, _ in
             gestureState = currentState
-//            transaction.animation = Animation.easeIn(duration: 2.0)
          }
    }
    
-   static let peripheralBackground = Color(white: 230.0/255)
+   static let peripheralBackground = Color(white: 230.0/255) // matching NYT app
 
    var body: some View {
       GeometryReader { proxy in
@@ -36,6 +34,7 @@ struct LetterView: View {
          ZStack {
             Text(verbatim: String(letter))
                .font(.system(size: proxy.size.width / 3, weight: .medium))
+               .textCase(.uppercase)
          }
          .frame(width: 1.1547 * proxy.size.width, height: proxy.size.height)
          .background(background)

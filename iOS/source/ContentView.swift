@@ -17,6 +17,14 @@ struct ContentView: View {
    private var items: FetchedResults<Game>
    
    var body: some View {
+      let game = Game(context: viewContext)
+      GamePreview.toSep_9_2024(game)
+      let progress = GameProgress(context: viewContext)
+      progress.currentWord = "SPELLI"
+      game.progress = progress
+      return GameView(game: game, progress: progress)
+
+      /*
       NavigationView {
          List {
             ForEach(items) { item in
@@ -40,6 +48,7 @@ struct ContentView: View {
          }
          Text("Select an item")
       }
+       */
    }
    
    private func addGame() {
