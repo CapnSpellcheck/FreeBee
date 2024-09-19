@@ -17,11 +17,7 @@ struct AutoRepeatingButton<L: View>: View {
    private let action: Action
    private let label: Label
    
-   @GestureState private var isBeingPressed = false {
-      didSet {
-         print("d")
-      }
-   }
+   @GestureState private var isBeingPressed = false
    
    init(action: @escaping Action, label: @escaping Label) {
       self.action = action

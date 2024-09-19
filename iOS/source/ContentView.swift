@@ -20,9 +20,10 @@ struct ContentView: View {
       let game = Game(context: viewContext)
       GamePreview.toSep_9_2024(game)
       let progress = GameProgress(context: viewContext)
-      progress.currentWord = "SPELLI"
+      progress.currentWord = "spelli"
+      progress.enteredWords = NSOrderedSet(array: ["facet", "acetate", "peace"].map { EnteredWord(context: viewContext, string: $0)})
       game.progress = progress
-      return GameView(game: game, progress: progress)
+      return GameView(game: game, progress: progress, context: viewContext)
 
       /*
       NavigationView {

@@ -32,7 +32,7 @@ struct LetterView: View {
          let hexagon = HexagonShape()
          let background = isCenter ? .accentColor : Self.peripheralBackground
          ZStack {
-            Text(verbatim: String(letter))
+            Text(String(letter))
                .font(.system(size: proxy.size.width / 3, weight: .medium))
                .textCase(.uppercase)
          }
