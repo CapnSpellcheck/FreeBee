@@ -15,9 +15,11 @@ struct GameView: View {
    @Environment(\.managedObjectContext) private var viewContext
    @StateObject var viewModel: GameViewModel
    @State private var showEntryNotAccepted = false
+   @State private var expandEnteredWords = false
    
    init(game: Game, progress: GameProgress, context: NSManagedObjectContext) {
-      _viewModel = StateObject(wrappedValue: GameViewModel(game: game, progress: progress, objectContext: context))
+      let model = GameViewModel(game: game, progress: progress, objectContext: context)
+      _viewModel = StateObject(wrappedValue: model)
    }
    
    var body: some View {
@@ -25,31 +27,40 @@ struct GameView: View {
       let progress = viewModel.progress
       
       VStack(spacing: 0) {
-         enteredWordList
+         enteredWordBar
          if showEntryNotAccepted {
             entryNotAcceptedMessage
          }
          Spacer(minLength: 12)
-         Text(progress.currentWordDisplay)
-            .tracking(2)
-            .textCase(.uppercase)
-            .lineLimit(1)
-            .minimumScaleFactor(0.5)
-            .font(.custom("HelveticaNeue-Medium", size: 28, relativeTo: .body))
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            .padding(.horizontal, kGeneralHorizontalPadding)
-         LetterHoneycomb(
-            centerLetter: Character(game.centerLetter),
-            otherLetters: Array(game.otherLetters!),
-            letterTapped: viewModel.append(letter:)
-         )
+         if !viewModel.gameComplete {
+            Text(progress.currentWordDisplay)
+               .tracking(2)
+               .textCase(.uppercase)
+               .lineLimit(1)
+               .minimumScaleFactor(0.5)
+               .font(.custom("HelveticaNeue-Medium", size: 28, relativeTo: .body))
+               .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+               .padding(.horizontal, kGeneralHorizontalPadding)
+         }
+         addOverlay(
+            view: LetterHoneycomb(
+               centerLetter: game.centerLetterCharacter,
+               otherLetters: Array(game.otherLetters!),
+               letterTapped: viewModel.append(letter:)
+            ).opacity(viewModel.gameComplete ? 0.4 : 1),
+            condition: viewModel.gameComplete
+         ) {
+            Text("💯").font(.system(size: 150))
+         }
+         .disabled(viewModel.gameComplete)
          editButtons
+            .opacity(viewModel.gameComplete ? 0 : 1)
       }
       .onReceive(viewModel.entryNotAcceptedEvent) { _ in
-         withAnimation {
+         withAnimation(.linear) {
             showEntryNotAccepted = true
             Task { @MainActor in
-               try? await Task.sleep(nanoseconds: kEntryNotAcceptedDuration * NSEC_PER_MSEC)
+               try? await Task.sleep(nanoseconds: NSEC_PER_MSEC*(kEntryNotAcceptedDuration + 350))
                withAnimation {
                   showEntryNotAccepted = false
                }
@@ -85,22 +96,45 @@ struct GameView: View {
                Image(systemName: "return")
             }
          })
+         .disabled(!viewModel.enterEnabled)
       }
       .font(.system(size: 36))
       .foregroundColor(.blue)
    }
    
-   @ViewBuilder var enteredWordList: some View {
-      HStack {
+   var enteredWordBar: some View {
+      let wordBar = HStack {
          Text(viewModel.enteredWordSummary)
             .lineLimit(1)
-            .frame(maxWidth: .infinity)
          Spacer()
          Image(systemName: "chevron.down")
       }
-      .padding(8)
-      .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color(UIColor.systemGray3), lineWidth: 1.5))
+         .zIndex(1)
+         .padding(8)
+         .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color(UIColor.systemGray3), lineWidth: 1.5))
+         .onTapGesture {
+            expandEnteredWords.toggle()
          }
+      
+      return addOverlay(view: wordBar, alignment: .bottomTrailing, condition: expandEnteredWords) {
+         ScrollView {
+            VStack(alignment: .leading, spacing: 6) {
+               ForEach(viewModel.progress.enteredWords!.array as! Array<EnteredWord>, id: \.value) { enteredWord in
+                  Text(enteredWord.value!.capitalized)
+               }
+            }
+            .padding(12)
+         }
+         .background(Color(UIColor.systemGray6))
+         .frame(maxHeight: 200)
+         .fixedSize()
+         .padding(.trailing, 8)
+         .offset(y: 2)
+         .alignmentGuide(.bottom, computeValue: { dimension in dimension[.top] })
+      }
+      .padding(.horizontal, kGeneralHorizontalPadding)
+   }
+   
       }
       .padding(.horizontal, kGeneralHorizontalPadding)
    }
@@ -113,7 +147,7 @@ struct GameView_Previews: PreviewProvider {
       GamePreview.toSep_9_2024(game)
       let progress = GameProgress(context: context)
       progress.currentWord = "spelli"
-      progress.enteredWords = NSOrderedSet(array: ["facet", "acetate", "peace", "ewfadafrdfs", "sdfgdsf"].map {
+      progress.enteredWords = NSOrderedSet(array: ["facet", "acetate", "peace", "effect", "accept"].map {
          EnteredWord(context: context, string: $0)
       })
       game.progress = progress

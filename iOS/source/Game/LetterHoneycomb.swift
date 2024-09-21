@@ -43,7 +43,7 @@ fileprivate struct LetterLayout: _VariadicView_UnaryViewRoot {
    @ViewBuilder func body(children: _VariadicView.Children) -> some View {
       let hexPadding = 10.0
       let tapWrapper: (Character) -> Void = { char in
-         print("Letter tapped: ", String(char))
+         NSLog("Letter tapped: ", String(char))
          config.letterTapped(char)
       }
       GeometryReader { proxy in

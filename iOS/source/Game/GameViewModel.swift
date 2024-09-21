@@ -11,12 +11,16 @@ import Combine
 import CoreData
 
 fileprivate let kMaxLetters = 19
+fileprivate let kMinLetters = 4
 
 final class GameViewModel: ObservableObject {
    let game: Game
    let progress: GameProgress
    let objectContext: NSManagedObjectContext
    let entryNotAcceptedEvent = PassthroughSubject<Void, Never>()
+   
+
+   private let userDefaults = UserDefaults.standard
       
    init(game: Game, progress: GameProgress, objectContext: NSManagedObjectContext) {
       self.game = game
@@ -28,6 +32,15 @@ final class GameViewModel: ObservableObject {
       (progress.enteredWords!.array as! Array<EnteredWord>).map {
          $0.value!.capitalized
       }.joined(separator: "\u{2003}")
+   }
+   
+   var enterEnabled: Bool {
+      progress.currentWord!.count >= kMinLetters &&
+         progress.currentWord!.contains(game.centerLetterCharacter)
+   }
+   
+   var gameComplete: Bool {
+      progress.score >= game.maximumScore
    }
    
    func append(letter: Character) {
@@ -46,12 +59,15 @@ final class GameViewModel: ObservableObject {
    
    func enter() {
       var errored = false
-      if game.allowedWords?.contains(progress.currentWord!) == true {
-         let enteredWord = EnteredWord(context: objectContext)
-         enteredWord.value = progress.currentWord!
-         progress.insertIntoEnteredWords(enteredWord, at: 0)
+      let enteredWord = progress.currentWord!
+      if game.allowedWords?.contains(enteredWord) == true {
+         progress.insertIntoEnteredWords(EnteredWord(context: objectContext, string: enteredWord), at: 0)
          do {
             try objectContext.save()
+            if game.isPangram(word: enteredWord) {
+               NSLog("pangram: %@", enteredWord)
+               userDefaults[.pangramsCount] = userDefaults[.pangramsCount] ?? 0 + 1
+            }
          } catch {
             NSLog("Error saving managed object context", error.localizedDescription)
             // TODO: send error event

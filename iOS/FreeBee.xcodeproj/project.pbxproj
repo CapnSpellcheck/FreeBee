@@ -21,6 +21,9 @@
 		0699B9212C911D8B002011E3 /* LetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9202C911D8B002011E3 /* LetterView.swift */; };
 		0699B9252C911EBA002011E3 /* Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9242C911EBA002011E3 /* Previews.swift */; };
 		0699B9262C9125EA002011E3 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9172C910637002011E3 /* GameView.swift */; };
+		06A940532C9E079A007A9522 /* UserDefaultExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940522C9E079A007A9522 /* UserDefaultExtension.swift */; };
+		06A940552C9E15B9007A9522 /* EnteredWordExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */; };
+		06A940572C9E57AD007A9522 /* SwiftUIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */; };
 		06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */; };
 		06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */; };
 		06C0F8D72C98CFA600115894 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C0F8D62C98CFA600115894 /* GameViewModel.swift */; };
@@ -63,6 +66,9 @@
 		0699B91E2C911885002011E3 /* GameExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameExtension.swift; sourceTree = "<group>"; };
 		0699B9202C911D8B002011E3 /* LetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterView.swift; sourceTree = "<group>"; };
 		0699B9242C911EBA002011E3 /* Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Previews.swift; sourceTree = "<group>"; };
+		06A940522C9E079A007A9522 /* UserDefaultExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultExtension.swift; sourceTree = "<group>"; };
+		06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnteredWordExtension.swift; sourceTree = "<group>"; };
+		06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUtils.swift; sourceTree = "<group>"; };
 		06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterHoneycomb.swift; sourceTree = "<group>"; };
 		06C0F8D62C98CFA600115894 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
@@ -128,6 +134,8 @@
 				0699B8F02C9101B0002011E3 /* Free_Bee.xcdatamodeld */,
 				0699B8EB2C9101B0002011E3 /* Preview Content */,
 				0699B9242C911EBA002011E3 /* Previews.swift */,
+				06A940522C9E079A007A9522 /* UserDefaultExtension.swift */,
+				06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */,
 			);
 			path = source;
 			sourceTree = "<group>";
@@ -160,10 +168,10 @@
 		0699B9162C91061B002011E3 /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */,
 				0699B91E2C911885002011E3 /* GameExtension.swift */,
 				06C0F8D82C98D11200115894 /* GameProgressExtension.swift */,
 				0699B9172C910637002011E3 /* GameView.swift */,
-				0699B9202C911D8B002011E3 /* LetterView.swift */,
 				06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */,
 				06C0F8D62C98CFA600115894 /* GameViewModel.swift */,
 			);
@@ -183,6 +191,7 @@
 			children = (
 				06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */,
 				06C0F8DD2C98F42200115894 /* AutoRepeatingButton.swift */,
+				0699B9202C911D8B002011E3 /* LetterView.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -322,8 +331,11 @@
 				0699B8EF2C9101B0002011E3 /* Persistence.swift in Sources */,
 				0699B91F2C911885002011E3 /* GameExtension.swift in Sources */,
 				0699B8E82C9101AF002011E3 /* ContentView.swift in Sources */,
+				06A940552C9E15B9007A9522 /* EnteredWordExtension.swift in Sources */,
+				06A940532C9E079A007A9522 /* UserDefaultExtension.swift in Sources */,
 				06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */,
 				0699B9262C9125EA002011E3 /* GameView.swift in Sources */,
+				06A940572C9E57AD007A9522 /* SwiftUIUtils.swift in Sources */,
 				06C0F8D92C98D11200115894 /* GameProgressExtension.swift in Sources */,
 				0699B9252C911EBA002011E3 /* Previews.swift in Sources */,
 				0699B8F22C9101B0002011E3 /* Free_Bee.xcdatamodeld in Sources */,
