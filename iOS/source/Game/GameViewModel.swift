@@ -62,6 +62,7 @@ final class GameViewModel: ObservableObject {
       let enteredWord = progress.currentWord!
       if game.allowedWords?.contains(enteredWord) == true {
          progress.insertIntoEnteredWords(EnteredWord(context: objectContext, string: enteredWord), at: 0)
+         progress.score += scoreWord(enteredWord)
          do {
             try objectContext.save()
             if game.isPangram(word: enteredWord) {
@@ -81,5 +82,13 @@ final class GameViewModel: ObservableObject {
          objectWillChange.send()
          progress.currentWord = ""
       }
+   }
+   
+   private func scoreWord(_ word: String) -> Int16 {
+      var score = Int16(word.count == 4 ? 1 : word.count)
+      if game.isPangram(word: word) {
+         score += 7
+      }
+      return score
    }
 }

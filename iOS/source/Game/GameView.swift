@@ -27,6 +27,7 @@ struct GameView: View {
       let progress = viewModel.progress
       
       VStack(spacing: 0) {
+         scoreView
          enteredWordBar
          if showEntryNotAccepted {
             entryNotAcceptedMessage
@@ -135,8 +136,15 @@ struct GameView: View {
       .padding(.horizontal, kGeneralHorizontalPadding)
    }
    
+   var scoreView: some View {
+      HStack {
+         Text(try! AttributedString(markdown: "Score:  **\(viewModel.progress.score)**"))
+            .padding(.trailing, 8)
+         ProgressView(value: 2, total: 4)
+            .scaleEffect(x: 1, y: 0.5)
       }
       .padding(.horizontal, kGeneralHorizontalPadding)
+      .padding(.bottom, 16)
    }
 }
 
@@ -150,6 +158,7 @@ struct GameView_Previews: PreviewProvider {
       progress.enteredWords = NSOrderedSet(array: ["facet", "acetate", "peace", "effect", "accept"].map {
          EnteredWord(context: context, string: $0)
       })
+      progress.score = game.maximumScore - 1
       game.progress = progress
       return GameView(game: game, progress: progress, context: context)
          .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
