@@ -46,38 +46,49 @@ fileprivate struct LetterLayout: _VariadicView_UnaryViewRoot {
          NSLog("Letter tapped: ", String(char))
          config.letterTapped(char)
       }
-      GeometryReader { proxy in
-         // The height of the honeycomb is slightly greater than its width, namely: if s is the
-         // side length of one of the hexagons, then w = 5s, but h = 3s√3; therefore, we calculate s
-         // from the box height; the honeycomb will have horizontal padding even in a square box.
-         let w = proxy.size.width
-         let h = proxy.size.height
-         let hexHeight = (min(w, h) - 4*hexPadding) / 3
-         let hexHeightAndPadding = hexHeight + hexPadding
-
-         LetterView(letter: config.centerLetter, isCenter: true, onTap: tapWrapper)
-            .frame(width: hexHeight, height: hexHeight)
-            .position(x: 0.5 * w, y: 0.5 * h)
-         ForEach(Array(config.otherLetters.enumerated()), id: \.element)
-         { i, letter in
-            let theta = Double(i) * Double.pi / 3
-            LetterView(letter: letter, isCenter: false, onTap: tapWrapper)
-               .frame(width: hexHeight, height: hexHeight)
-               .position(
-                  x: 0.5*w + hexHeightAndPadding*sin(theta),
-                  y: 0.5*h + hexHeightAndPadding*cos(theta)
-               )
+      
+      Color.clear
+         .frame(maxWidth: .infinity)
+      // The height of the honeycomb is slightly greater than its width: if s is the
+      // side length of one of the hexagons, then w = 5s, h = 3s√3
+         .aspectRatio(3/5*sqrt(3.0), contentMode: .fit)
+         .overlay {
+            GeometryReader { proxy in
+               // As mentioned, h > w, so calculate s from the box height; the honeycomb will have
+               // (a bit of) horizontal padding
+               let w = proxy.size.width
+               let h = proxy.size.height
+               let hexHeight = (min(w, h) - 4*hexPadding) / 3
+               let hexHeightAndPadding = hexHeight + hexPadding
+               
+               LetterView(letter: config.centerLetter, isCenter: true, onTap: tapWrapper)
+                  .frame(width: hexHeight, height: hexHeight)
+                  .position(x: 0.5*w, y: 0.5*h)
+               ForEach(Array(config.otherLetters.enumerated()), id: \.element)
+               { i, letter in
+                  let theta = Double(i) * Double.pi / 3
+                  LetterView(letter: letter, isCenter: false, onTap: tapWrapper)
+                     .frame(width: hexHeight, height: hexHeight)
+                     .position(
+                        x: 0.5*w + hexHeightAndPadding * sin(theta),
+                        y: 0.5*h + hexHeightAndPadding * cos(theta)
+                     )
+               }
+            }
          }
-
-      }
    }
 }
 
 struct LetterHoneycomb_Previews: PreviewProvider {
    static var previews: some View {
       let otherLetters = "123456".map { $0 }
-      LetterHoneycomb(centerLetter: Character("A"), otherLetters: otherLetters) { _ in }
-         .frame(width: 300, height: 300)
-         .background(.green)
+      VStack {
+         Text("Top")
+         Spacer()
+         LetterHoneycomb(centerLetter: Character("A"), otherLetters: otherLetters) { _ in }
+            .background(.green)
+         Spacer()
+         Text("Bottom")
+      }
    }
 }

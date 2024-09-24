@@ -17,10 +17,10 @@ extension Game {
    }
    
    func isPangram(word: String) -> Bool {
-      let wordLetters = Set(word)
       if word.count < 7 {
          return false
       }
+      let wordLetters = Set(word)
       return wordLetters.contains(centerLetterCharacter) && wordLetters.isSuperset(of: otherLetters!)
    }
 }

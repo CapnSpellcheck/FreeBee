@@ -10,6 +10,7 @@ import CoreData
 
 fileprivate let kEntryNotAcceptedDuration: UInt64 = 2000
 fileprivate let kGeneralHorizontalPadding = 16.0
+fileprivate let kHoneycombPadding = 16.0
 
 struct GameView: View {
    @Environment(\.managedObjectContext) private var viewContext
@@ -29,10 +30,10 @@ struct GameView: View {
       VStack(spacing: 0) {
          scoreView
          enteredWordBar
+         Spacer()
          if showEntryNotAccepted {
             entryNotAcceptedMessage
          }
-         Spacer(minLength: 12)
          if !viewModel.gameComplete {
             Text(progress.currentWordDisplay)
                .tracking(2)
@@ -54,6 +55,7 @@ struct GameView: View {
             Text("💯").font(.system(size: 150))
          }
          .disabled(viewModel.gameComplete)
+         .padding(.vertical, kHoneycombPadding)
          editButtons
             .opacity(viewModel.gameComplete ? 0 : 1)
       }
@@ -76,8 +78,10 @@ struct GameView: View {
             .imageScale(.small)
             .foregroundColor(.red)
          Text("Entry not accepted")
+            .font(.system(.callout))
       }
       .transition(.opacity)
+      .padding(.vertical, 12)
    }
    
    var editButtons: some View {
@@ -93,12 +97,13 @@ struct GameView: View {
             if #available(iOS 16.0, *) {
                Image(systemName: "return")
                   .fontWeight(.bold)
-            } else {
+            } else { 
                Image(systemName: "return")
             }
          })
          .disabled(!viewModel.enterEnabled)
       }
+      .buttonStyle(.plain)
       .font(.system(size: 36))
       .foregroundColor(.blue)
    }
@@ -112,7 +117,8 @@ struct GameView: View {
       }
          .zIndex(1)
          .padding(8)
-         .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color(UIColor.systemGray3), lineWidth: 1.5))
+         .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(UIColor.systemGray3), lineWidth: 1.5))
          .onTapGesture {
             expandEnteredWords.toggle()
          }
@@ -140,7 +146,9 @@ struct GameView: View {
       HStack {
          Text(try! AttributedString(markdown: "Score:  **\(viewModel.progress.score)**"))
             .padding(.trailing, 8)
-         ProgressView(value: 2, total: 4)
+         let value = Float(viewModel.progress.score)
+         let total = Float(viewModel.game.maximumScore)
+         ProgressView(value: value, total: total)
             .scaleEffect(x: 1, y: 0.5)
       }
       .padding(.horizontal, kGeneralHorizontalPadding)
