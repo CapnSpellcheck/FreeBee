@@ -96,6 +96,20 @@ final class GameViewModel: ObservableObject {
       }
    }
    
+   /**
+    Hear out one of the strangest caveats I've ever seen as a software engineer: the parent view doesn't automatically detect
+    that this game has been modified/saved -- apparently, the kicker is that *no Game attribute has been mutated, just attributes on its **progress** relationship*
+    I've researched quite a few complaints with the same issue, e.g.:
+    https://stackoverflow.com/questions/65171970/view-with-fetchrequest-doesnt-update-on-change
+    https://forums.developer.apple.com/forums/thread/131231
+    This does not seem to be caused by using the wrong MOC or of StateObject vs ObservedObject (I tried changing this class
+    to the latter). It also isn't solved by enabling relationship prefetching in the fetch request (I really thought that might fix).
+    */
+   func closeGame() {
+      game.dirtyTrigger += 1
+      game.dirtyTrigger %= 100
+   }
+   
    private func scoreWord(_ word: String) -> Int16 {
       var score = Int16(word.count == 4 ? 1 : word.count)
       if game.isPangram(word: word) {

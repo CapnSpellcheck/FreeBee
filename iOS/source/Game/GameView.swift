@@ -60,6 +60,7 @@ struct GameView: View {
             .opacity(viewModel.gameComplete ? 0 : 1)
       }
       .navigationBarTitleDisplayMode(.inline)
+      .navigationTitle(gameDateDisplayFormatter.string(from: viewModel.game.date!))
       .onReceive(viewModel.entryNotAcceptedEvent) { _ in
          withAnimation(.linear) {
             showEntryNotAccepted = true
@@ -70,6 +71,9 @@ struct GameView: View {
                }
             }
          }
+      }
+      .onDisappear {
+         viewModel.closeGame()
       }
    }
    
@@ -107,6 +111,7 @@ struct GameView: View {
       .buttonStyle(.plain)
       .font(.system(size: 36))
       .foregroundColor(.blue)
+      .padding(.bottom, 12)
    }
    
    var enteredWordBar: some View {
@@ -122,7 +127,9 @@ struct GameView: View {
          .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(UIColor.systemGray3), lineWidth: 1.5))
          .onTapGesture {
-            expandEnteredWords.toggle()
+            if viewModel.progress.enteredWords!.count > 0 {
+               expandEnteredWords.toggle()
+            }
          }
       
       return addOverlay(view: wordBar, alignment: .bottomTrailing, condition: expandEnteredWords) {

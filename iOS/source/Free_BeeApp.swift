@@ -19,7 +19,7 @@ struct Free_BeeApp: App {
    
    var body: some Scene {
       WindowGroup {
-         ContentView()
+         GameList()
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
       }
    }

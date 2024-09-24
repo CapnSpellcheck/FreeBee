@@ -16,6 +16,10 @@ extension Game {
       Character(centerLetter)
    }
    
+   var allLetters: String {
+      otherLetters!.prefix(3) + String(centerLetterCharacter) + otherLetters!.suffix(3)
+   }
+   
    func isPangram(word: String) -> Bool {
       if word.count < 7 {
          return false
