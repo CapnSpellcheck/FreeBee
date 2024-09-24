@@ -11,6 +11,12 @@ import SwiftUI
 struct Free_BeeApp: App {
    let persistenceController = PersistenceController.shared
    
+   init() {
+#if DEBUG
+      GamePreview.seed(context: persistenceController.container.viewContext)
+#endif
+   }
+   
    var body: some Scene {
       WindowGroup {
          ContentView()

@@ -11,6 +11,9 @@
         <attribute name="maximumScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="otherLetters" attributeType="String" valueTransformerName="NSSecureUnarchiveFromDataTransformer" minValueString="6" maxValueString="6" customClassName="Array&lt;Int32&gt;"/>
         <relationship name="progress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GameProgress" inverseName="game" inverseEntity="GameProgress"/>
+        <fetchIndex name="byDateIndex">
+            <fetchIndexElement property="date" type="Binary" order="descending"/>
+        </fetchIndex>
     </entity>
     <entity name="GameProgress" representedClassName="GameProgress" syncable="YES" codeGenerationType="class">
         <attribute name="currentWord" optional="YES" transient="YES" attributeType="String" defaultValueString=""/>

@@ -15,23 +15,33 @@ fileprivate let kMinLetters = 4
 
 final class GameViewModel: ObservableObject {
    let game: Game
-   let progress: GameProgress
    let objectContext: NSManagedObjectContext
    let entryNotAcceptedEvent = PassthroughSubject<Void, Never>()
-   
 
    private let userDefaults = UserDefaults.standard
       
-   init(game: Game, progress: GameProgress, objectContext: NSManagedObjectContext) {
+   init(game: Game, objectContext: NSManagedObjectContext) {
       self.game = game
-      self.progress = progress
+      if game.progress == nil {
+         game.progress = GameProgress(context: objectContext)
+      }
       self.objectContext = objectContext
    }
 
+   var progress: GameProgress {
+      game.progress!
+   }
+   
    var enteredWordSummary: String {
-      (progress.enteredWords!.array as! Array<EnteredWord>).map {
-         $0.value!.capitalized
-      }.joined(separator: "\u{2003}")
+      progress.enteredWords!.count > 0 ?
+         (progress.enteredWords!.array as! Array<EnteredWord>).map {
+            $0.value!.capitalized
+         }.joined(separator: "\u{2003}")
+      : "No words yet"
+   }
+   
+   var enteredWordSummaryColor: Color {
+      progress.enteredWords!.count > 0 ? .primary : .secondary
    }
    
    var enterEnabled: Bool {
@@ -67,7 +77,9 @@ final class GameViewModel: ObservableObject {
             try objectContext.save()
             if game.isPangram(word: enteredWord) {
                NSLog("pangram: %@", enteredWord)
-               userDefaults[.pangramsCount] = userDefaults[.pangramsCount] ?? 0 + 1
+               let pangramCountKey = UserDefaults.pangramsCount
+               userDefaults[pangramCountKey] = userDefaults[pangramCountKey] ?? 0 + 1
+               NSLog("total pangrams: %d", userDefaults[pangramCountKey] ?? 0)
             }
          } catch {
             NSLog("Error saving managed object context", error.localizedDescription)

@@ -18,8 +18,8 @@ struct GameView: View {
    @State private var showEntryNotAccepted = false
    @State private var expandEnteredWords = false
    
-   init(game: Game, progress: GameProgress, context: NSManagedObjectContext) {
-      let model = GameViewModel(game: game, progress: progress, objectContext: context)
+   init(game: Game, context: NSManagedObjectContext) {
+      let model = GameViewModel(game: game, objectContext: context)
       _viewModel = StateObject(wrappedValue: model)
    }
    
@@ -59,6 +59,7 @@ struct GameView: View {
          editButtons
             .opacity(viewModel.gameComplete ? 0 : 1)
       }
+      .navigationBarTitleDisplayMode(.inline)
       .onReceive(viewModel.entryNotAcceptedEvent) { _ in
          withAnimation(.linear) {
             showEntryNotAccepted = true
@@ -112,6 +113,7 @@ struct GameView: View {
       let wordBar = HStack {
          Text(viewModel.enteredWordSummary)
             .lineLimit(1)
+            .foregroundColor(viewModel.enteredWordSummaryColor)
          Spacer()
          Image(systemName: "chevron.down")
       }
@@ -168,7 +170,7 @@ struct GameView_Previews: PreviewProvider {
       })
       progress.score = game.maximumScore - 1
       game.progress = progress
-      return GameView(game: game, progress: progress, context: context)
+      return GameView(game: game, context: context)
          .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
    }
 }
