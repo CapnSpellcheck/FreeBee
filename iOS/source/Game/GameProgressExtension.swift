@@ -11,4 +11,10 @@ extension GameProgress {
    var currentWordDisplay: String {
       currentWord! + "_"
    }
+   
+   func hasEntered(word: String) -> Bool {
+      enteredWords!.index { enteredWord, _, _ in
+         (enteredWord as? EnteredWord)?.value == word
+      } != NSNotFound
+   }
 }

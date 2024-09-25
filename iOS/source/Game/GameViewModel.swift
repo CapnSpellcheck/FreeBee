@@ -70,7 +70,7 @@ final class GameViewModel: ObservableObject {
    func enter() {
       var errored = false
       let enteredWord = progress.currentWord!
-      if game.allowedWords?.contains(enteredWord) == true {
+      if game.allowedWords!.contains(enteredWord), !progress.hasEntered(word: enteredWord) {
          progress.insertIntoEnteredWords(EnteredWord(context: objectContext, string: enteredWord), at: 0)
          progress.score += scoreWord(enteredWord)
          do {
