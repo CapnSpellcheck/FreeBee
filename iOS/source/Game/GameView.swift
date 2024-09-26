@@ -153,12 +153,14 @@ struct GameView: View {
       .padding(.horizontal, kGeneralHorizontalPadding)
    }
    
+   // The progress bar shows progress based on number of words not the score. I feel this is more
+   // representative and expected.
    var scoreView: some View {
       HStack {
          Text(try! AttributedString(markdown: "Score:  **\(viewModel.progress.score)**"))
             .padding(.trailing, 8)
-         let value = Float(viewModel.progress.score)
-         let total = Float(viewModel.game.maximumScore)
+         let value = Float(viewModel.game.progress!.enteredWords!.count)
+         let total = Float(viewModel.game.allowedWords!.count)
          ProgressView(value: value, total: total)
             .scaleEffect(x: 1, y: 0.5)
       }
