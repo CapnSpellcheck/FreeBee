@@ -27,4 +27,8 @@ extension Game {
       let wordLetters = Set(word)
       return wordLetters.contains(centerLetterCharacter) && wordLetters.isSuperset(of: otherLetters!)
    }
+   
+   var isGenius: Bool {
+      geniusScore <= progress!.score
+   }
 }

@@ -25,7 +25,6 @@ struct GameView: View {
    
    var body: some View {
       let game = viewModel.game
-      let progress = viewModel.progress
       
       VStack(spacing: 0) {
          scoreView
@@ -35,7 +34,7 @@ struct GameView: View {
             entryNotAcceptedMessage
          }
          if !viewModel.gameComplete {
-            Text(progress.currentWordDisplay)
+            Text(game.progress!.currentWordDisplay)
                .tracking(2)
                .textCase(.uppercase)
                .lineLimit(1)
@@ -58,6 +57,9 @@ struct GameView: View {
          .padding(.vertical, kHoneycombPadding)
          editButtons
             .opacity(viewModel.gameComplete ? 0 : 1)
+      }
+      .toolbar {
+         geniusIcon
       }
       .navigationBarTitleDisplayMode(.inline)
       .navigationTitle(gameDateDisplayFormatter.string(from: viewModel.game.date!))
@@ -162,6 +164,25 @@ struct GameView: View {
       }
       .padding(.horizontal, kGeneralHorizontalPadding)
       .padding(.bottom, 16)
+   }
+   
+   var geniusIcon: some ToolbarContent {
+      ToolbarItemGroup {
+         if viewModel.game.isGenius {
+            Menu(content: {
+               Text("You reached genius level. Smarty!")
+            }, label: {
+               { () -> Image in
+                  var brain = "brain"
+                  if #available(iOS 17.0, *) {
+                     brain = "brain.fill"
+                  }
+                  return Image(systemName: brain)
+               }()
+                  .foregroundColor(Color("brain"))
+            })
+         }
+      }
    }
 }
 

@@ -24,6 +24,8 @@
 		06A940532C9E079A007A9522 /* UserDefaultExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940522C9E079A007A9522 /* UserDefaultExtension.swift */; };
 		06A940552C9E15B9007A9522 /* EnteredWordExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */; };
 		06A940572C9E57AD007A9522 /* SwiftUIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */; };
+		06AEE4A92CA4CD8800AF8077 /* GamePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */; };
+		06AEE4AB2CA4CE7700AF8077 /* GamePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */; };
 		06B5E3052CA35B20006844C4 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B5E3042CA35B20006844C4 /* Utils.swift */; };
 		06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */; };
 		06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */; };
@@ -70,6 +72,8 @@
 		06A940522C9E079A007A9522 /* UserDefaultExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultExtension.swift; sourceTree = "<group>"; };
 		06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnteredWordExtension.swift; sourceTree = "<group>"; };
 		06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUtils.swift; sourceTree = "<group>"; };
+		06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePicker.swift; sourceTree = "<group>"; };
+		06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePickerViewModel.swift; sourceTree = "<group>"; };
 		06B5E3042CA35B20006844C4 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterHoneycomb.swift; sourceTree = "<group>"; };
@@ -138,6 +142,7 @@
 				06A940522C9E079A007A9522 /* UserDefaultExtension.swift */,
 				06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */,
 				06B5E3042CA35B20006844C4 /* Utils.swift */,
+				06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */,
 			);
 			path = source;
 			sourceTree = "<group>";
@@ -185,6 +190,7 @@
 			children = (
 				0699B8E72C9101AF002011E3 /* GameList.swift */,
 				0699B91A2C910802002011E3 /* GameLoader.swift */,
+				06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */,
 			);
 			path = Index;
 			sourceTree = "<group>";
@@ -341,9 +347,11 @@
 				06A940572C9E57AD007A9522 /* SwiftUIUtils.swift in Sources */,
 				06C0F8D92C98D11200115894 /* GameProgressExtension.swift in Sources */,
 				06B5E3052CA35B20006844C4 /* Utils.swift in Sources */,
+				06AEE4AB2CA4CE7700AF8077 /* GamePickerViewModel.swift in Sources */,
 				0699B9252C911EBA002011E3 /* Previews.swift in Sources */,
 				0699B8F22C9101B0002011E3 /* Free_Bee.xcdatamodeld in Sources */,
 				06C0F8DE2C98F42200115894 /* AutoRepeatingButton.swift in Sources */,
+				06AEE4A92CA4CD8800AF8077 /* GamePicker.swift in Sources */,
 				06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */,
 				0699B8E62C9101AF002011E3 /* Free_BeeApp.swift in Sources */,
 				0699B9212C911D8B002011E3 /* LetterView.swift in Sources */,

@@ -15,7 +15,6 @@ struct GameList: View {
       sortDescriptors: [NSSortDescriptor(keyPath: \Game.date, ascending: false)],
       animation: .default)
    private var gameResults: FetchedResults<Game>
-//   @FetchRequest(fetchRequest: Self.fetchRequest) var gameResults: FetchedResults<Game>
 
    var body: some View {
       NavigationView {
@@ -30,7 +29,7 @@ struct GameList: View {
                         Spacer()
                         gameLettersText(game: game)
                         Spacer()
-                        Text("Score: \(game.progress!.score)")
+                        scoreView(game: game)
                      }
                   })
                }
@@ -74,14 +73,12 @@ struct GameList: View {
          .textCase(.uppercase)
    }
    
-   static private var fetchRequest: NSFetchRequest<Game> {
-      let request = NSFetchRequest<Game>(entityName: String(describing: Game.self))
-      request.sortDescriptors = [
-         NSSortDescriptor(
-            keyPath: \Game.date,
-            ascending: false)]
-      request.relationshipKeyPathsForPrefetching = ["progress"]
-      return request
+   @ViewBuilder func scoreView(game: Game) -> some View {
+      if game.isGenius {
+         Text("💯")
+      } else {
+         Text("Score: \(game.progress!.score)")
+      }
    }
 }
 
