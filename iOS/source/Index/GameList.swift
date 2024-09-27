@@ -15,6 +15,7 @@ struct GameList: View {
       sortDescriptors: [NSSortDescriptor(keyPath: \Game.date, ascending: false)],
       animation: .default)
    private var gameResults: FetchedResults<Game>
+   @State private var isChooseADateActive = false
 
    var body: some View {
       NavigationView {
@@ -25,7 +26,7 @@ struct GameList: View {
                      GameView(game: game, context: viewContext)
                   }, label: {
                      HStack {
-                        Text(game.date!, formatter: gameDateDisplayFormatter)
+                        Text(gameDateDisplayFormatter.string(from: game.date!))
                         Spacer()
                         gameLettersText(game: game)
                         Spacer()
@@ -37,7 +38,7 @@ struct GameList: View {
             Section("Start a new game") {
                Group {
                   Button("Choose a date…") {
-                     ()
+                     isChooseADateActive = true
                   }
                   Button("Open a random game") {
                      ()
@@ -55,6 +56,13 @@ struct GameList: View {
 //            }
          }
          .navigationTitle("Games")
+         .overlay {
+            NavigationLink(
+               isActive: $isChooseADateActive,
+               destination: { GamePicker(context: viewContext)},
+               label: { EmptyView() }
+            )
+         }
       }
       .onAppear {
          viewContext.processPendingChanges()

@@ -11,7 +11,7 @@ import CoreData
 #if DEBUG
 enum GamePreview {
    static func toSep_9_2024(_  game: Game) {
-      game.date = Date(timeIntervalSince1970: 1725854400)
+      game.date = Date(timeIntervalSince1970: 1725840000)
       game.centerLetterCode = Int32("e".unicodeScalars.first!.value)
       game.otherLetters = "yatpcf"
       game.allowedWords = ["accept", "acetate", "affect", "cafe", "cape", "effect", "face", "facet", "fate", "feet", "pace"]
@@ -20,7 +20,7 @@ enum GamePreview {
    }
    
    static func toOct_22_2018(_ game: Game) {
-      game.date = Date(timeIntervalSince1970: 1540180800)
+      game.date = Date(timeIntervalSince1970: 1540166400)
       game.centerLetterCode = Int32("u".unicodeScalars.first!.value)
       game.otherLetters = "rlcayt"
       game.allowedWords = ["accrual", "accuracy", "actual", "actually", "actuary", "aura", "aural", "cull", "cult", "cultural", "culturally", "curl", "curly", "curry", "curt", "lull", "rural", "rutty", "tactual", "taut", "truly", "tutu", "yucca"]
@@ -29,7 +29,7 @@ enum GamePreview {
    }
    
    static func toMar_5_2021(_ game: Game) {
-      game.date = Date(timeIntervalSince1970: 1614920400)
+      game.date = Date(timeIntervalSince1970: 1614902400)
       game.centerLetterCode = Int32("c".unicodeScalars.first!.value)
       game.otherLetters = "mihatr"
       game.allowedWords = ["acacia", "arch", "archaic", "arctic", "attach", "attic", "attract", "carat", "cart", "cataract", "catch", "cathartic", "chair", "charm", "chart", "chat", "chia", "chit", "chitchat", "citric", "cram", "critic", "hatch", "itch", "march", "match", "mimic", "rich", "tactic", "tract"]

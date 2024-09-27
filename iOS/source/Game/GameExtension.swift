@@ -29,6 +29,10 @@ extension Game {
    }
    
    var isGenius: Bool {
-      geniusScore <= progress!.score
+      progress!.score >= geniusScore
+   }
+   
+   var isComplete: Bool {
+      progress!.score >= maximumScore
    }
 }

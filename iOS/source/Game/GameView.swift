@@ -33,7 +33,7 @@ struct GameView: View {
          if showEntryNotAccepted {
             entryNotAcceptedMessage
          }
-         if !viewModel.gameComplete {
+         if !game.isComplete {
             Text(game.progress!.currentWordDisplay)
                .tracking(2)
                .textCase(.uppercase)
@@ -48,15 +48,15 @@ struct GameView: View {
                centerLetter: game.centerLetterCharacter,
                otherLetters: Array(game.otherLetters!),
                letterTapped: viewModel.append(letter:)
-            ).opacity(viewModel.gameComplete ? 0.4 : 1),
-            condition: viewModel.gameComplete
+            ).opacity(game.isComplete ? 0.4 : 1),
+            condition: game.isComplete
          ) {
             Text("💯").font(.system(size: 150))
          }
-         .disabled(viewModel.gameComplete)
+         .disabled(game.isComplete)
          .padding(.vertical, kHoneycombPadding)
          editButtons
-            .opacity(viewModel.gameComplete ? 0 : 1)
+            .opacity(game.isComplete ? 0 : 1)
       }
       .toolbar {
          geniusIcon
@@ -137,7 +137,8 @@ struct GameView: View {
       return addOverlay(view: wordBar, alignment: .bottomTrailing, condition: expandEnteredWords) {
          ScrollView {
             VStack(alignment: .leading, spacing: 6) {
-               ForEach(viewModel.progress.enteredWords!.array as! Array<EnteredWord>, id: \.value) { enteredWord in
+               ForEach(viewModel.progress.enteredWords!.array as! Array<EnteredWord>, id: \.value)
+               { enteredWord in
                   Text(enteredWord.value!.capitalized)
                }
             }
