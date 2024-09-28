@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+class GameLoader {
+   init(date: Date) {}
+}

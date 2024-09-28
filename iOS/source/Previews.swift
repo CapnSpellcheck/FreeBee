@@ -52,7 +52,7 @@ enum GamePreview {
 
       let mar5_2021 = Game(context: context)
       GamePreview.toMar_5_2021(mar5_2021)
-      oct22_2018.progress = GameProgress(context: context)
+      mar5_2021.progress = GameProgress(context: context)
 
       try? context.save()
    }

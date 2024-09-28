@@ -15,6 +15,7 @@ struct PersistenceController {
       let viewContext = result.container.viewContext
       let game1 = Game(context: viewContext)
       GamePreview.toSep_9_2024(game1)
+      game1.progress = GameProgress(context: viewContext)
       
       do {
          try viewContext.save()

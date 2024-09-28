@@ -9,11 +9,12 @@ import SwiftUI
 import CoreData
 
 struct GamePicker: View {
-   @Environment(\.managedObjectContext) private var viewContext
+   @Environment(\.navigationController) private var navController
+   
    @StateObject var viewModel: GamePickerViewModel
    @State private var selectedDate = Date()
    
-   init(context: NSManagedObjectContext) {
+   init(context: NSManagedObjectContext) {//}, gameLoaderBinding: Binding<Bool>, onDateSelected: () -> Void) {
       let model = GamePickerViewModel(objectContext: context)
       _viewModel = StateObject(wrappedValue: model)
    }
@@ -25,7 +26,10 @@ struct GamePicker: View {
             DatePicker("", selection: $selectedDate, in: viewModel.availableDateRange, displayedComponents: .date)
                .labelsHidden()
             Button("Go!") {
-               viewModel.isGameLoaded(date: selectedDate)
+               viewModel.checkGameExists(date: selectedDate)
+               if !viewModel.showGameExistsDialog {
+                  loadSelectedDate()
+               }
             }
             .buttonStyle(.borderedProminent)
             .foregroundColor(.primary)
@@ -33,9 +37,31 @@ struct GamePicker: View {
          Text("At this time, we can't preview the game for you before you open it. Maybe in the future!")
             .font(.footnote)
             .padding(.bottom, 40)
+         Text("Or…")
+            .font(.headline)
+         Button("Open a random date") {}
+            .buttonStyle(.bordered)
+            .foregroundColor(.primary)
       }
       .navigationTitle("Choose a Game")
       .padding(.horizontal, 12)
+      .confirmationDialog(
+         "Game already in progress",
+         isPresented: $viewModel.showGameExistsDialog,
+         titleVisibility: .visible,
+         actions: {
+            Button("Cancel", role: .cancel) {}
+            Button("Continue") {
+               loadSelectedDate()
+            }
+         }
+      ) {
+         Text("Open this game with your existing progress?")
+      }
+   }
+   
+   private func loadSelectedDate() {
+      navController?.replaceTopmost(with: GameLoaderView(gameDate: selectedDate))
    }
 }
 
