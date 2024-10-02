@@ -15,3 +15,9 @@ let gameDateDisplayFormatter: DateFormatter = {
    df.dateStyle = .medium
    return df
 }()
+
+extension String {
+   func nilIfEmpty() -> String? {
+      self == "" ? nil : self
+   }
+}

@@ -82,7 +82,7 @@ struct GameList: View {
       if game.isGenius {
          Text("💯")
       } else {
-         Text("Score: \(game.progress!.score)")
+         Text("Score: \(game.progress?.score ?? 0)")
       }
    }
 }

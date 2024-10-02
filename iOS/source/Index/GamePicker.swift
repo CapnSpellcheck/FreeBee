@@ -10,11 +10,9 @@ import CoreData
 
 struct GamePicker: View {
    @Environment(\.navigationController) private var navController
-   
    @StateObject var viewModel: GamePickerViewModel
-   @State private var selectedDate = Date()
    
-   init(context: NSManagedObjectContext) {//}, gameLoaderBinding: Binding<Bool>, onDateSelected: () -> Void) {
+   init(context: NSManagedObjectContext) {
       let model = GamePickerViewModel(objectContext: context)
       _viewModel = StateObject(wrappedValue: model)
    }
@@ -23,10 +21,10 @@ struct GamePicker: View {
       VStack {
          Text("Games are created by the New York Times. Choose a date to open the game from that date.")
          HStack(spacing: 16) {
-            DatePicker("", selection: $selectedDate, in: viewModel.availableDateRange, displayedComponents: .date)
-               .labelsHidden()
+            DatePickerUTC(selection: $viewModel.selectedDate, in: viewModel.availableDateRange)
+            .labelsHidden()
             Button("Go!") {
-               viewModel.checkGameExists(date: selectedDate)
+               viewModel.checkGameExists()
                if !viewModel.showGameExistsDialog {
                   loadSelectedDate()
                }
@@ -61,7 +59,7 @@ struct GamePicker: View {
    }
    
    private func loadSelectedDate() {
-      navController?.replaceTopmost(with: GameLoaderView(gameDate: selectedDate))
+      navController?.replaceTopmost(with: GameLoaderView(gameDate: viewModel.selectedDate))
    }
 }
 

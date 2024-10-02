@@ -9,30 +9,38 @@ import Foundation
 import CoreData
 import Combine
 
-fileprivate let kAug_4_2018: TimeInterval = 1533340800
+fileprivate let kAug_4_2018 = Date(timeIntervalSince1970: 1533340800)
 
 class GamePickerViewModel: ObservableObject {
    let objectContext: NSManagedObjectContext
    
    @Published var showGameExistsDialog = false
+   @Published var selectedDate: Date
+   @Published private var latestAvailableDate: Date
       
    init(objectContext: NSManagedObjectContext) {
       self.objectContext = objectContext
+      
+      var calendarAtUTC = Calendar.current
+      calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
+      var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+      
+      let todayGameDate = calendarAtUTC.date(from: components) ?? kAug_4_2018
+      latestAvailableDate = todayGameDate
+      selectedDate = todayGameDate
+      determineLatestAvailableDate()
    }
 
    var availableDateRange: ClosedRange<Date> {
-      Date(timeIntervalSince1970: kAug_4_2018)...Date()
+      kAug_4_2018...latestAvailableDate
    }
-      
-   func checkGameExists(date: Date) {
-      showGameExistsDialog = isGameLoaded(date: date)
+   
+   func checkGameExists() {
+      showGameExistsDialog = isGameLoaded(date: selectedDate)
    }
    
    private func isGameLoaded(date: Date) -> Bool {
-      var components = Calendar.current.dateComponents([.day, .month, .year], from: date)
-      components.hour = 0
-      components.minute = 0
-      components.second = 0
+      let components = Calendar.current.dateComponents([.day, .month, .year], from: date)
       
       var calendarAtUTC = Calendar.current
       calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
@@ -49,5 +57,9 @@ class GamePickerViewModel: ObservableObject {
          NSLog("Couldn't check for existence of game. Error: %@", error.localizedDescription)
          return false
       }
+   }
+   
+   private func determineLatestAvailableDate() {
+//      let session = URLSession(configuration: .ephemeral)
    }
 }

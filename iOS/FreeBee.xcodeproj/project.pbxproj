@@ -20,6 +20,7 @@
 		0699B9212C911D8B002011E3 /* LetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9202C911D8B002011E3 /* LetterView.swift */; };
 		0699B9252C911EBA002011E3 /* Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9242C911EBA002011E3 /* Previews.swift */; };
 		0699B9262C9125EA002011E3 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699B9172C910637002011E3 /* GameView.swift */; };
+		06A322112CACCBF200AD6054 /* DatePickerUTC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A322102CACCBF200AD6054 /* DatePickerUTC.swift */; };
 		06A940532C9E079A007A9522 /* UserDefaultExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940522C9E079A007A9522 /* UserDefaultExtension.swift */; };
 		06A940552C9E15B9007A9522 /* EnteredWordExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */; };
 		06A940572C9E57AD007A9522 /* SwiftUIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */; };
@@ -37,6 +38,7 @@
 		06C0F8D72C98CFA600115894 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C0F8D62C98CFA600115894 /* GameViewModel.swift */; };
 		06C0F8D92C98D11200115894 /* GameProgressExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C0F8D82C98D11200115894 /* GameProgressExtension.swift */; };
 		06C0F8DE2C98F42200115894 /* AutoRepeatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C0F8DD2C98F42200115894 /* AutoRepeatingButton.swift */; };
+		06C3CDC32CAB383F0087AED6 /* Kanna in Frameworks */ = {isa = PBXBuildFile; productRef = 06C3CDC22CAB383F0087AED6 /* Kanna */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +75,7 @@
 		0699B91E2C911885002011E3 /* GameExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameExtension.swift; sourceTree = "<group>"; };
 		0699B9202C911D8B002011E3 /* LetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterView.swift; sourceTree = "<group>"; };
 		0699B9242C911EBA002011E3 /* Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Previews.swift; sourceTree = "<group>"; };
+		06A322102CACCBF200AD6054 /* DatePickerUTC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerUTC.swift; sourceTree = "<group>"; };
 		06A940522C9E079A007A9522 /* UserDefaultExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultExtension.swift; sourceTree = "<group>"; };
 		06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnteredWordExtension.swift; sourceTree = "<group>"; };
 		06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUtils.swift; sourceTree = "<group>"; };
@@ -98,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06C3CDC32CAB383F0087AED6 /* Kanna in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,9 +208,9 @@
 			children = (
 				0699B8E72C9101AF002011E3 /* GameList.swift */,
 				0699B91A2C910802002011E3 /* GameLoader.swift */,
+				06B094172CA767CD00A6CF66 /* GameLoaderView.swift */,
 				06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */,
 				06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */,
-				06B094172CA767CD00A6CF66 /* GameLoaderView.swift */,
 			);
 			path = Index;
 			sourceTree = "<group>";
@@ -218,6 +222,7 @@
 				06C0F8DD2C98F42200115894 /* AutoRepeatingButton.swift */,
 				0699B9202C911D8B002011E3 /* LetterView.swift */,
 				06B094462CA7A42E00A6CF66 /* ActionNavigationLink.swift */,
+				06A322102CACCBF200AD6054 /* DatePickerUTC.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -238,6 +243,9 @@
 			dependencies = (
 			);
 			name = "Free Bee";
+			packageProductDependencies = (
+				06C3CDC22CAB383F0087AED6 /* Kanna */,
+			);
 			productName = "Free Bee";
 			productReference = 0699B8E22C9101AF002011E3 /* Free Bee.app */;
 			productType = "com.apple.product-type.application";
@@ -310,6 +318,9 @@
 				Base,
 			);
 			mainGroup = 0699B8D92C9101AF002011E3;
+			packageReferences = (
+				06C3CDC12CAB383F0087AED6 /* XCRemoteSwiftPackageReference "Kanna" */,
+			);
 			productRefGroup = 0699B8E32C9101AF002011E3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -359,6 +370,7 @@
 				0699B8E82C9101AF002011E3 /* GameList.swift in Sources */,
 				06A940552C9E15B9007A9522 /* EnteredWordExtension.swift in Sources */,
 				06B094402CA7958F00A6CF66 /* SceneDelegate.swift in Sources */,
+				06A322112CACCBF200AD6054 /* DatePickerUTC.swift in Sources */,
 				06B094422CA7993400A6CF66 /* EnvironmentValues.swift in Sources */,
 				06A940532C9E079A007A9522 /* UserDefaultExtension.swift in Sources */,
 				06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */,
@@ -697,6 +709,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		06C3CDC12CAB383F0087AED6 /* XCRemoteSwiftPackageReference "Kanna" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tid-kijyun/Kanna.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 5.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		06C3CDC22CAB383F0087AED6 /* Kanna */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 06C3CDC12CAB383F0087AED6 /* XCRemoteSwiftPackageReference "Kanna" */;
+			productName = Kanna;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		0699B8F02C9101B0002011E3 /* Free_Bee.xcdatamodeld */ = {

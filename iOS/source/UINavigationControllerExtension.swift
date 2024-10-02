@@ -10,9 +10,9 @@ import UIKit
 import SwiftUI
 
 extension UINavigationController {
-   func replaceTopmost(with view: some View) {
+   func replaceTopmost(with view: some View, animated: Bool = true) {
       let newVC = UIHostingController(rootView: view.environment(\.navigationController, self))
-      self.setViewControllers(viewControllers.dropLast() + [newVC], animated: true)
+      self.setViewControllers(viewControllers.dropLast() + [newVC], animated: animated)
    }
    
    func push(view: some View) {

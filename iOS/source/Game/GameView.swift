@@ -14,6 +14,7 @@ fileprivate let kHoneycombPadding = 16.0
 
 struct GameView: View {
    @Environment(\.managedObjectContext) private var viewContext
+   @Environment(\.dismiss) private var dismiss
    @StateObject var viewModel: GameViewModel
    @State private var showEntryNotAccepted = false
    @State private var expandEnteredWords = false
@@ -21,6 +22,15 @@ struct GameView: View {
    init(game: Game, context: NSManagedObjectContext) {
       let model = GameViewModel(game: game, objectContext: context)
       _viewModel = StateObject(wrappedValue: model)
+   }
+   
+   init?(gameDate: Date, context: NSManagedObjectContext) {
+      let fetchRequest = NSFetchRequest<Game>(entityName: String(describing: Game.self))
+      fetchRequest.predicate = NSPredicate(format: "date == %@", gameDate as NSDate)
+      guard let game = try? fetchRequest.execute().first else {
+         return nil
+      }
+      self.init(game: game, context: context)
    }
    
    var body: some View {
