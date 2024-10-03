@@ -11,7 +11,6 @@ import SwiftUI
 struct DatePickerUTC: UIViewRepresentable {
    @Binding private var selection: Date
    private let range: ClosedRange<Date>?
-   private let datePicker = UIDatePicker()
 
    private var minimumDate: Date? {
       range?.lowerBound
@@ -27,6 +26,7 @@ struct DatePickerUTC: UIViewRepresentable {
    }
    
    func makeUIView(context: Context) -> UIDatePicker {
+      let datePicker = UIDatePicker()
       datePicker.datePickerMode = .date
       datePicker.preferredDatePickerStyle = .compact
       datePicker.minimumDate = minimumDate
@@ -42,12 +42,16 @@ struct DatePickerUTC: UIViewRepresentable {
        uiView: Self.UIViewType,
        context: Self.Context
    ) -> CGSize? {
-      datePicker.sizeThatFits(.zero)
+      return uiView.bounds.size
    }
    
    func updateUIView(_ uiView: UIDatePicker, context: Context) {
-      datePicker.date = selection
-      
+      uiView.date = selection
+      if context.coordinator.width == UIView.noIntrinsicMetric {
+         uiView.sizeToFit()
+         context.coordinator.width = uiView.bounds.size.width + 20
+         uiView.bounds.size.width = context.coordinator.width
+      }
    }
    
    func makeCoordinator() -> Coordinator {
@@ -57,6 +61,7 @@ struct DatePickerUTC: UIViewRepresentable {
    class Coordinator: NSObject {
       private let selection: Binding<Date>
       private let range: ClosedRange<Date>?
+      var width: CGFloat = UIView.noIntrinsicMetric
       
       init(selection: Binding<Date>, in range: ClosedRange<Date>? = nil) {
          self.selection = selection

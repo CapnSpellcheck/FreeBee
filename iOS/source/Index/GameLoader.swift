@@ -71,22 +71,41 @@ class GameLoader {
          return
       }
       
+      do {
+         try parseGame1(document: document)
+      } catch {
+         do {
+            try parseGame2(document: document)
+         } catch {
+            await sendEvent(.error(error))
+         }
+      }
+
+      do {
+         let objectContext = PersistenceController.shared.container.viewContext
+         try objectContext.performAndWait {
+            try objectContext.save()
+         }
+         await sendEvent(.finished)
+      } catch {
+         await sendEvent(.error(error))
+      }
+   }
+   
+   private func parseGame1(document: HTMLDocument) throws {
       var result = document.xpath("//*[@id='main-answer-list'][1]/ul/li/div/text()")
       guard case .NodeSet(let answerNodes) = result else {
-         await sendEvent(.error(ParseError()))
-         return
+         throw ParseError()
       }
       let allowedWords = answerNodes.compactMap { e in
          e.text?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty()
       }
       guard !allowedWords.isEmpty else {
-         await sendEvent(.error(ParseError()))
-         return
+         throw ParseError()
       }
       result = document.xpath("//*[@id='puzzle-notes'][1]")
       guard case .NodeSet(let nodes) = result, let puzzleNotes = nodes.first else {
-         await sendEvent(.error(ParseError()))
-         return
+         throw ParseError()
       }
       result = puzzleNotes.xpath("//*[contains(., 'Maximum Puzzle Score')][1]")
       guard case .NodeSet(let nodes) = result,
@@ -95,8 +114,7 @@ class GameLoader {
             let matchRange = Range(match.range, in: text),
             let maximumScore = Int16(text[matchRange])
       else {
-         await sendEvent(.error(ParseError()))
-         return
+         throw ParseError()
       }
       result = puzzleNotes.xpath("//*[contains(., 'Needed for Genius')][1]")
       guard case .NodeSet(let nodes) = result,
@@ -105,15 +123,13 @@ class GameLoader {
             let matchRange = Range(match.range, in: text),
             let geniusScore = Int16(text[matchRange])
       else {
-         await sendEvent(.error(ParseError()))
-         return
+         throw ParseError()
       }
       
       var centerLetter: Character?
       var otherLetters: String?
       guard determineLetters(words: allowedWords, centerLetter: &centerLetter, otherLetters: &otherLetters) else {
-         await sendEvent(.error(ParseError()))
-         return
+         throw ParseError()
       }
       
       let objectContext = PersistenceController.shared.container.viewContext
@@ -126,11 +142,13 @@ class GameLoader {
       game.geniusScore = geniusScore
       game.maximumScore = maximumScore
       game.progress = GameProgress(context: objectContext)
-      
+
       NSLog("game parsed: %@", game)
-      
-      try! objectContext.save()
-      await sendEvent(.finished)
+   }
+   
+   private func parseGame2(document: HTMLDocument) throws {
+      throw ParseError()
+      // TODO
    }
    
    // This method assumes that the input words are a valid game; otherwise it may run indefinitely.
@@ -189,6 +207,18 @@ extension GameLoader {
       }
       override var localizedDescription: String {
          "Unable to parse the downloaded game. The app scrapes a third party website to obtain game information; it may need an update to restore compatibility with that site."
+      }
+   }
+   
+   class DatabaseError: NSError {
+      init() {
+         super.init(domain: "freebee", code: 0)
+      }
+      required init?(coder: NSCoder) {
+         fatalError("init(coder:) has not been implemented")
+      }
+      override var localizedDescription: String {
+         "Database error."
       }
    }
 }

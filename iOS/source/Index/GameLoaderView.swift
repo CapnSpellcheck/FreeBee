@@ -30,6 +30,9 @@ struct GameLoaderView: View {
          if loadingStatusError != nil {
             showErrorAlert = true
          }
+         if case .finished = loadingStatus {
+            openGame()
+         }
       }
       .navigationTitle(gameDateDisplayFormatter.string(from: loader.gameDate))
       .navigationBarTitleDisplayMode(.inline)
@@ -68,10 +71,14 @@ struct GameLoaderView: View {
    }
    
    private func openGame() {
-      navController?.replaceTopmost(with: GameView(
+      if let gameView = GameView(
          gameDate: loader.gameDate,
          context: PersistenceController.shared.container.viewContext
-      ), animated: false)
+      ) {
+         navController?.replaceTopmost(with: gameView, animated: false)
+      } else {
+         navController?.popViewController(animated: true)
+      }
    }
 }
 

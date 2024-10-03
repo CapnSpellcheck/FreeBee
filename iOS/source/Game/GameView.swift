@@ -27,7 +27,7 @@ struct GameView: View {
    init?(gameDate: Date, context: NSManagedObjectContext) {
       let fetchRequest = NSFetchRequest<Game>(entityName: String(describing: Game.self))
       fetchRequest.predicate = NSPredicate(format: "date == %@", gameDate as NSDate)
-      guard let game = try? fetchRequest.execute().first else {
+      guard let game = try? context.fetch(fetchRequest).first else {
          return nil
       }
       self.init(game: game, context: context)
@@ -203,7 +203,9 @@ struct GameView_Previews: PreviewProvider {
    static var previews: some View {
       let context = PersistenceController.preview.container.viewContext
       let game = Game(context: context)
+      #if DEBUG
       GamePreview.toSep_9_2024(game)
+      #endif
       let progress = GameProgress(context: context)
       progress.currentWord = "spelli"
       progress.enteredWords = NSOrderedSet(array: ["facet", "acetate", "peace", "effect", "accept"].map {

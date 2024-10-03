@@ -40,16 +40,10 @@ class GamePickerViewModel: ObservableObject {
    }
    
    private func isGameLoaded(date: Date) -> Bool {
-      let components = Calendar.current.dateComponents([.day, .month, .year], from: date)
-      
-      var calendarAtUTC = Calendar.current
-      calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
-      
-      guard let midnightDate = calendarAtUTC.date(from: components) else { return false }
-      NSLog("Checking for existence of game with date=%@", midnightDate as NSDate)
+      NSLog("Checking for existence of game with date=%@", date as NSDate)
       
       let fetchRequest = NSFetchRequest<Game>(entityName: String(describing: Game.self))
-      fetchRequest.predicate = NSPredicate(format: "date == %@", midnightDate as NSDate)
+      fetchRequest.predicate = NSPredicate(format: "date == %@", date as NSDate)
       do {
          let count = try objectContext.count(for: fetchRequest)
          return count != 0
