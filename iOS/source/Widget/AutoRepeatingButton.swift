@@ -29,7 +29,7 @@ struct AutoRepeatingButton<L: View>: View {
          .simultaneousGesture(
             LongPressGesture(minimumDuration: 9999, maximumDistance: 50)
                .updating($isBeingPressed) { currentState, gestureState, _ in
-                  Task { @MainActor in
+                  Task {@MainActor in
                      action()
                   }
                   gestureState = currentState

@@ -79,7 +79,7 @@ struct GameList: View {
    }
    
    @ViewBuilder func scoreView(game: Game) -> some View {
-      if game.isGenius {
+      if game.isComplete {
          Text("💯")
       } else {
          Text("Score: \(game.progress?.score ?? 0)")

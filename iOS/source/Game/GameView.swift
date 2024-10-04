@@ -76,7 +76,7 @@ struct GameView: View {
       .onReceive(viewModel.entryNotAcceptedEvent) { _ in
          withAnimation(.linear) {
             showEntryNotAccepted = true
-            Task { @MainActor in
+            Task {@MainActor in
                try? await Task.sleep(nanoseconds: NSEC_PER_MSEC*(kEntryNotAcceptedDuration + 350))
                withAnimation {
                   showEntryNotAccepted = false

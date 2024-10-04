@@ -169,7 +169,7 @@ class GameLoader {
    }
    
    private func sendEvent(_ event: Event) async {
-      Task { @MainActor in
+      Task {@MainActor in
          events.send(event)
       }
    }

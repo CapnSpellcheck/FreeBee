@@ -37,9 +37,14 @@ struct GamePicker: View {
             .padding(.top, 8)
          Text("Or…")
             .font(.headline)
-         Button("Open a random date") {}
-            .buttonStyle(.bordered)
-            .foregroundColor(.primary)
+         Button("Open a random date") {
+            Task {@MainActor in
+               await viewModel.selectRandomDate()
+               loadSelectedDate()
+            }
+         }
+         .buttonStyle(.bordered)
+         .foregroundColor(.primary)
       }
       .navigationTitle("Choose a Game")
       .padding(.horizontal, 12)
