@@ -72,13 +72,10 @@ class GameLoader {
       }
       
       do {
-         try parseGame1(document: document)
+         try parseGame(document: document)
       } catch {
-         do {
-            try parseGame2(document: document)
-         } catch {
-            await sendEvent(.error(error))
-         }
+         await sendEvent(.error(error))
+         return
       }
 
       do {
@@ -92,8 +89,8 @@ class GameLoader {
       }
    }
    
-   private func parseGame1(document: HTMLDocument) throws {
-      var result = document.xpath("//*[@id='main-answer-list'][1]/ul/li/div/text()")
+   private func parseGame(document: HTMLDocument) throws {
+      var result = document.xpath("//*[@id='main-answer-list'][1]/ul/li//text()[not(parent::a)]")
       guard case .NodeSet(let answerNodes) = result else {
          throw ParseError()
       }
@@ -144,11 +141,6 @@ class GameLoader {
       game.progress = GameProgress(context: objectContext)
 
       NSLog("game parsed: %@", game)
-   }
-   
-   private func parseGame2(document: HTMLDocument) throws {
-      throw ParseError()
-      // TODO
    }
    
    // This method assumes that the input words are a valid game; otherwise it may run indefinitely.

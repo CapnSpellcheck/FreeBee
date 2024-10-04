@@ -47,7 +47,9 @@ struct GameLoaderView: View {
          Text("Error"),
              isPresented: $showErrorAlert,
              presenting: loadingStatusError,
-             actions: { _ in Button("OK") {} }
+             actions: { _ in Button("OK") {
+                navController?.popViewController(animated: true)
+             } }
       ) { error in
          Text(error.localizedDescription)
       }
@@ -76,8 +78,6 @@ struct GameLoaderView: View {
          context: PersistenceController.shared.container.viewContext
       ) {
          navController?.replaceTopmost(with: gameView, animated: false)
-      } else {
-         navController?.popViewController(animated: true)
       }
    }
 }

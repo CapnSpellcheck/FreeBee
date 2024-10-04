@@ -74,7 +74,7 @@ final class GameViewModel: ObservableObject {
             if game.isPangram(word: enteredWord) {
                NSLog("pangram: %@", enteredWord)
                let pangramCountKey = UserDefaults.pangramsCount
-               userDefaults[pangramCountKey] = userDefaults[pangramCountKey] ?? 0 + 1
+               userDefaults[pangramCountKey] = (userDefaults[pangramCountKey] ?? 0) + 1
                NSLog("total pangrams: %d", userDefaults[pangramCountKey] ?? 0)
             }
          } catch {
