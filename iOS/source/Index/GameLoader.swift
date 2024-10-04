@@ -73,12 +73,6 @@ class GameLoader {
       
       do {
          try parseGame(document: document)
-      } catch {
-         await sendEvent(.error(error))
-         return
-      }
-
-      do {
          let objectContext = PersistenceController.shared.container.viewContext
          try objectContext.performAndWait {
             try objectContext.save()
