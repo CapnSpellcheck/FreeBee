@@ -159,12 +159,13 @@ class GameLoader {
          centerLetterCandidates.formIntersection(letters)
       }
       
-      otherLetters = String(foundLetters)
       guard foundLetters.count == 7 && centerLetterCandidates.count == 1 else {
+         otherLetters = String(foundLetters)
          return false
       }
       centerLetter = centerLetterCandidates.first
       _ = centerLetter.map { foundLetters.remove($0) }
+      otherLetters = String(foundLetters)
       return true
    }
    

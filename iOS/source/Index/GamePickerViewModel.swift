@@ -13,6 +13,7 @@ fileprivate let kAug_4_2018 = Date(timeIntervalSince1970: 1533340800)
 
 class GamePickerViewModel: ObservableObject {
    @Published var showGameExistsDialog = false
+   @Published var isSearchingForDate = false
    @Published var selectedDate: Date
    @Published private var latestAvailableDate: Date
       
@@ -37,6 +38,9 @@ class GamePickerViewModel: ObservableObject {
    }
    
    func selectRandomDate() async {
+      await MainActor.run {
+         isSearchingForDate = true
+      }
       let backgroundObjectContext = PersistenceController.shared.container.newBackgroundContext()
       var randomDate: Date?
       var calendarAtUTC = Calendar.current
@@ -54,10 +58,13 @@ class GamePickerViewModel: ObservableObject {
          }
       } while randomDate != nil && isGameLoaded(date: randomDate!, objectContext: backgroundObjectContext)
       if let randomDate {
-         await Task {@MainActor in
+         await MainActor.run {
             selectedDate = randomDate
             // wait for task to finish
-         }.value
+         }
+      }
+      await MainActor.run {
+         isSearchingForDate = false
       }
    }
    

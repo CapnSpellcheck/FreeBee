@@ -38,7 +38,7 @@ struct GamePicker: View {
          Text("Or…")
             .font(.headline)
          Button("Open a random date") {
-            Task {@MainActor in
+            Task {
                await viewModel.selectRandomDate()
                loadSelectedDate()
             }
@@ -46,6 +46,7 @@ struct GamePicker: View {
          .buttonStyle(.bordered)
          .foregroundColor(.primary)
       }
+      .disabled(viewModel.isSearchingForDate)
       .navigationTitle("Choose a Game")
       .padding(.horizontal, 12)
       .confirmationDialog(
@@ -63,7 +64,7 @@ struct GamePicker: View {
       }
    }
    
-   private func loadSelectedDate() {
+   @MainActor private func loadSelectedDate() {
       navController?.replaceTopmost(with: GameLoaderView(gameDate: viewModel.selectedDate))
    }
 }
