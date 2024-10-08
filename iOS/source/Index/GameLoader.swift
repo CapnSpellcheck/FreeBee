@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 import Kanna
+import Vision
+import UIKit
 
 private let iso8601FormatStyle: Date.ISO8601FormatStyle =
    .iso8601.locale(Locale(identifier: "en_US_POSIX"))
@@ -52,14 +54,15 @@ class GameLoader {
          await self.sendEvent(.error(error))
       }
    }
-   
-   func isGameAvailable() {
-      
-   }
-   
+
    private var gameURL: URL? {
       let yyyymmdd = gameDate.formatted(iso8601FormatStyle)
       return URL(string: "https://nytbee.com/Bee_\(yyyymmdd).html")
+   }
+   
+   private var gameImageURL: URL? {
+      let yyyymmdd = gameDate.formatted(iso8601FormatStyle)
+      return URL(string: "https://nytbee.com/pics/\(yyyymmdd).png")
    }
    
    private func parseGame(htmlData: Data) async {
@@ -72,7 +75,7 @@ class GameLoader {
       }
       
       do {
-         try parseGame(document: document)
+         try await parseGame(document: document)
          let objectContext = PersistenceController.shared.container.viewContext
          try objectContext.performAndWait {
             try objectContext.save()
@@ -83,7 +86,7 @@ class GameLoader {
       }
    }
    
-   private func parseGame(document: HTMLDocument) throws {
+   private func parseGame(document: HTMLDocument) async throws {
       var result = document.xpath("//*[@id='main-answer-list'][1]/ul/li//text()[not(parent::a)]")
       guard case .NodeSet(let answerNodes) = result else {
          throw ParseError()
@@ -119,8 +122,12 @@ class GameLoader {
       
       var centerLetter: Character?
       var otherLetters: String?
-      guard determineLetters(words: allowedWords, centerLetter: &centerLetter, otherLetters: &otherLetters) else {
-         throw ParseError()
+      
+      if !determineLetters(words: allowedWords, centerLetter: &centerLetter, otherLetters: &otherLetters) {
+         centerLetter = await determineCetterLetterByImage()
+         guard centerLetter != nil else { return }
+         // remove the center from otherLetters
+         otherLetters = otherLetters?.filter { c in c != centerLetter! }
       }
       
       let objectContext = PersistenceController.shared.container.viewContext
@@ -137,34 +144,69 @@ class GameLoader {
       NSLog("game parsed: %@", game)
    }
    
-   // This method assumes that the input words are a valid game; otherwise it may run indefinitely.
    private func determineLetters(
       words: Array<String>,
       centerLetter: inout Character?,
       otherLetters: inout String?
    ) -> Bool {
       var foundLetters = Set<Character>()
-      var centerLetterCandidates = Set<Character>()
-      repeat {
-         let randomWord = words.randomElement()!
-         let letters = Set(randomWord)
-         foundLetters.formUnion(letters)
-         if centerLetterCandidates.isEmpty {
-            centerLetterCandidates.formUnion(letters)
-         } else {
-            centerLetterCandidates.formIntersection(letters)
-         }
-      } while foundLetters.count < 7 || centerLetterCandidates.count > 1
+      var centerLetterCandidates = Set<Character>(words.first!)
+      let words = words.shuffled()
       
+      for word in words where foundLetters.count < 8 && centerLetterCandidates.count > 1 {
+         let letters = Set(word)
+         foundLetters.formUnion(letters)
+         centerLetterCandidates.formIntersection(letters)
+      }
+      
+      otherLetters = String(foundLetters)
+      guard foundLetters.count == 7 && centerLetterCandidates.count == 1 else {
+         return false
+      }
       centerLetter = centerLetterCandidates.first
       _ = centerLetter.map { foundLetters.remove($0) }
-      otherLetters = String(foundLetters)
-      return foundLetters.count == 6 && centerLetterCandidates.count == 1
+      return true
+   }
+   
+   private func determineCetterLetterByImage() async -> Character? {
+      do {
+         let (data, _) = try await urlSession.data(from: gameImageURL!)
+         guard let cgImage = UIImage(data: data).flatMap({ image in
+            let cgImage = image.cgImage!
+            // Vision is very sensitive to the portion of the image chosen here. Not sure if it works
+            // for all 26 letters.
+            return cgImage.cropping(to: CGRect(
+               x: 0.28*Double(cgImage.width),
+               y: 0.28*Double(cgImage.height),
+               width: 0.44*Double(cgImage.width),
+               height: 0.44*Double(cgImage.height)))
+         }) else {
+            throw ParseError()
+         }
+         // Create a new image-request handler.
+         let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+         // Create a new request to recognize text.
+         let request = VNRecognizeTextRequest { _, _ in }
+         request.revision = 2
+         request.minimumTextHeight = 0.1
+         try requestHandler.perform([request])
+
+         guard let text = request.results?.first?.topCandidates(1).first?.string else {
+            throw ParseError()
+         }
+         NSLog("determineCetterLetterByImage: text recognition: %@", text)
+         return text.first?.lowercased().first
+      } catch {
+         await self.sendEvent(.error(error))
+      }
+      
+      return nil
    }
    
    private func sendEvent(_ event: Event) async {
-      Task {@MainActor in
-         events.send(event)
+      NSLog("sendEvent: %@", String(describing: event))
+      Task.detached {@MainActor in
+         self.events.send(event)
       }
    }
 }
