@@ -46,8 +46,6 @@ struct GameList: View {
             }
          }
          .listStyle(.grouped)
-         .toolbar {
-         }
          .navigationTitle("Games")
          Spacer()
          Group {
@@ -60,6 +58,15 @@ struct GameList: View {
          }
          .padding(.horizontal, 12)
          .padding(.bottom, 12)
+      }
+      .toolbar {
+         ToolbarItem(id: "stats") {
+            Button(action: {
+               navController?.push(view: StatisticsView())
+            }, label: {
+               Image(systemName: "chart.bar.xaxis")
+            })
+         }
       }
       .onAppear {
          viewContext.processPendingChanges()

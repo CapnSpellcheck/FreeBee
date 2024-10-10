@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 import Combine
 
-class GamePickerViewModel: ObservableObject {
+final class GamePickerViewModel: ObservableObject {
    @Published var showGameExistsDialog = false
    @Published var isSearchingForDate = false
    @Published var selectedDate: Date

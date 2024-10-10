@@ -27,7 +27,7 @@ private extension String {
    }
 }
 
-class GameLoader {
+final class GameLoader {
    @MainActor let events = PassthroughSubject<Event, Never>()
    let gameDate: Date
    
