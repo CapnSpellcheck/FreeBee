@@ -9,28 +9,27 @@ import Foundation
 import CoreData
 import Combine
 
-fileprivate let kAug_4_2018 = Date(timeIntervalSince1970: 1533340800)
-
 class GamePickerViewModel: ObservableObject {
    @Published var showGameExistsDialog = false
    @Published var isSearchingForDate = false
    @Published var selectedDate: Date
-   @Published private var latestAvailableDate: Date
+   @Published var latestAvailableDate: Date
       
    init(objectContext: NSManagedObjectContext) {
       var calendarAtUTC = Calendar.current
       calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
       var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
       
-      let todayGameDate = calendarAtUTC.date(from: components) ?? kAug_4_2018
+      let todayGameDate = calendarAtUTC.date(from: components) ?? earliestDate
       latestAvailableDate = todayGameDate
       selectedDate = todayGameDate
-      determineLatestAvailableDate()
+      
+      Task.detached(priority: .high) {
+         await self.determineLatestAvailableDate(today: todayGameDate)
+      }
    }
 
-   var availableDateRange: ClosedRange<Date> {
-      kAug_4_2018...latestAvailableDate
-   }
+   let earliestDate = Date(timeIntervalSince1970: 1533340800)
    
    func checkGameExists() {
       showGameExistsDialog = isGameLoaded(date: selectedDate)
@@ -47,9 +46,9 @@ class GamePickerViewModel: ObservableObject {
       calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
 
       repeat {
-         let range = latestAvailableDate.timeIntervalSinceReferenceDate - kAug_4_2018.timeIntervalSinceReferenceDate
+         let range = latestAvailableDate.timeIntervalSinceReferenceDate - earliestDate.timeIntervalSinceReferenceDate
          let randomInterval = TimeInterval.random(in: 0...range)
-         randomDate = Date(timeInterval: randomInterval, since: kAug_4_2018)
+         randomDate = Date(timeInterval: randomInterval, since: earliestDate)
          NSLog("range: %f, randomInterval: %f, randomDate: %@", range, randomInterval, randomDate! as NSDate)
          let components = calendarAtUTC.dateComponents([.year, .month, .day], from: randomDate!)
          randomDate = calendarAtUTC.date(from: components)
@@ -58,9 +57,9 @@ class GamePickerViewModel: ObservableObject {
          }
       } while randomDate != nil && isGameLoaded(date: randomDate!, objectContext: backgroundObjectContext)
       if let randomDate {
+         // wait for task to finish
          await MainActor.run {
             selectedDate = randomDate
-            // wait for task to finish
          }
       }
       await MainActor.run {
@@ -85,7 +84,44 @@ class GamePickerViewModel: ObservableObject {
       }
    }
    
-   private func determineLatestAvailableDate() {
-//      let session = URLSession(configuration: .ephemeral)
+   // if the user is east of PST, "today's" game, determined by the device local time, may not
+   // exist yet. In addition, the entry on nytbee.com may take longer.
+   private func determineLatestAvailableDate(today: Date) async {
+      let urlSession = URLSession(configuration: .ephemeral)
+      let objectContext = PersistenceController.shared.container.newBackgroundContext()
+      var checkDate = today
+      
+      while checkDate >= earliestDate {
+         // if the game is saved locally, skip it
+         if !isGameLoaded(date: checkDate, objectContext: objectContext) {
+            // check whether the website responds with 404.
+            if let gameURL = gameURL(forDate: checkDate)  {
+               var request = URLRequest(url: gameURL)
+               // NOTE: This really should work with a HEAD request, but it doesn't, at least in
+               // my testing. I attempted to investigate this per https://forums.developer.apple.com/forums/thread/728371,
+               // since `curl -I https://nytbee.com/Bee_20241019.html` works, but I haven't yet found
+               // the cause.
+//               request.httpMethod = "HEAD"
+//               request.setValue("curl/8.7.1", forHTTPHeaderField: "user-agent")
+               
+               if let (_, response) = try? await urlSession.bytes(for: request),
+                  (response as! HTTPURLResponse).statusCode < 300 {
+                  await MainActor.run { [checkDate] in
+                     latestAvailableDate = checkDate
+                  }
+                  return
+               }
+            } else {
+               assertionFailure("GamePickerViewModel: gameURL was nil")
+            }
+         }
+         
+         // update checkDate
+         guard let newDate = Calendar.current.date(byAdding: .day, value: -1, to: checkDate) else {
+            assertionFailure("GamePickerViewModel: unable to rewind date")
+            return
+         }
+         checkDate = newDate
+      }
    }
 }

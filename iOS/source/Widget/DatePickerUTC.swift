@@ -10,19 +10,13 @@ import SwiftUI
 
 struct DatePickerUTC: UIViewRepresentable {
    @Binding private var selection: Date
-   private let range: ClosedRange<Date>?
-
-   private var minimumDate: Date? {
-      range?.lowerBound
-   }
+   @Binding private var minimumDate: Date?
+   @Binding private var maximumDate: Date?
    
-   private var maximumDate: Date? {
-      range?.upperBound
-   }
-   
-   init(selection: Binding<Date>, in range: ClosedRange<Date>?) {
+   init(selection: Binding<Date>, earliestDate: Binding<Date?> = .constant(nil), latestDate: Binding<Date?> = .constant(nil)) {
       self._selection = selection
-      self.range = range
+      self._minimumDate = earliestDate
+      self._maximumDate = latestDate
    }
    
    func makeUIView(context: Context) -> UIDatePicker {
@@ -47,6 +41,8 @@ struct DatePickerUTC: UIViewRepresentable {
    
    func updateUIView(_ uiView: UIDatePicker, context: Context) {
       uiView.date = selection
+      uiView.minimumDate = minimumDate
+      uiView.maximumDate = maximumDate
       if context.coordinator.width == UIView.noIntrinsicMetric {
          uiView.sizeToFit()
          context.coordinator.width = uiView.bounds.size.width + 20
@@ -55,17 +51,15 @@ struct DatePickerUTC: UIViewRepresentable {
    }
    
    func makeCoordinator() -> Coordinator {
-      Coordinator(selection: $selection, in: range)
+      Coordinator(selection: $selection)
    }
    
    class Coordinator: NSObject {
       private let selection: Binding<Date>
-      private let range: ClosedRange<Date>?
       var width: CGFloat = UIView.noIntrinsicMetric
       
       init(selection: Binding<Date>, in range: ClosedRange<Date>? = nil) {
          self.selection = selection
-         self.range = range
       }
       
       @objc func changed(_ sender: UIDatePicker) {

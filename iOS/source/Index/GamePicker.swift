@@ -21,7 +21,11 @@ struct GamePicker: View {
       VStack {
          Text("Games are created by the New York Times. Choose a date to open the game from that date.")
          HStack(spacing: 16) {
-            DatePickerUTC(selection: $viewModel.selectedDate, in: viewModel.availableDateRange)
+            DatePickerUTC(
+               selection: $viewModel.selectedDate,
+               earliestDate: .constant(viewModel.earliestDate),
+               latestDate: Binding($viewModel.latestAvailableDate)
+            )
             Button("Go!") {
                viewModel.checkGameExists()
                if !viewModel.showGameExistsDialog {

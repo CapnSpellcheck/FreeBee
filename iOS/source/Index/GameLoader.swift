@@ -11,10 +11,7 @@ import Kanna
 import Vision
 import UIKit
 
-private let iso8601FormatStyle: Date.ISO8601FormatStyle =
-   .iso8601.locale(Locale(identifier: "en_US_POSIX"))
-   .dateSeparator(.omitted)
-   .year().month().day()
+
 private let urlSession: URLSession = {
    let configuration = URLSessionConfiguration.default
    configuration.httpShouldSetCookies = false
@@ -40,7 +37,7 @@ class GameLoader {
    
    func loadGame() async {
       NSLog("loadGame: date=%@", gameDate as NSDate)
-      guard let gameURL = gameURL else {
+      guard let gameURL = gameURL(forDate: gameDate) else {
          assertionFailure("GameLoader: gameURL was nil")
          return
       }
@@ -54,14 +51,9 @@ class GameLoader {
          await self.sendEvent(.error(error))
       }
    }
-
-   private var gameURL: URL? {
-      let yyyymmdd = gameDate.formatted(iso8601FormatStyle)
-      return URL(string: "https://nytbee.com/Bee_\(yyyymmdd).html")
-   }
    
    private var gameImageURL: URL? {
-      let yyyymmdd = gameDate.formatted(iso8601FormatStyle)
+      let yyyymmdd = gameDate.formatted(yyyymmddISO8601FormatStyle)
       return URL(string: "https://nytbee.com/pics/\(yyyymmdd).png")
    }
    
