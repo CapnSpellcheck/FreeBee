@@ -23,7 +23,8 @@ struct GameList: View {
             Section("In progress") {
                ForEach(gameResults) { game in
                   ActionNavigationLink(action: {
-                     navController?.push(view: GameView(game: game, context: viewContext))
+                     let gameView = GameView(game: game, context: viewContext)
+                     navController?.push(view: gameView, orientations: [.portrait])
                   }, content: {
                      HStack {
                         Text(gameDateDisplayFormatter.string(from: game.date!))

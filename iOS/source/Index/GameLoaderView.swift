@@ -77,7 +77,7 @@ struct GameLoaderView: View {
          gameDate: loader.gameDate,
          context: PersistenceController.shared.container.viewContext
       ) {
-         navController?.replaceTopmost(with: gameView, animated: false)
+         navController?.replaceTopmost(with: gameView, animated: false, orientations: [.portrait])
       }
    }
 }

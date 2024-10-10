@@ -24,6 +24,7 @@
 		06A940532C9E079A007A9522 /* UserDefaultExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940522C9E079A007A9522 /* UserDefaultExtension.swift */; };
 		06A940552C9E15B9007A9522 /* EnteredWordExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */; };
 		06A940572C9E57AD007A9522 /* SwiftUIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */; };
+		06ABC1F42CB75DFA00628DAA /* RulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC1F32CB75DFA00628DAA /* RulesView.swift */; };
 		06AEE4A92CA4CD8800AF8077 /* GamePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */; };
 		06AEE4AB2CA4CE7700AF8077 /* GamePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */; };
 		06B094182CA767CD00A6CF66 /* GameLoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B094172CA767CD00A6CF66 /* GameLoaderView.swift */; };
@@ -79,6 +80,7 @@
 		06A940522C9E079A007A9522 /* UserDefaultExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultExtension.swift; sourceTree = "<group>"; };
 		06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnteredWordExtension.swift; sourceTree = "<group>"; };
 		06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUtils.swift; sourceTree = "<group>"; };
+		06ABC1F32CB75DFA00628DAA /* RulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesView.swift; sourceTree = "<group>"; };
 		06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePicker.swift; sourceTree = "<group>"; };
 		06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePickerViewModel.swift; sourceTree = "<group>"; };
 		06B094172CA767CD00A6CF66 /* GameLoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoaderView.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				0699B9172C910637002011E3 /* GameView.swift */,
 				06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */,
 				06C0F8D62C98CFA600115894 /* GameViewModel.swift */,
+				06ABC1F32CB75DFA00628DAA /* RulesView.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				06B094472CA7A42E00A6CF66 /* ActionNavigationLink.swift in Sources */,
 				06C0F8DE2C98F42200115894 /* AutoRepeatingButton.swift in Sources */,
 				06B094182CA767CD00A6CF66 /* GameLoaderView.swift in Sources */,
+				06ABC1F42CB75DFA00628DAA /* RulesView.swift in Sources */,
 				06AEE4A92CA4CD8800AF8077 /* GamePicker.swift in Sources */,
 				06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */,
 				0699B9212C911D8B002011E3 /* LetterView.swift in Sources */,

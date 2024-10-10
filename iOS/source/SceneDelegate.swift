@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       let window = UIWindow(windowScene: windowScene)
       
       /// 3. Create a view hierarchy programmatically
-      let navController = UINavigationController()
+      let navController = OrientationNavigationController()
       navController.navigationBar.prefersLargeTitles = true
       let gameView = GameList()
          .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)

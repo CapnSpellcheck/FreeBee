@@ -18,6 +18,7 @@ struct GameView: View {
    @StateObject var viewModel: GameViewModel
    @State private var showEntryNotAccepted = false
    @State private var expandEnteredWords = false
+   @State private var showRules = false
    
    init(game: Game, context: NSManagedObjectContext) {
       let model = GameViewModel(game: game, objectContext: context)
@@ -70,6 +71,16 @@ struct GameView: View {
       }
       .toolbar {
          geniusIcon
+         ToolbarItem(id: "rules") {
+            Button(action: {
+               showRules = true
+            }, label: {
+               Image(systemName: "questionmark.circle")
+            })
+         }
+      }
+      .sheet(isPresented: $showRules) {
+         RulesView()
       }
       .navigationBarTitleDisplayMode(.inline)
       .navigationTitle(gameDateDisplayFormatter.string(from: viewModel.game.date!))
@@ -213,7 +224,9 @@ struct GameView_Previews: PreviewProvider {
       })
       progress.score = game.maximumScore - 1
       game.progress = progress
-      return GameView(game: game, context: context)
-         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+      return NavigationView {
+         GameView(game: game, context: context)
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+      }
    }
 }
