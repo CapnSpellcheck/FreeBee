@@ -153,7 +153,7 @@ class GameLoader {
       var centerLetterCandidates = Set<Character>(words.first!)
       let words = words.shuffled()
       
-      for word in words where foundLetters.count < 8 && centerLetterCandidates.count > 1 {
+      for word in words where foundLetters.count < 7 || centerLetterCandidates.count > 1 {
          let letters = Set(word)
          foundLetters.formUnion(letters)
          centerLetterCandidates.formIntersection(letters)
