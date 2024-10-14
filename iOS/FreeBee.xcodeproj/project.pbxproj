@@ -204,9 +204,9 @@
 				0699B91E2C911885002011E3 /* GameExtension.swift */,
 				06C0F8D82C98D11200115894 /* GameProgressExtension.swift */,
 				0699B9172C910637002011E3 /* GameView.swift */,
-				06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */,
 				06C0F8D62C98CFA600115894 /* GameViewModel.swift */,
 				06ABC1F32CB75DFA00628DAA /* RulesView.swift */,
+				06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";

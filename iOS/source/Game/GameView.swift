@@ -14,7 +14,6 @@ fileprivate let kHoneycombPadding = 16.0
 
 struct GameView: View {
    @Environment(\.managedObjectContext) private var viewContext
-   @Environment(\.dismiss) private var dismiss
    @StateObject var viewModel: GameViewModel
    @State private var showEntryNotAccepted = false
    @State private var expandEnteredWords = false
@@ -69,6 +68,10 @@ struct GameView: View {
          editButtons
             .opacity(game.isComplete ? 0 : 1)
       }
+      .contentShape(Rectangle())
+      .simultaneousGesture(TapGesture().onEnded({
+         expandEnteredWords = false
+      }))
       .toolbar {
          geniusIcon
          ToolbarItem(id: "rules") {
@@ -171,6 +174,10 @@ struct GameView: View {
          .padding(.trailing, 8)
          .offset(y: 2)
          .alignmentGuide(.bottom, computeValue: { dimension in dimension[.top] })
+         // prevent the tap in scroll view from hiding it
+         .onTapGesture {
+            expandEnteredWords = true
+         }
       }
       .padding(.horizontal, kGeneralHorizontalPadding)
    }
