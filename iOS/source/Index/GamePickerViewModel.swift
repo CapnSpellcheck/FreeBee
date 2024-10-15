@@ -16,8 +16,12 @@ final class GamePickerViewModel: ObservableObject {
    @Published var latestAvailableDate: Date
 
    let persistenceController: PersistenceController
-   
-   init(persistenceController: PersistenceController = PersistenceController.shared) {
+   let dataFrom: any BytesForProtocol
+
+   init(
+      persistenceController: PersistenceController = PersistenceController.shared,
+      dataFrom: any BytesForProtocol = URLSession(configuration: .ephemeral)
+   ) {
       var calendarAtUTC = Calendar.current
       calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
       var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
@@ -26,7 +30,8 @@ final class GamePickerViewModel: ObservableObject {
       latestAvailableDate = todayGameDate
       selectedDate = todayGameDate
       self.persistenceController = persistenceController
-      
+      self.dataFrom = dataFrom
+
       Task.detached(priority: .high) {
          await self.determineLatestAvailableDate(today: todayGameDate)
       }
@@ -89,7 +94,6 @@ final class GamePickerViewModel: ObservableObject {
    // if the user is east of PST, "today's" game, determined by the device local time, may not
    // exist yet. In addition, the entry on nytbee.com may take longer.
    private func determineLatestAvailableDate(today: Date) async {
-      let urlSession = URLSession(configuration: .ephemeral)
       let objectContext = persistenceController.container.newBackgroundContext()
       var checkDate = today
       
@@ -106,7 +110,7 @@ final class GamePickerViewModel: ObservableObject {
 //               request.httpMethod = "HEAD"
 //               request.setValue("curl/8.7.1", forHTTPHeaderField: "user-agent")
                
-               if let (_, response) = try? await urlSession.bytes(for: request),
+               if let (_, response) = try? await dataFrom.bytes(for: request),
                   (response as! HTTPURLResponse).statusCode < 300 {
                   await MainActor.run { [checkDate] in
                      latestAvailableDate = checkDate

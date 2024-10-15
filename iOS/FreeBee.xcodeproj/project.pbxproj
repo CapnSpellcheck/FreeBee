@@ -25,6 +25,8 @@
 		06A940552C9E15B9007A9522 /* EnteredWordExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */; };
 		06A940572C9E57AD007A9522 /* SwiftUIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */; };
 		06ABC1F42CB75DFA00628DAA /* RulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC1F32CB75DFA00628DAA /* RulesView.swift */; };
+		06ADC9422CBF03BB00F55CEC /* GamePickerViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ADC9412CBF03BB00F55CEC /* GamePickerViewModelTest.swift */; };
+		06ADC9442CBF055D00F55CEC /* BytesForProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ADC9432CBF055D00F55CEC /* BytesForProtocol.swift */; };
 		06AEE4A92CA4CD8800AF8077 /* GamePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */; };
 		06AEE4AB2CA4CE7700AF8077 /* GamePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */; };
 		06B094182CA767CD00A6CF66 /* GameLoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B094172CA767CD00A6CF66 /* GameLoaderView.swift */; };
@@ -37,7 +39,7 @@
 		06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */; };
 		06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */; };
 		06BFCA2E2CBDE98100C094C8 /* DataFromProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFCA2D2CBDE98100C094C8 /* DataFromProtocol.swift */; };
-		06BFCA302CBDF54F00C094C8 /* MockDataFrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFCA2F2CBDF54F00C094C8 /* MockDataFrom.swift */; };
+		06BFCA302CBDF54F00C094C8 /* InterfaceMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFCA2F2CBDF54F00C094C8 /* InterfaceMocks.swift */; };
 		06BFCA322CBDFB6D00C094C8 /* 20241001_response.html in Resources */ = {isa = PBXBuildFile; fileRef = 06BFCA312CBDFB6D00C094C8 /* 20241001_response.html */; };
 		06BFCA352CBE0FC700C094C8 /* CenterLetterImageDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFCA332CBE0FC200C094C8 /* CenterLetterImageDeterminer.swift */; };
 		06BFCA372CBE104400C094C8 /* MockCenterLetterImageDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFCA362CBE104400C094C8 /* MockCenterLetterImageDeterminer.swift */; };
@@ -90,6 +92,8 @@
 		06A940542C9E15B8007A9522 /* EnteredWordExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnteredWordExtension.swift; sourceTree = "<group>"; };
 		06A940562C9E57AD007A9522 /* SwiftUIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUtils.swift; sourceTree = "<group>"; };
 		06ABC1F32CB75DFA00628DAA /* RulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesView.swift; sourceTree = "<group>"; };
+		06ADC9412CBF03BB00F55CEC /* GamePickerViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePickerViewModelTest.swift; sourceTree = "<group>"; };
+		06ADC9432CBF055D00F55CEC /* BytesForProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BytesForProtocol.swift; sourceTree = "<group>"; };
 		06AEE4A82CA4CD8800AF8077 /* GamePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePicker.swift; sourceTree = "<group>"; };
 		06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePickerViewModel.swift; sourceTree = "<group>"; };
 		06B094172CA767CD00A6CF66 /* GameLoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoaderView.swift; sourceTree = "<group>"; };
@@ -103,7 +107,7 @@
 		06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterHoneycomb.swift; sourceTree = "<group>"; };
 		06BFCA2D2CBDE98100C094C8 /* DataFromProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFromProtocol.swift; sourceTree = "<group>"; };
-		06BFCA2F2CBDF54F00C094C8 /* MockDataFrom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataFrom.swift; sourceTree = "<group>"; };
+		06BFCA2F2CBDF54F00C094C8 /* InterfaceMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceMocks.swift; sourceTree = "<group>"; };
 		06BFCA312CBDFB6D00C094C8 /* 20241001_response.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = 20241001_response.html; sourceTree = "<group>"; };
 		06BFCA332CBE0FC200C094C8 /* CenterLetterImageDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterLetterImageDeterminer.swift; sourceTree = "<group>"; };
 		06BFCA362CBE104400C094C8 /* MockCenterLetterImageDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCenterLetterImageDeterminer.swift; sourceTree = "<group>"; };
@@ -199,7 +203,8 @@
 			isa = PBXGroup;
 			children = (
 				0699B8FB2C9101B1002011E3 /* GameLoaderTest.swift */,
-				06BFCA2F2CBDF54F00C094C8 /* MockDataFrom.swift */,
+				06ADC9412CBF03BB00F55CEC /* GamePickerViewModelTest.swift */,
+				06BFCA2F2CBDF54F00C094C8 /* InterfaceMocks.swift */,
 				06BFCA312CBDFB6D00C094C8 /* 20241001_response.html */,
 				06BFCA362CBE104400C094C8 /* MockCenterLetterImageDeterminer.swift */,
 				06BFCA3A2CBE1C1C00C094C8 /* 20200705_response.html */,
@@ -246,6 +251,7 @@
 		06BFCA2C2CBDE95B00C094C8 /* Testing Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				06ADC9432CBF055D00F55CEC /* BytesForProtocol.swift */,
 				06BFCA2D2CBDE98100C094C8 /* DataFromProtocol.swift */,
 				06BFCA332CBE0FC200C094C8 /* CenterLetterImageDeterminer.swift */,
 			);
@@ -422,6 +428,7 @@
 				06BFCA352CBE0FC700C094C8 /* CenterLetterImageDeterminer.swift in Sources */,
 				06C281B32CB8862800BFF88E /* StatisticsViewModel.swift in Sources */,
 				06B094422CA7993400A6CF66 /* EnvironmentValues.swift in Sources */,
+				06ADC9442CBF055D00F55CEC /* BytesForProtocol.swift in Sources */,
 				06A940532C9E079A007A9522 /* UserDefaultExtension.swift in Sources */,
 				06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */,
 				0699B9262C9125EA002011E3 /* GameView.swift in Sources */,
@@ -450,9 +457,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06ADC9422CBF03BB00F55CEC /* GamePickerViewModelTest.swift in Sources */,
 				0699B8FC2C9101B1002011E3 /* GameLoaderTest.swift in Sources */,
 				06BFCA372CBE104400C094C8 /* MockCenterLetterImageDeterminer.swift in Sources */,
-				06BFCA302CBDF54F00C094C8 /* MockDataFrom.swift in Sources */,
+				06BFCA302CBDF54F00C094C8 /* InterfaceMocks.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
