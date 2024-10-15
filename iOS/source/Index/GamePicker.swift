@@ -12,8 +12,8 @@ struct GamePicker: View {
    @Environment(\.navigationController) private var navController
    @StateObject var viewModel: GamePickerViewModel
    
-   init(context: NSManagedObjectContext) {
-      let model = GamePickerViewModel(objectContext: context)
+   init() {
+      let model = GamePickerViewModel()
       _viewModel = StateObject(wrappedValue: model)
    }
    
@@ -77,7 +77,7 @@ struct GamePicker_Previews: PreviewProvider {
    static var previews: some View {
       let context = PersistenceController.preview.container.viewContext
       NavigationView {
-         GamePicker(context: context)
+         GamePicker()
       }
    }
 }

@@ -14,8 +14,10 @@ final class GamePickerViewModel: ObservableObject {
    @Published var isSearchingForDate = false
    @Published var selectedDate: Date
    @Published var latestAvailableDate: Date
-      
-   init(objectContext: NSManagedObjectContext) {
+
+   let persistenceController: PersistenceController
+   
+   init(persistenceController: PersistenceController = PersistenceController.shared) {
       var calendarAtUTC = Calendar.current
       calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
       var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
@@ -23,6 +25,7 @@ final class GamePickerViewModel: ObservableObject {
       let todayGameDate = calendarAtUTC.date(from: components) ?? earliestDate
       latestAvailableDate = todayGameDate
       selectedDate = todayGameDate
+      self.persistenceController = persistenceController
       
       Task.detached(priority: .high) {
          await self.determineLatestAvailableDate(today: todayGameDate)
@@ -32,15 +35,17 @@ final class GamePickerViewModel: ObservableObject {
    let earliestDate = Date(timeIntervalSince1970: 1533340800)
    
    func checkGameExists() {
-      showGameExistsDialog = isGameLoaded(date: selectedDate)
-      PersistenceController.shared.container.newBackgroundContext()
+      showGameExistsDialog = isGameLoaded(
+         date: selectedDate,
+         objectContext: persistenceController.container.viewContext
+      )
    }
    
    func selectRandomDate() async {
       await MainActor.run {
          isSearchingForDate = true
       }
-      let backgroundObjectContext = PersistenceController.shared.container.newBackgroundContext()
+      let backgroundObjectContext = persistenceController.container.newBackgroundContext()
       var randomDate: Date?
       var calendarAtUTC = Calendar.current
       calendarAtUTC.timeZone = TimeZone(abbreviation: "UTC")!
@@ -67,10 +72,7 @@ final class GamePickerViewModel: ObservableObject {
       }
    }
    
-   private func isGameLoaded(
-      date: Date,
-      objectContext: NSManagedObjectContext = PersistenceController.shared.container.viewContext
-   ) -> Bool {
+   private func isGameLoaded(date: Date, objectContext: NSManagedObjectContext) -> Bool {
       NSLog("Checking for existence of game with date=%@", date as NSDate)
       
       let fetchRequest = NSFetchRequest<Game>(entityName: String(describing: Game.self))
@@ -88,7 +90,7 @@ final class GamePickerViewModel: ObservableObject {
    // exist yet. In addition, the entry on nytbee.com may take longer.
    private func determineLatestAvailableDate(today: Date) async {
       let urlSession = URLSession(configuration: .ephemeral)
-      let objectContext = PersistenceController.shared.container.newBackgroundContext()
+      let objectContext = persistenceController.container.newBackgroundContext()
       var checkDate = today
       
       while checkDate >= earliestDate {

@@ -15,6 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
       // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
       guard let windowScene = (scene as? UIWindowScene) else { return }
+      guard NSClassFromString("XCTestObservationCenter") == nil else {
+          return
+      }
+      
       /// 2. Create a new UIWindow using the windowScene constructor which takes in a window scene.
       let window = UIWindow(windowScene: windowScene)
       

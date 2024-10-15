@@ -8,9 +8,6 @@
 import Foundation
 import Combine
 import Kanna
-import Vision
-import UIKit
-
 
 private let urlSession: URLSession = {
    let configuration = URLSessionConfiguration.default
@@ -30,9 +27,21 @@ private extension String {
 final class GameLoader {
    @MainActor let events = PassthroughSubject<Event, Never>()
    let gameDate: Date
+   let dataFrom: DataFromProtocol
+   let persistenceController: PersistenceController
+   let centerLetterImageDeterminer: CenterLetterImageDeterminer
    
-   init(gameDate: Date) {
+   init(
+      gameDate: Date,
+      dataFrom: DataFromProtocol = urlSession,
+      persistenceController: PersistenceController = PersistenceController.shared,
+      centerLetterDeterminer: CenterLetterImageDeterminer? = nil
+   ) {
       self.gameDate = gameDate
+      self.dataFrom = dataFrom
+      self.persistenceController = persistenceController
+      self.centerLetterImageDeterminer = centerLetterDeterminer ??
+         CenterLetterVisionImageDeterminer(dataFrom: dataFrom)
    }
    
    func loadGame() async {
@@ -45,16 +54,11 @@ final class GameLoader {
       NSLog("loadGame: URL=%@", gameURL.absoluteString)
       
       do {
-         let (data, _) = try await urlSession.data(from: gameURL)
+         let (data, _) = try await dataFrom.data(from: gameURL)
          await self.parseGame(htmlData: data)
       } catch {
          await self.sendEvent(.error(error))
       }
-   }
-   
-   private var gameImageURL: URL? {
-      let yyyymmdd = gameDate.formatted(yyyymmddISO8601FormatStyle)
-      return URL(string: "https://nytbee.com/pics/\(yyyymmdd).png")
    }
    
    private func parseGame(htmlData: Data) async {
@@ -68,7 +72,7 @@ final class GameLoader {
       
       do {
          try await parseGame(document: document)
-         let objectContext = PersistenceController.shared.container.viewContext
+         let objectContext = persistenceController.container.viewContext
          try objectContext.performAndWait {
             try objectContext.save()
          }
@@ -122,7 +126,7 @@ final class GameLoader {
          otherLetters = otherLetters?.filter { c in c != centerLetter! }
       }
       
-      let objectContext = PersistenceController.shared.container.viewContext
+      let objectContext = persistenceController.container.viewContext
       
       let game = Game(context: objectContext)
       game.date = gameDate
@@ -163,37 +167,11 @@ final class GameLoader {
    
    private func determineCetterLetterByImage() async -> Character? {
       do {
-         let (data, _) = try await urlSession.data(from: gameImageURL!)
-         guard let cgImage = UIImage(data: data).flatMap({ image in
-            let cgImage = image.cgImage!
-            // Vision is very sensitive to the portion of the image chosen here. Not sure if it works
-            // for all 26 letters.
-            return cgImage.cropping(to: CGRect(
-               x: 0.28*Double(cgImage.width),
-               y: 0.28*Double(cgImage.height),
-               width: 0.44*Double(cgImage.width),
-               height: 0.44*Double(cgImage.height)))
-         }) else {
-            throw ParseError()
-         }
-         // Create a new image-request handler.
-         let requestHandler = VNImageRequestHandler(cgImage: cgImage)
-         // Create a new request to recognize text.
-         let request = VNRecognizeTextRequest { _, _ in }
-         request.revision = 2
-         request.minimumTextHeight = 0.1
-         try requestHandler.perform([request])
-
-         guard let text = request.results?.first?.topCandidates(1).first?.string else {
-            throw ParseError()
-         }
-         NSLog("determineCetterLetterByImage: text recognition: %@", text)
-         return text.first?.lowercased().first
+         return try await centerLetterImageDeterminer.determine(gameDate: gameDate)
       } catch {
          await self.sendEvent(.error(error))
+         return nil
       }
-      
-      return nil
    }
    
    private func sendEvent(_ event: Event) async {

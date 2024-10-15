@@ -39,7 +39,7 @@ struct GameList: View {
             Section("Start a new game") {
                Group {
                   Button("Choose a new game") {
-                     navController?.push(view: GamePicker(context: viewContext))
+                     navController?.push(view: GamePicker())
                   }
                }
                .foregroundColor(.primary)
