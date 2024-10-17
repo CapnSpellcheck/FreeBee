@@ -9,13 +9,12 @@ import Foundation
 import SwiftUI
 
 extension EnvironmentValues {
-   var navigationController: UINavigationController? {
-      get { self[NavigationControllerKey.self] }
-      set { self[NavigationControllerKey.self] = newValue }
+   var router: Router? {
+      get { self[RouterKey.self] }
+      set { self[RouterKey.self] = newValue }
    }
 }
 
-private struct NavigationControllerKey: EnvironmentKey {
-    static let defaultValue: UINavigationController? = nil
+private struct RouterKey: EnvironmentKey {
+   static let defaultValue: Router? = nil
 }
- 

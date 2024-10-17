@@ -17,8 +17,10 @@ final class GameViewModel: ObservableObject {
    let game: Game
    let objectContext: NSManagedObjectContext
    let entryNotAcceptedEvent = PassthroughSubject<Void, Never>()
+   var onCurrentWordChanged: ((String?) -> Void)?
 
    private let userDefaults = UserDefaults.standard
+   private var observationToken: NSKeyValueObservation?
       
    init(game: Game, objectContext: NSManagedObjectContext) {
       self.game = game
@@ -26,6 +28,10 @@ final class GameViewModel: ObservableObject {
          game.progress = GameProgress(context: objectContext)
       }
       self.objectContext = objectContext
+      
+      observationToken = game.progress?.observe(\.currentWord, options: [.new]) { _, change in
+         self.onCurrentWordChanged?(change.newValue!)
+      }
    }
 
    var progress: GameProgress {

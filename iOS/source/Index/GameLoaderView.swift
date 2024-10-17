@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GameLoaderView: View {
-   @Environment(\.navigationController) private var navController
+   @EnvironmentObject private var router: Router
    @State private var loader: GameLoader
    @State private var loadingStatus: GameLoader.Event?
    @State private var showErrorAlert = false
@@ -48,7 +48,7 @@ struct GameLoaderView: View {
              isPresented: $showErrorAlert,
              presenting: loadingStatusError,
              actions: { _ in Button("OK") {
-                navController?.popViewController(animated: true)
+                router.pop()
              } }
       ) { error in
          Text(error.localizedDescription)
@@ -73,12 +73,7 @@ struct GameLoaderView: View {
    }
    
    private func openGame() {
-      if let gameView = GameView(
-         gameDate: loader.gameDate,
-         context: PersistenceController.shared.container.viewContext
-      ) {
-         navController?.replaceTopmost(with: gameView, animated: false, orientations: [.portrait])
-      }
+      router.showGame(date: loader.gameDate)
    }
 }
 

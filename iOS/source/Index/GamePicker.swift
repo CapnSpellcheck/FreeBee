@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct GamePicker: View {
-   @Environment(\.navigationController) private var navController
+   @EnvironmentObject private var router: Router
    @StateObject var viewModel: GamePickerViewModel
    
    init() {
@@ -69,7 +69,7 @@ struct GamePicker: View {
    }
    
    @MainActor private func loadSelectedDate() {
-      navController?.replaceTopmost(with: GameLoaderView(gameDate: viewModel.selectedDate))
+      router.showGameLoader(date: viewModel.selectedDate)
    }
 }
 

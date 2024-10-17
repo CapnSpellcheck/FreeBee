@@ -10,7 +10,7 @@ import CoreData
 
 struct GameList: View {
    @Environment(\.managedObjectContext) private var viewContext
-   @Environment(\.navigationController) private var navController
+   @EnvironmentObject private var router: Router
    
    @FetchRequest(
       sortDescriptors: [NSSortDescriptor(keyPath: \Game.date, ascending: false)],
@@ -24,7 +24,7 @@ struct GameList: View {
                ForEach(gameResults) { game in
                   ActionNavigationLink(action: {
                      let gameView = GameView(game: game, context: viewContext)
-                     navController?.push(view: gameView, orientations: [.portrait])
+                     router.showGame(date: game.date!)
                   }, content: {
                      HStack {
                         Text(gameDateDisplayFormatter.string(from: game.date!))
@@ -39,7 +39,7 @@ struct GameList: View {
             Section("Start a new game") {
                Group {
                   Button("Choose a new game") {
-                     navController?.push(view: GamePicker())
+                     router.showGamePicker()
                   }
                }
                .foregroundColor(.primary)
@@ -62,7 +62,7 @@ struct GameList: View {
       .toolbar {
          ToolbarItem(id: "stats") {
             Button(action: {
-               navController?.push(view: StatisticsView())
+               router.showStatistics()
             }, label: {
                Image(systemName: "chart.bar.xaxis")
             })
