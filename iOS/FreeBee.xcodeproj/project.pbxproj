@@ -37,6 +37,8 @@
 		06B094422CA7993400A6CF66 /* EnvironmentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B094412CA7993400A6CF66 /* EnvironmentValues.swift */; };
 		06B094442CA79A4400A6CF66 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B094432CA79A4400A6CF66 /* AppDelegate.swift */; };
 		06B094472CA7A42E00A6CF66 /* ActionNavigationLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B094462CA7A42E00A6CF66 /* ActionNavigationLink.swift */; };
+		06B0BE042CC1B0A800E23C7F /* EntityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B0BE032CC1B0A800E23C7F /* EntityTest.swift */; };
+		06B0BE062CC1B9F700E23C7F /* GameViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B0BE052CC1B9F700E23C7F /* GameViewModelTest.swift */; };
 		06B5E3052CA35B20006844C4 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B5E3042CA35B20006844C4 /* Utils.swift */; };
 		06B9E4142C94D32F00ADAA2D /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */; };
 		06B9E4162C94E20500ADAA2D /* LetterHoneycomb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */; };
@@ -107,6 +109,8 @@
 		06B094432CA79A4400A6CF66 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06B094462CA7A42E00A6CF66 /* ActionNavigationLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionNavigationLink.swift; sourceTree = "<group>"; };
 		06B094482CA7A7D900A6CF66 /* Free-Bee-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Free-Bee-Info.plist"; sourceTree = "<group>"; };
+		06B0BE032CC1B0A800E23C7F /* EntityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTest.swift; sourceTree = "<group>"; };
+		06B0BE052CC1B9F700E23C7F /* GameViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModelTest.swift; sourceTree = "<group>"; };
 		06B5E3042CA35B20006844C4 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterHoneycomb.swift; sourceTree = "<group>"; };
@@ -208,6 +212,8 @@
 			children = (
 				0699B8FB2C9101B1002011E3 /* GameLoaderTest.swift */,
 				06ADC9412CBF03BB00F55CEC /* GamePickerViewModelTest.swift */,
+				06B0BE052CC1B9F700E23C7F /* GameViewModelTest.swift */,
+				06B0BE032CC1B0A800E23C7F /* EntityTest.swift */,
 				06BFCA2F2CBDF54F00C094C8 /* InterfaceMocks.swift */,
 				06BFCA312CBDFB6D00C094C8 /* 20241001_response.html */,
 				06BFCA362CBE104400C094C8 /* MockCenterLetterImageDeterminer.swift */,
@@ -474,6 +480,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				06ADC9422CBF03BB00F55CEC /* GamePickerViewModelTest.swift in Sources */,
+				06B0BE042CC1B0A800E23C7F /* EntityTest.swift in Sources */,
+				06B0BE062CC1B9F700E23C7F /* GameViewModelTest.swift in Sources */,
 				0699B8FC2C9101B1002011E3 /* GameLoaderTest.swift in Sources */,
 				06BFCA372CBE104400C094C8 /* MockCenterLetterImageDeterminer.swift in Sources */,
 				06BFCA302CBDF54F00C094C8 /* InterfaceMocks.swift in Sources */,

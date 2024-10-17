@@ -21,7 +21,7 @@ final class GameViewModel: ObservableObject {
 
    private let userDefaults = UserDefaults.standard
    private var observationToken: NSKeyValueObservation?
-      
+   
    init(game: Game, objectContext: NSManagedObjectContext) {
       self.game = game
       if game.progress == nil {
