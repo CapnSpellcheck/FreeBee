@@ -39,7 +39,7 @@ enum GamePreview {
    
    // Seed canned games (above) into the persistent store if there are no Games in the store.
    static func seed(context: NSManagedObjectContext) {
-      let countRequest = NSFetchRequest<Game>(entityName: String(describing: Game.self))
+      let countRequest = Game.fetchRequest()
       guard (try? context.count(for: countRequest)) == 0 else { return }
       
       let sep9_2024 = Game(context: context)

@@ -25,7 +25,7 @@ struct GameView: View {
    }
    
    init?(gameDate: Date, context: NSManagedObjectContext) {
-      let fetchRequest = NSFetchRequest<Game>(entityName: String(describing: Game.self))
+      let fetchRequest = Game.fetchRequest()
       fetchRequest.predicate = NSPredicate(format: "date == %@", gameDate as NSDate)
       guard let game = try? context.fetch(fetchRequest).first else {
          return nil

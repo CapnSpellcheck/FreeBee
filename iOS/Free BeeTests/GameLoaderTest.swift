@@ -38,7 +38,7 @@ final class GameLoaderTest: XCTestCase {
       await loader.loadGame()
       
       let game: Game! = try! persistenceController.container.viewContext
-         .fetch(NSFetchRequest<Game>(entityName: String(describing: Game.self))).first
+         .fetch(Game.fetchRequest()).first
       if game == nil {
          XCTFail("no game was inserted into the persistent store")
          return

@@ -80,7 +80,7 @@ final class GamePickerViewModel: ObservableObject {
    private func isGameLoaded(date: Date, objectContext: NSManagedObjectContext) -> Bool {
       NSLog("Checking for existence of game with date=%@", date as NSDate)
       
-      let fetchRequest = NSFetchRequest<Game>(entityName: String(describing: Game.self))
+      let fetchRequest = Game.fetchRequest()
       fetchRequest.predicate = NSPredicate(format: "date == %@", date as NSDate)
       do {
          let count = try objectContext.count(for: fetchRequest)

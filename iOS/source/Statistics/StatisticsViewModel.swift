@@ -15,9 +15,9 @@ final class StatisticsViewModel {
    let geniusGames: Int
    
    init(objectContext: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
-      let wordRequest = NSFetchRequest<EnteredWord>(entityName: String(describing: EnteredWord.self))
+      let wordRequest = EnteredWord.fetchRequest()
       wordsPlayed = (try? objectContext.count(for: wordRequest)) ?? 0
-      let progressRequest = NSFetchRequest<GameProgress>(entityName: String(describing: GameProgress.self))
+      let progressRequest = GameProgress.fetchRequest()
       progressRequest.predicate = NSPredicate(format: "score > 0")
       gamesStarted = (try? objectContext.count(for: progressRequest)) ?? 0
       progressRequest.predicate = NSPredicate(format: "score >= game.geniusScore")
