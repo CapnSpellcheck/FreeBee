@@ -111,6 +111,7 @@
 		06B094482CA7A7D900A6CF66 /* Free-Bee-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Free-Bee-Info.plist"; sourceTree = "<group>"; };
 		06B0BE032CC1B0A800E23C7F /* EntityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTest.swift; sourceTree = "<group>"; };
 		06B0BE052CC1B9F700E23C7F /* GameViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModelTest.swift; sourceTree = "<group>"; };
+		06B3772B2CD0831F007423D9 /* Free Bee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Free Bee.entitlements"; sourceTree = "<group>"; };
 		06B5E3042CA35B20006844C4 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		06B9E4132C94D32E00ADAA2D /* HexagonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		06B9E4152C94E20500ADAA2D /* LetterHoneycomb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterHoneycomb.swift; sourceTree = "<group>"; };
@@ -157,6 +158,7 @@
 		0699B8D92C9101AF002011E3 = {
 			isa = PBXGroup;
 			children = (
+				06B3772B2CD0831F007423D9 /* Free Bee.entitlements */,
 				06B094482CA7A7D900A6CF66 /* Free-Bee-Info.plist */,
 				0699B8E42C9101AF002011E3 /* source */,
 				0699B8FA2C9101B1002011E3 /* Free BeeTests */,
@@ -632,6 +634,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Free Bee.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"source/Preview Content\"";
@@ -664,6 +667,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Free Bee.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"source/Preview Content\"";

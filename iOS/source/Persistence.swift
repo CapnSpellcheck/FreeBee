@@ -13,17 +13,15 @@ struct PersistenceController {
    static var preview: PersistenceController = {
       let result = PersistenceController(inMemory: true)
       let viewContext = result.container.viewContext
-      #if DEBUG
+#if DEBUG
       let game1 = Game(context: viewContext)
       GamePreview.toSep_9_2024(game1)
       game1.progress = GameProgress(context: viewContext)
-      #endif
+#endif
       
       do {
          try viewContext.save()
       } catch {
-         // Replace this implementation with code to handle the error appropriately.
-         // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
          let nsError = error as NSError
          fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
       }
@@ -32,11 +30,30 @@ struct PersistenceController {
    
    let container: NSPersistentContainer
    
-   init(inMemory: Bool = false) {
+   init(inMemory: Bool = false, fileManager: FileManager = FileManager.default) {
       container = NSPersistentContainer(name: "Free_Bee")
-      if inMemory {
-         container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+      guard let sharedStoreLocation = fileManager.containerURL(forSecurityApplicationGroupIdentifier:  "group.com.letstwinkle")?.appendingPathComponent("freebee.sqlite"),
+            let currentStoreLocation = container.persistentStoreDescriptions.first?.url else {
+         fatalError("Expected both locations to exist...")
       }
+      if inMemory {
+         container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+      } else {
+         if fileManager.fileExists(atPath: currentStoreLocation.path) && !fileManager.fileExists(atPath: sharedStoreLocation.path) {
+            let coordinator = container.persistentStoreCoordinator
+            NSLog("Moving Core Data store from app sandbox to app group container")
+            do {
+               try coordinator.replacePersistentStore(at: sharedStoreLocation, destinationOptions: nil, withPersistentStoreFrom: currentStoreLocation, sourceOptions: nil, type: .sqlite)
+               try? coordinator.destroyPersistentStore(at: currentStoreLocation, type: .sqlite, options: nil)
+            } catch {
+               print("\(error.localizedDescription)")
+            }
+         } else {
+            let description = NSPersistentStoreDescription(url: sharedStoreLocation)
+            container.persistentStoreDescriptions = [description]
+         }
+      }
+      
       container.loadPersistentStores(completionHandler: { (storeDescription, error) in
          if let error = error as NSError? {
             // Replace this implementation with code to handle the error appropriately.
