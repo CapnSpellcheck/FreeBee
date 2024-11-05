@@ -13,11 +13,7 @@ struct PersistenceController {
    static var preview: PersistenceController = {
       let result = PersistenceController(inMemory: true)
       let viewContext = result.container.viewContext
-#if DEBUG
-      let game1 = Game(context: viewContext)
-      GamePreview.toSep_9_2024(game1)
-      game1.progress = GameProgress(context: viewContext)
-#endif
+      GamePreview.seed(context: viewContext)
       
       do {
          try viewContext.save()

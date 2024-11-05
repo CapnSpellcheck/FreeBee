@@ -23,7 +23,6 @@ struct GameList: View {
             Section("In progress") {
                ForEach(gameResults) { game in
                   ActionNavigationLink(action: {
-                     let gameView = GameView(game: game, context: viewContext)
                      router.showGame(date: game.date!)
                   }, content: {
                      HStack {
