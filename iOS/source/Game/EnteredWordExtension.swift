@@ -14,3 +14,10 @@ extension EnteredWord {
       value = string
    }
 }
+
+extension EnteredWord: Comparable {
+   public static func < (lhs: EnteredWord, rhs: EnteredWord) -> Bool {
+      return lhs.value! < rhs.value!
+   }
+   
+}

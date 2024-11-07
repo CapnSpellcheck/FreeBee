@@ -161,12 +161,12 @@ struct GameView: View {
       return addOverlay(view: wordBar, alignment: .bottomTrailing, condition: expandEnteredWords) {
          ScrollView {
             VStack(alignment: .leading, spacing: 6) {
-               ForEach(viewModel.progress.enteredWords!.array as! Array<EnteredWord>, id: \.value)
+               ForEach(viewModel.sortedEnteredWords, id: \.self)
                { enteredWord in
-                  Text(enteredWord.value!.capitalized)
+                  Text(enteredWord.capitalized)
                }
             }
-            .padding(12)
+            .padding(kGeneralHorizontalPadding)
          }
          .background(Color(UIColor.systemGray6))
          .frame(maxHeight: 200)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 fileprivate let kFirstRepeatDelay = 0.5
-fileprivate let kExtraRepeatDelay = 0.25
+fileprivate let kExtraRepeatDelay = 1.0 / 6
 
 struct AutoRepeatingButton<L: View>: View {
    typealias Action = () -> Void

@@ -56,6 +56,10 @@ final class GameViewModel: ObservableObject {
          progress.currentWord!.contains(game.centerLetterCharacter)
    }
    
+   var sortedEnteredWords: Array<String> {
+      (progress.enteredWords!.array as! Array<EnteredWord>).sorted().map { $0.value! }
+   }
+   
    func append(letter: Character) {
       if progress.currentWord?.count ?? 0 < kMaxLetters {
          objectWillChange.send()

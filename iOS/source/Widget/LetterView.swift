@@ -35,6 +35,7 @@ struct LetterView: View {
             Text(String(letter))
                .font(.system(size: proxy.size.width / 3, weight: .medium))
                .textCase(.uppercase)
+               .foregroundColor(.black)
          }
          .frame(width: 1.1547 * proxy.size.width, height: proxy.size.height)
          .background(background)
