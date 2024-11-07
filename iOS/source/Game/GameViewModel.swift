@@ -18,7 +18,8 @@ final class GameViewModel: ObservableObject {
    let objectContext: NSManagedObjectContext
    let entryNotAcceptedEvent = PassthroughSubject<Void, Never>()
    var onCurrentWordChanged: ((String?) -> Void)?
-
+   @Published private(set) var entryNotAcceptedMessage = "Entry not accepted"
+   
    private let userDefaults = UserDefaults.standard
    private var observationToken: NSKeyValueObservation?
    
@@ -72,7 +73,9 @@ final class GameViewModel: ObservableObject {
    func enter() {
       var errored = false
       let enteredWord = progress.currentWord!
-      if game.allowedWords!.contains(enteredWord), !progress.hasEntered(word: enteredWord) {
+      let wordIsAllowed = game.allowedWords!.contains(enteredWord)
+      let wordAlreadyEntered = progress.hasEntered(word: enteredWord)
+      if wordIsAllowed, !wordAlreadyEntered {
          progress.insertIntoEnteredWords(EnteredWord(context: objectContext, string: enteredWord), at: 0)
          progress.score += scoreWord(enteredWord)
          do {
@@ -90,6 +93,11 @@ final class GameViewModel: ObservableObject {
             errored = true
          }
       } else {
+         if wordAlreadyEntered {
+            entryNotAcceptedMessage = "Word is already entered"
+         } else {
+            entryNotAcceptedMessage = "Entry isn't accepted"
+         }
          entryNotAcceptedEvent.send()
       }
       if !errored {

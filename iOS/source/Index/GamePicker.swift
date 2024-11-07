@@ -73,6 +73,7 @@ struct GamePicker: View {
    }
 }
 
+#if DEBUG
 struct GamePicker_Previews: PreviewProvider {
    static var previews: some View {
       let context = PersistenceController.preview.container.viewContext
@@ -81,3 +82,4 @@ struct GamePicker_Previews: PreviewProvider {
       }
    }
 }
+#endif

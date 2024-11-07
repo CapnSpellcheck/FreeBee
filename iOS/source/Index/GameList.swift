@@ -94,6 +94,7 @@ struct GameList: View {
    }
 }
 
+#if DEBUG
 struct GameList_Previews: PreviewProvider {
    static var previews: some View {
       NavigationView {
@@ -101,3 +102,4 @@ struct GameList_Previews: PreviewProvider {
       }
    }
 }
+#endif

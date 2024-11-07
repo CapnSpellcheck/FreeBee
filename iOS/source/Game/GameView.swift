@@ -108,7 +108,7 @@ struct GameView: View {
          Image(systemName: "x.circle.fill")
             .imageScale(.small)
             .foregroundColor(.red)
-         Text("Entry not accepted")
+         Text(viewModel.entryNotAcceptedMessage)
             .font(.system(.callout))
       }
       .transition(.opacity)
@@ -217,6 +217,7 @@ struct GameView: View {
    }
 }
 
+#if DEBUG
 struct GameView_Previews: PreviewProvider {
    static var previews: some View {
       let context = PersistenceController.preview.container.viewContext
@@ -237,3 +238,4 @@ struct GameView_Previews: PreviewProvider {
       }
    }
 }
+#endif
