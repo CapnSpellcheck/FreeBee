@@ -1,7 +1,7 @@
 [versions]
 agp = "8.2.2"
 android-compileSdk = "35"
-android-minSdk = "24"
+android-minSdk = "28"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.2"
 androidx-appcompat = "1.7.0"
@@ -12,11 +12,13 @@ androidx-lifecycle = "2.8.2"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 androidx-room = "2.6.1"
-compose-plugin = "1.5.11"
+compose-multiplatform = "1.5.11"
+compose-compiler = "1.5.7"
 junit = "4.13.2"
 kotlin = "1.9.21"
-kotlinx-datetime = "0.5.0"
+kotlinx-datetime = "0.6.0"
 moko-mvvm = "0.16.1"
+multiplatform-settings = "1.1.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -35,11 +37,11 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime"}
+multiplatform-settings = { module="com.russhwolf:multiplatform-settings-no-arg", version.ref="multiplatform-settings"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kapt = { id="org.jetbrains.kotlin.kapt", version.ref="kotlin" }

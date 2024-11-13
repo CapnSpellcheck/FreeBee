@@ -3,7 +3,6 @@ package com.letstwinkle.freebee.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.letstwinkle.freebee.model.IGame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 

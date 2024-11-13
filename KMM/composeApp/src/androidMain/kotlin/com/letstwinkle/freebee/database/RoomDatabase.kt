@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.TypeConverters
 import com.letstwinkle.freebee.BuildConfig
-import com.letstwinkle.freebee.model.IGame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow

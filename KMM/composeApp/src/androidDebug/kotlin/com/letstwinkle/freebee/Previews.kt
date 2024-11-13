@@ -1,0 +1,46 @@
+package com.letstwinkle.freebee
+
+import android.annotation.SuppressLint
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import com.letstwinkle.freebee.database.IGame
+import com.letstwinkle.freebee.screens.root.*
+import com.letstwinkle.freebee.screens.statistics.StatisticsScreen
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+@Preview(
+   apiLevel = 34,
+   device = "id:pixel_8"
+)
+fun GameListPreview() {
+   val gameListViewModel = GameListViewModel(PreviewRepository())
+   Scaffold(topBar = {
+      TopAppBar(
+         title = { Text("Games") },
+      )}) {
+      GameList(
+         gameListViewModel,
+         painterProvider = PreviewPainterProvider(),
+         navigator = object : GameListNavigator {
+            override fun showStatistics() {
+            }
+            
+            override fun openGame(game: IGame) {
+            }
+            
+            override fun openGamePicker() {
+            }
+         })
+   }
+}
+
+@Composable
+@Preview(
+   apiLevel = 34,
+   device = "id:pixel_8"
+)
+fun StatisticsPreview() {
+   StatisticsScreen()
+}

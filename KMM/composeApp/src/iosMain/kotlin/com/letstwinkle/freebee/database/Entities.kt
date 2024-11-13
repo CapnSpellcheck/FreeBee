@@ -2,9 +2,6 @@
 
 package com.letstwinkle.freebee.database
 
-import com.letstwinkle.freebee.model.IEnteredWord
-import com.letstwinkle.freebee.model.IGame
-import com.letstwinkle.freebee.model.IGameProgress
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
@@ -14,7 +11,6 @@ import platform.CoreData.NSEntityDescription
 import platform.CoreData.NSManagedObject
 import platform.CoreData.NSManagedObjectContext
 import platform.Foundation.NSDate
-import platform.Foundation.NSMutableOrderedSet
 import platform.Foundation.NSOrderedSet
 import platform.Foundation.enumerateObjectsUsingBlock
 import platform.Foundation.mutableOrderedSetValueForKey
@@ -75,6 +71,8 @@ class Game : IGame {
       set(value) {
          managedObject.setValue(value, forKey = Keys.progress)
       }
+   override val uniqueID: Any
+      get() = managedObject.objectID.URIRepresentation()
    
    private object Keys {
       const val allowedWords = "allowedWords"

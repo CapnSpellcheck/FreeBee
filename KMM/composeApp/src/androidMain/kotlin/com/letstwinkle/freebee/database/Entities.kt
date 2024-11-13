@@ -5,9 +5,6 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.letstwinkle.freebee.model.IEnteredWord
-import com.letstwinkle.freebee.model.IGame
-import com.letstwinkle.freebee.model.IGameProgress
 import kotlinx.datetime.Instant
 
 @Entity(indices=[Index("date", unique=true, orders=[Index.Order.DESC])]) 
@@ -21,6 +18,9 @@ data class Game(
    override val maximumScore: Short,
    @Embedded override val progress: GameProgress
 ) : IGame {
+   override val uniqueID: Any
+      get() = id
+   
    override fun equals(other: Any?): Boolean {
       if (javaClass != other?.javaClass) return false
       

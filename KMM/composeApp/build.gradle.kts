@@ -1,14 +1,8 @@
-import com.android.build.gradle.internal.ide.kmp.KotlinAndroidSourceSetMarker.Companion.android
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kapt)
-//    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -34,11 +28,12 @@ kotlin {
     }
     
     sourceSets {
+        
         androidMain.dependencies {
-                implementation(compose.preview)
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.androidx.room.runtime)
-                implementation(libs.androidx.room.ktx)
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.room.ktx)
         }
 
         @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
@@ -48,11 +43,10 @@ kotlin {
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            // apparently not available in this version
-//            implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.multiplatform.settings)
             
             api("dev.icerock.moko:mvvm-compose:${libs.versions.moko.mvvm.get()}") // api mvvm-core, getViewModel for Compose Multiplatform
             api("dev.icerock.moko:mvvm-flow-compose:${libs.versions.moko.mvvm.get()}") // api mvvm-flow, binding extensions for Compose Multiplatform
@@ -91,6 +85,10 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 

@@ -1,7 +1,7 @@
 package com.letstwinkle.freebee.screens.root
 
 import com.letstwinkle.freebee.database.FreeBeeRepository
-import com.letstwinkle.freebee.model.IGame
+import com.letstwinkle.freebee.database.IGame
 import dev.icerock.moko.mvvm.flow.CStateFlow
 import dev.icerock.moko.mvvm.flow.cStateFlow
 import dev.icerock.moko.mvvm.viewmodel.ViewModel

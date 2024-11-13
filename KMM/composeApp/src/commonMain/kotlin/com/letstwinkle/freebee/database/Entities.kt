@@ -1,4 +1,4 @@
-package com.letstwinkle.freebee.model
+package com.letstwinkle.freebee.database
 
 import kotlinx.datetime.Instant
 
@@ -10,6 +10,7 @@ interface IGame {
    val geniusScore: Short
    val maximumScore: Short
    val progress: IGameProgress
+   val uniqueID: Any
 }
 
 interface IGameProgress {
@@ -27,3 +28,6 @@ fun IGameProgress.hasEntered(word: String): Boolean =
 
 val IGameProgress.currentWordDisplay: String
    get() = currentWord + "_"
+
+val IGame.isComplete: Boolean
+   get() = progress.score >= maximumScore
