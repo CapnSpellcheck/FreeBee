@@ -73,7 +73,7 @@ struct GameLoaderView: View {
    }
    
    private func openGame() {
-      router.showGame(date: loader.gameDate)
+      router.showGame(date: loader.gameDate, replacingTopmost: true)
    }
 }
 

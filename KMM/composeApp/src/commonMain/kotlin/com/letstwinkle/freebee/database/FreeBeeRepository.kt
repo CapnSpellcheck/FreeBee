@@ -1,6 +1,5 @@
 package com.letstwinkle.freebee.database
 
-import com.letstwinkle.freebee.model.IGame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 
@@ -16,5 +15,9 @@ interface FreeBeeRepository {
    
    fun fetchGamesLive(): Flow<List<IGame>>
    
-   suspend fun getGameCount(): Int
+   suspend fun getStartedGameCount(): Int
+   
+   suspend fun getGeniusGameCount(): Int
+   
+   suspend fun getEnteredWordCount(): Int
 }

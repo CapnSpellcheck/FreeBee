@@ -1,10 +1,7 @@
 package com.letstwinkle.freebee.database
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 @Entity(indices=[Index("date", unique=true, orders=[Index.Order.DESC])]) 
@@ -16,7 +13,7 @@ data class Game(
    override val otherLetters: String,
    override val geniusScore: Short,
    override val maximumScore: Short,
-   @Embedded override val progress: GameProgress
+   @Embedded(prefix = "progress_") override val progress: GameProgress
 ) : IGame {
    override val uniqueID: Any
       get() = id
@@ -57,3 +54,11 @@ data class GameProgress(
    override val enteredWords: LinkedHashSet<IEnteredWord>
       get() = linkedSetOf()
 }
+
+@Entity(foreignKeys=[ForeignKey(Game::class, arrayOf("id"), arrayOf("gameId"))])
+data class EnteredWord(
+   @PrimaryKey(autoGenerate = true) val id: Int,
+   val gameId: Int,
+   override val value: String,
+   val timestamp: Instant = Clock.System.now(),
+) : IEnteredWord

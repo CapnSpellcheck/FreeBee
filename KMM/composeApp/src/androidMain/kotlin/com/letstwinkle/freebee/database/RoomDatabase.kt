@@ -11,10 +11,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 
-@Database(entities=[Game::class], version=1)
+@Database(entities=[Game::class, EnteredWord::class], version=2)
 @TypeConverters(RoomConverters::class)
 abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
    abstract fun gameDAO(): GameDAO
+   abstract fun enteredWordDAO(): EnteredWordDAO
    
    override suspend fun createGame(
       date: Instant,
@@ -31,7 +32,11 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
       return gameDAO().fetchGamesLive()
    }
    
-   override suspend fun getGameCount(): Int = gameDAO().getCount()
+   override suspend fun getStartedGameCount(): Int = gameDAO().getStartedCount()
+   
+   override suspend fun getGeniusGameCount(): Int = gameDAO().getGeniusCount()
+   
+   override suspend fun getEnteredWordCount(): Int = enteredWordDAO().getTotalCount()
    
    companion object {
       @Volatile private var instance: RoomDatabase? = null
@@ -55,7 +60,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
          if (BuildConfig.DEBUG) {
             val gameDAO = getDatabase(context).gameDAO()
             GlobalScope.launch(Dispatchers.IO) {
-               if (gameDAO.getCount() > 0)
+               if (gameDAO.getStartedCount() > 0)
                   return@launch
                var game = Game(
                   id = 1,

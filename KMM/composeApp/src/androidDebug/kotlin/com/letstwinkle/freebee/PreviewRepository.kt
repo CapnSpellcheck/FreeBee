@@ -133,6 +133,9 @@ class PreviewRepository : FreeBeeRepository {
       return flowOf(games.sortedByDescending { it.date })
    }
    
-   override suspend fun getGameCount(): Int = games.count()
+   override suspend fun getStartedGameCount(): Int = 255
+   override suspend fun getGeniusGameCount(): Int = 188
+   
+   override suspend fun getEnteredWordCount(): Int = 999
    
 }

@@ -1,6 +1,5 @@
 package com.letstwinkle.freebee.database
 
-import com.letstwinkle.freebee.model.IGame
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.convert
 import kotlinx.coroutines.channels.awaitClose
@@ -15,11 +14,7 @@ import platform.CoreData.NSFetchedResultsControllerDelegateProtocol
 import platform.CoreData.NSManagedObject
 import platform.CoreData.NSPersistentContainer
 import platform.CoreData.NSPersistentStoreDescription
-import platform.Foundation.NSFileManager
-import platform.Foundation.NSLog
-import platform.Foundation.NSSortDescriptor
-import platform.Foundation.NSURL
-import platform.Foundation.URLByAppendingPathComponent
+import platform.Foundation.*
 import platform.darwin.NSObject
 
 @OptIn(ExperimentalForeignApi::class)
@@ -124,8 +119,22 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
       }
    }.buffer(2)
    
-   override suspend fun getGameCount(): Int {
-      return container.viewContext.countForFetchRequest(gameFetchRequest, null).convert()
+   override suspend fun getStartedGameCount(): Int {
+      val request = gameFetchRequest
+      request.predicate = NSPredicate.predicateWithFormat("score > 0")
+      return container.viewContext.countForFetchRequest(request, null).convert()
+   }
+   
+   override suspend fun getGeniusGameCount(): Int {
+      val request = NSFetchRequest("GameProgress")
+      request.predicate = NSPredicate.predicateWithFormat("score >= game.geniusScore")
+      return container.viewContext.countForFetchRequest(request, null).convert()
+   }
+   
+   override suspend fun getEnteredWordCount(): Int {
+      val request = NSFetchRequest("EnteredWord")
+      return container.viewContext.countForFetchRequest(request, null).convert()
+      
    }
    
    private val gameFetchRequest: NSFetchRequest

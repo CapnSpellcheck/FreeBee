@@ -36,6 +36,16 @@ interface GameDAO {
    @Query("SELECT * FROM Game ORDER BY date DESC")
    fun fetchGamesLive(): Flow<List<Game>>
    
-   @Query("SELECT COUNT(*) FROM Game")
-   suspend fun getCount(): Int
+   @Query("SELECT COUNT(*) FROM Game WHERE progress_score > 0")
+   suspend fun getStartedCount(): Int
+   
+   @Query("SELECT COUNT(*) FROM Game WHERE progress_score >= geniusScore")
+   suspend fun getGeniusCount(): Int
+
+}
+
+@Dao
+interface EnteredWordDAO {
+   @Query("SELECT COUNT(*) FROM EnteredWord")
+   suspend fun getTotalCount(): Int
 }

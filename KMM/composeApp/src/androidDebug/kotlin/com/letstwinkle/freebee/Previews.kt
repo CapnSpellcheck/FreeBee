@@ -2,11 +2,13 @@ package com.letstwinkle.freebee
 
 import android.annotation.SuppressLint
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import com.letstwinkle.freebee.database.IGame
 import com.letstwinkle.freebee.screens.root.*
-import com.letstwinkle.freebee.screens.statistics.StatisticsScreen
+import com.letstwinkle.freebee.statistics.Statistics
+import com.letstwinkle.freebee.statistics.StatisticsModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -36,11 +38,28 @@ fun GameListPreview() {
    }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 @Preview(
    apiLevel = 34,
    device = "id:pixel_8"
 )
 fun StatisticsPreview() {
-   StatisticsScreen()
+   val statisticsModel = rememberSaveable { mutableStateOf<StatisticsModel?>(null) }
+   LaunchedEffect(Unit) {
+      statisticsModel.value = StatisticsModel(
+         PreviewRepository(),
+         PreviewSettings().apply {
+            putInt(SettingKeys.PangramCount, 50)
+         }
+      )
+   }
+   Scaffold(topBar = {
+      TopAppBar(
+         title = { Text("Statistics") },
+      )
+   }) {
+      statisticsModel.value?.let { Statistics(it) }
+   }
 }
+

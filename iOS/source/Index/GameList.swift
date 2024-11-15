@@ -67,9 +67,6 @@ struct GameList: View {
             })
          }
       }
-      .onAppear {
-         viewContext.processPendingChanges()
-      }
       .navigationBarTitleDisplayMode(.large)
    }
    
