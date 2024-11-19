@@ -7,7 +7,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import com.letstwinkle.freebee.database.IGame
 import com.letstwinkle.freebee.screens.root.*
-import com.letstwinkle.freebee.statistics.Statistics
+import com.letstwinkle.freebee.screens.Statistics
+import com.letstwinkle.freebee.screens.game.Game
+import com.letstwinkle.freebee.screens.game.GameViewModel
 import com.letstwinkle.freebee.statistics.StatisticsModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -60,6 +62,24 @@ fun StatisticsPreview() {
       )
    }) {
       statisticsModel.value?.let { Statistics(it) }
+   }
+}
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+@Preview(
+   apiLevel = 34,
+   device = "id:pixel_8"
+)
+fun GamePreview() {
+   val gameViewModel = GameViewModel(PreviewRepository(), 3)
+   Scaffold(topBar = {
+      TopAppBar(
+         title = { Text("Mar 15, 2023") },
+         actions = {
+         })
+   }) {
+      Game(gameViewModel, painterProvider = PreviewPainterProvider())
    }
 }
 

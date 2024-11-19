@@ -1,19 +1,18 @@
-package com.letstwinkle.freebee.database
+package com.letstwinkle.freebee.database.android
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.letstwinkle.freebee.BuildConfig
+import com.letstwinkle.freebee.database.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 
-@Database(entities=[Game::class, EnteredWord::class], version=2)
+@Database(entities = [Game::class, EnteredWord::class], version = 5)
 @TypeConverters(RoomConverters::class)
-abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
+abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository<Game, GameWithWords> {
    abstract fun gameDAO(): GameDAO
    abstract fun enteredWordDAO(): EnteredWordDAO
    
@@ -28,8 +27,16 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
       gameDAO().createGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore)
    }
    
-   override fun fetchGamesLive(): Flow<List<IGame>> {
+   override fun fetchGamesLive(): Flow<List<Game>> {
       return gameDAO().fetchGamesLive()
+   }
+   
+   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
+      return withTransaction {
+         val game = gameDAO().fetchGame(gameID)
+         val enteredWordsList = enteredWordDAO().getGameWords(game.id)
+         GameWithWords(game, LinkedHashSet(enteredWordsList))
+      }
    }
    
    override suspend fun getStartedGameCount(): Int = gameDAO().getStartedCount()
@@ -37,6 +44,32 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
    override suspend fun getGeniusGameCount(): Int = gameDAO().getGeniusCount()
    
    override suspend fun getEnteredWordCount(): Int = enteredWordDAO().getTotalCount()
+   
+   override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
+      val enteredWord = EnteredWord(gameId = gameWithWords.game.id, value = word)
+      enteredWordDAO().addEnteredWord(enteredWord)
+      gameWithWords.enteredWords.add(enteredWord)
+      return true
+   }
+   
+   override suspend fun updateGameScore(game: GameWithWords, score: Short) {
+      gameDAO().saveGameScore(GameScore(game.game.id, score))
+      game.game.score = score
+   }
+   
+   // TODO: to match iOS, model revert should be implemented on failure, somehow…
+   override suspend fun
+      executeAndSave(transaction: suspend (FreeBeeRepository<Game, GameWithWords>) -> Unit): Boolean
+   {
+      try {
+         withTransaction {
+            transaction(this)
+         }
+      } catch (e: Exception) {
+         return false
+      }
+      return true
+   }
    
    companion object {
       @Volatile private var instance: RoomDatabase? = null
@@ -50,7 +83,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
                   }
                }
                .build()
-            this.debugSeed(context)
+            debugSeed(context)
             instance!!
          }
       }
@@ -82,7 +115,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
                   otherLetters = "yatpcf",
                   geniusScore = 89,
                   maximumScore = 127,
-                  progress = GameProgress(score = 123)
+                  score = 123
                )
                gameDAO.createGame(game)
                
@@ -118,7 +151,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
                   otherLetters = "rlcayt",
                   geniusScore = 113,
                   maximumScore = 161,
-                  progress = GameProgress(score = 55)
+                  score = 55
                )
                gameDAO.createGame(game)
                
@@ -161,7 +194,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
                   otherLetters = "mihatr",
                   geniusScore = 186,
                   maximumScore = 266,
-                  progress = GameProgress()
+                  score = 0
                )
                gameDAO.createGame(game)
             }

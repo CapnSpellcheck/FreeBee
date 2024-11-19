@@ -41,7 +41,12 @@ private val TableHorizontalPadding = 16.dp
                }
             })
       }) {
-         GameList(gameListViewModel, navigator = navigator, painterProvider = painterProvider)
+         GameList(
+            gameListViewModel,
+            Modifier.padding(it),
+            navigator = navigator,
+            painterProvider = painterProvider
+         )
       }
    }
 }
@@ -142,7 +147,7 @@ private val TableHorizontalPadding = 16.dp
          horizontalArrangement = Arrangement.End,
          verticalAlignment = Alignment.CenterVertically
       ) {
-         Text(if (game.isComplete) "💯" else "Score: ${game.progress.score}", fontSize = 17.sp)
+         Text(if (game.isComplete) "💯" else "Score: ${game.score}", fontSize = 17.sp)
          Image(
             painterProvider.provide(PainterProvider.Resource.Chevron),
             null,

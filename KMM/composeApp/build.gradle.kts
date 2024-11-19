@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kapt)
+    id("kotlin-parcelize")
 }
 
 kotlin {
@@ -50,6 +51,7 @@ kotlin {
             
             api("dev.icerock.moko:mvvm-compose:${libs.versions.moko.mvvm.get()}") // api mvvm-core, getViewModel for Compose Multiplatform
             api("dev.icerock.moko:mvvm-flow-compose:${libs.versions.moko.mvvm.get()}") // api mvvm-flow, binding extensions for Compose Multiplatform
+            api(libs.multiplatform.logging)
         }
         
         commonTest.dependencies {

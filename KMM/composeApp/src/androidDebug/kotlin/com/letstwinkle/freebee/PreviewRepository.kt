@@ -1,14 +1,12 @@
 package com.letstwinkle.freebee
 
 import com.letstwinkle.freebee.database.FreeBeeRepository
-import com.letstwinkle.freebee.database.Game
-import com.letstwinkle.freebee.database.GameProgress
-import com.letstwinkle.freebee.database.IGame
+import com.letstwinkle.freebee.database.android.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Instant
 
-class PreviewRepository : FreeBeeRepository {
+class PreviewRepository : FreeBeeRepository<Game, GameWithWords> {
    private var games = mutableListOf(
       Game(
          id = 1,
@@ -30,7 +28,7 @@ class PreviewRepository : FreeBeeRepository {
          otherLetters = "yatpcf",
          geniusScore = 89,
          maximumScore = 127,
-         progress = GameProgress(score = 123)
+         score = 123
       ),
       Game(
          id = 2,
@@ -64,7 +62,7 @@ class PreviewRepository : FreeBeeRepository {
          otherLetters = "rlcayt",
          geniusScore = 113,
          maximumScore = 161,
-         progress = GameProgress(score = 55)
+         score = 55
       ),
       Game(
          id = 3,
@@ -105,8 +103,13 @@ class PreviewRepository : FreeBeeRepository {
          otherLetters = "mihatr",
          geniusScore = 186,
          maximumScore = 266,
-         progress = GameProgress()
       )
+   )
+   
+   private var enteredWordsMap = mapOf(
+      1 to listOf("cafe", "facet", "face").map { EnteredWord(0, 1, it) }.toTypedArray(),
+      2 to listOf("taut", "curt", "rural").map { EnteredWord(0, 2, it) }.toTypedArray(),
+      3 to listOf("charm", "attach", "itch", "match", "cram").map { EnteredWord(0, 3, it) }.toTypedArray(),
    )
    
    override suspend fun createGame(
@@ -117,7 +120,8 @@ class PreviewRepository : FreeBeeRepository {
       geniusScore: Short,
       maximumScore: Short,
    ) {
-      games.add(Game(
+      games.add(
+         Game(
          id = games.size + 1,
          date = date,
          allowedWords = allowedWords,
@@ -125,17 +129,35 @@ class PreviewRepository : FreeBeeRepository {
          otherLetters = otherLetters,
          geniusScore = geniusScore,
          maximumScore = maximumScore,
-         progress = GameProgress()
-      ))
+      )
+      )
    }
    
-   override fun fetchGamesLive(): Flow<List<IGame>> {
+   override fun fetchGamesLive(): Flow<List<Game>> {
       return flowOf(games.sortedByDescending { it.date })
+   }
+   
+   override suspend fun fetchGameWithWords(gameID: Int): GameWithWords {
+      val game = games.first { it.id == gameID }
+      return GameWithWords(game, linkedSetOf(*(enteredWordsMap[gameID] ?: arrayOf())))
    }
    
    override suspend fun getStartedGameCount(): Int = 255
    override suspend fun getGeniusGameCount(): Int = 188
    
    override suspend fun getEnteredWordCount(): Int = 999
+   override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository<Game, GameWithWords>) -> Unit): Boolean {
+      transaction(this)
+      return true
+   }
+   
+   override suspend fun updateGameScore(game: GameWithWords, score: Short) {
+      game.game.score = score
+   }
+   
+   override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
+      gameWithWords.enteredWords.add(EnteredWord(gameId = gameWithWords.game.id, value = word))
+      return true
+   }
    
 }

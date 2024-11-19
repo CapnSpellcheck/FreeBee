@@ -2,11 +2,13 @@ package com.letstwinkle.freebee.database
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.convert
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 import platform.CoreData.NSFetchRequest
 import platform.CoreData.NSFetchedResultsController
@@ -17,8 +19,10 @@ import platform.CoreData.NSPersistentStoreDescription
 import platform.Foundation.*
 import platform.darwin.NSObject
 
+// TODO: Remove NSLog
+
 @OptIn(ExperimentalForeignApi::class)
-class CoreDataDatabase private constructor(val container: NSPersistentContainer) : FreeBeeRepository {
+class CoreDataDatabase private constructor(val container: NSPersistentContainer) : FreeBeeRepository<Game, Game> {
    
    companion object {
       val shared = create()
@@ -78,15 +82,13 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
       game.otherLetters = otherLetters
       game.geniusScore = geniusScore
       game.maximumScore = maximumScore
-      game.progress = GameProgress(container.viewContext)
       val succeeded = container.viewContext.save(null)
       if (!succeeded) {
          NSLog("[CoreDataDatabase] Couldn't save game")
       }
    }
    
-   override fun fetchGamesLive(): Flow<List<IGame>> = callbackFlow {
-      
+   override fun fetchGamesLive(): Flow<List<Game>> = callbackFlow {
       val fetchRequest = gameFetchRequest
       fetchRequest.sortDescriptors = listOf(NSSortDescriptor(key = "date", ascending = false))
       val fetchResultsController = NSFetchedResultsController(
@@ -119,6 +121,10 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
       }
    }.buffer(2)
    
+   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): Game {
+      return Game(container.viewContext.objectWithID(gameID))
+   }
+   
    override suspend fun getStartedGameCount(): Int {
       val request = gameFetchRequest
       request.predicate = NSPredicate.predicateWithFormat("score > 0")
@@ -134,8 +140,32 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
    override suspend fun getEnteredWordCount(): Int {
       val request = NSFetchRequest("EnteredWord")
       return container.viewContext.countForFetchRequest(request, null).convert()
-      
    }
+   
+   override suspend fun updateGameScore(game: Game, score: Short) {
+      game.progress.score = score
+   }
+   
+   override suspend fun addEnteredWord(gameWithWords: Game, word: String): Boolean {
+      val enteredWord = EnteredWord(container.viewContext, word)
+      gameWithWords.progress.addEnteredWord(enteredWord)
+      return container.viewContext.save(null)
+   }
+   
+   override suspend fun
+      executeAndSave(transaction: suspend (FreeBeeRepository<Game, Game>) -> Unit): Boolean
+   {
+      val success: Boolean
+      withContext(Dispatchers.Main) {
+         val viewContext = container.viewContext
+         transaction(this@CoreDataDatabase)
+         success = viewContext.save(null)
+         if (!success)
+            viewContext.rollback()
+      }
+      return success
+   }
+   
    
    private val gameFetchRequest: NSFetchRequest
       get() = NSFetchRequest("Game")

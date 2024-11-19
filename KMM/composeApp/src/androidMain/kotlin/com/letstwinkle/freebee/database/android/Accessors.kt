@@ -1,8 +1,7 @@
-package com.letstwinkle.freebee.database
+package com.letstwinkle.freebee.database.android
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
+import com.letstwinkle.freebee.database.EntityIdentifier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 
@@ -19,7 +18,6 @@ interface GameDAO {
       geniusScore: Short,
       maximumScore: Short,
    ) {
-      val progress = GameProgress()
       val game = Game(
          0,
          date,
@@ -28,7 +26,6 @@ interface GameDAO {
          otherLetters,
          geniusScore,
          maximumScore,
-         progress
       )
       createGame(game)
    }
@@ -36,16 +33,28 @@ interface GameDAO {
    @Query("SELECT * FROM Game ORDER BY date DESC")
    fun fetchGamesLive(): Flow<List<Game>>
    
-   @Query("SELECT COUNT(*) FROM Game WHERE progress_score > 0")
+   @Query("SELECT * FROM Game WHERE id = :gameID")
+   suspend fun fetchGame(gameID: EntityIdentifier): Game
+   
+   @Query("SELECT COUNT(*) FROM Game WHERE score > 0")
    suspend fun getStartedCount(): Int
    
-   @Query("SELECT COUNT(*) FROM Game WHERE progress_score >= geniusScore")
+   @Query("SELECT COUNT(*) FROM Game WHERE score >= geniusScore")
    suspend fun getGeniusCount(): Int
 
+   @Update(entity = Game::class)
+   suspend fun saveGameScore(gameScore: GameScore)
 }
 
 @Dao
 interface EnteredWordDAO {
    @Query("SELECT COUNT(*) FROM EnteredWord")
    suspend fun getTotalCount(): Int
+   
+   @Query("SELECT * FROM EnteredWord WHERE gameId = :gameId ORDER BY id")
+   suspend fun getGameWords(gameId: Int): List<EnteredWord>
+   
+   @Insert
+   suspend fun addEnteredWord(word: EnteredWord)
+   
 }

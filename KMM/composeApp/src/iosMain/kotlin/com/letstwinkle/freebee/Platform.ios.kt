@@ -1,5 +1,6 @@
 package com.letstwinkle.freebee
 
+import com.letstwinkle.freebee.database.*
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.*
@@ -21,4 +22,8 @@ val gameDateDisplayFormatter: NSDateFormatter = run {
     df.timeStyle = NSDateFormatterNoStyle
     df.dateStyle = NSDateFormatterMediumStyle
     df
+}
+
+actual fun repository(): CovariantFreeBeeRepository {
+    return CoreDataDatabase.shared
 }

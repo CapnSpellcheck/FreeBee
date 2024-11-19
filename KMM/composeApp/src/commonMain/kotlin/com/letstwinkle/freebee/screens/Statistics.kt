@@ -1,4 +1,4 @@
-package com.letstwinkle.freebee.statistics
+package com.letstwinkle.freebee.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.letstwinkle.freebee.indentedDivider
+import com.letstwinkle.freebee.statistics.StatisticsModel
 
 @Composable fun StatisticsScreen() {
    val statisticsModel = rememberSaveable { mutableStateOf<StatisticsModel?>(null) }
@@ -41,7 +42,7 @@ private val padding = 16.dp
 
 @Composable fun StatisticRow(label: String, value: Int) {
    Row(
-      Modifier.fillMaxWidth().heightIn(44.dp).padding(padding, 11.dp, 11.dp, padding),
+      Modifier.fillMaxWidth().heightIn(44.dp).padding(padding, 11.dp, padding, 11.dp),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.Bottom
    ) {
