@@ -10,7 +10,9 @@ interface PainterProvider {
    
    enum class Resource(val resourceName: String) {
       ChartBarXaxis("chart-bar-xaxis.xml"),
-      Chevron("chevron-right.xml")
+      Chevron("chevron-right.xml"),
+      ChevronDown("chevron-down.xml"),
+      Backspace("backspace.xml"),
       ;
    }
 }

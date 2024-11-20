@@ -1,6 +1,7 @@
 package com.letstwinkle.freebee.screens.game
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import com.letstwinkle.freebee.SettingKeys
 import com.letstwinkle.freebee.database.*
 import com.russhwolf.settings.Settings
@@ -9,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
 private val log = logging()
+private val MinWordLength = 4
 
 class GameViewModel<GameWithWords: IGameWithWords>(
    private val repository: FreeBeeRepository<out IGame, GameWithWords>,
@@ -20,6 +22,35 @@ class GameViewModel<GameWithWords: IGameWithWords>(
       get() = gameWithWordsMutable
    val entryNotAcceptedMessage: State<String?>
       get() = entryNotAcceptedMessageMutable
+   
+   val gameProgress: Float
+      get() = gameWithWords.value?.run { (0f + enteredWords.size) / game.allowedWords.size } ?: 0f
+   
+   val enterEnabled: Boolean
+      get() = gameWithWords.value?.game?.let { 
+         it.currentWord.length >= MinWordLength && it.currentWord.contains(it.centerLetterCharacter)
+      } ?: false
+   
+   // Remember the enteredWords are stored oldest first, but display most recent first here.
+   val enteredWordSummary: String
+      get() {
+         val estimateNumberOfCharactersThatCouldBeShown = 60
+         var length = 0; var taken = 0
+         val enteredWords = gameWithWords.value?.enteredWords
+         return enteredWords?.toList()?.asReversed()?.takeWhile {
+            length += it.value.length + 2
+            if (length <= 60)
+               taken++
+            length <= 60
+         }?.joinToString(
+            "\u2003",
+            postfix = if (taken < enteredWords.size) "…" else ""
+         ) { it.value.replaceFirstChar(Char::titlecase) }
+            ?: "No words yet"
+      }
+   
+   val enteredWordSummaryColor: Color
+      get() = Color.Black
    
    init {
       viewModelScope.launch {
@@ -62,6 +93,14 @@ class GameViewModel<GameWithWords: IGameWithWords>(
       } else {
          entryNotAcceptedMessageMutable.value = "Error performing operation, sorry"
       }
+   }
+   
+   fun backspace() {
+      val gameWithWords = gameWithWords.value ?: return
+      gameWithWords.game.apply {
+         currentWord = currentWord.dropLast(1)
+      }
+      gameWithWordsMutable.value = gameWithWords
    }
    
    // temporary, until the LetterHoneycomb is implemented

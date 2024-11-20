@@ -59,9 +59,9 @@ private val TableHorizontalPadding = 16.dp
    navigator: GameListNavigator?
 ) {
    val games = viewModel.gamesFlow.collectAsState().value
-   Column(Modifier.background(groupedTableHeaderBackgroundColor)) {
+   Column(modifier.background(groupedTableHeaderBackgroundColor)) {
       LazyColumn(
-         modifier.weight(1f)
+         Modifier.weight(1f)
       ) {
          item(key = "inprogress") {
             Header("In progress")
@@ -72,7 +72,7 @@ private val TableHorizontalPadding = 16.dp
             }
          }
          itemsIndexed(games, { _, game -> game.uniqueID }) { index, game ->
-            GameRow(game, { navigator?.openGame(game) }, painterProvider)
+            GameRow(game, { navigator?.openGame(game) }, painterProvider = painterProvider)
             if (index < games.size - 1) {
                indentedDivider(TableHorizontalPadding)
             }
@@ -86,7 +86,7 @@ private val TableHorizontalPadding = 16.dp
             Header("Start a new game")
          }
       }
-      Column(modifier.clip(RoundedCornerShape(6.dp)).background(Color.White), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+      Column(Modifier.clip(RoundedCornerShape(6.dp)).background(Color.White), verticalArrangement = Arrangement.spacedBy(12.dp)) {
          Text("Sponsor me")
          Text("I appreciate tips! The only social payment platform I'm on is PayPal. Feel free to send me a gift.")
          TextButton({ }) {
@@ -106,9 +106,14 @@ private val TableHorizontalPadding = 16.dp
    )
 }
 
-@Composable fun GameRow(game: IGame, onClick: (IGame) -> Unit, painterProvider: PainterProvider) {
+@Composable fun GameRow(
+   game: IGame,
+   onClick: (IGame) -> Unit,
+   modifier: Modifier = Modifier,
+   painterProvider: PainterProvider,
+) {
    Row(
-      Modifier.fillMaxWidth()
+      modifier.fillMaxWidth()
          .heightIn(44.dp)
          .background(Color.White)
          .clickable(onClickLabel = "Open this game") { onClick(game) }

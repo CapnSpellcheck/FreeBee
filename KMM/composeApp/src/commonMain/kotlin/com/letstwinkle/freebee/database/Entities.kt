@@ -11,18 +11,11 @@ interface IGame {
    val otherLetters: String
    val geniusScore: Short
    val maximumScore: Short
-//   val progress: IGameProgress
    var currentWord: String
    var score: Short
    
    val uniqueID: EntityIdentifier
 }
-
-//interface IGameProgress {
-//   var currentWord: String
-//   var score: Short
-//   val enteredWords: Set<IEnteredWord>
-//}
 
 interface IGameWithWords {
    val game: IGame
@@ -36,8 +29,14 @@ interface IEnteredWord {
 inline val IGame.currentWordDisplay: String
    get() = currentWord + "_"
 
+inline val IGame.centerLetterCharacter: Char
+   get() = Char(centerLetterCode)
+
 inline val IGame.isComplete: Boolean
    get() = score >= maximumScore
+
+inline val IGame.isGenius: Boolean
+   get() = score >= geniusScore
 
 fun IGame.isPangram(word: String): Boolean {
    if (word.length < 7) 

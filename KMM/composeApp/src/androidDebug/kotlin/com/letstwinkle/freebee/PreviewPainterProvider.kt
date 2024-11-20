@@ -11,6 +11,8 @@ class PreviewPainterProvider : PainterProvider {
       @DrawableRes val id: Int = when (r) {
          PainterProvider.Resource.ChartBarXaxis -> R.drawable.chart_bar_xaxis
          PainterProvider.Resource.Chevron -> R.drawable.chevron_right
+         PainterProvider.Resource.Backspace -> R.drawable.backspace
+         PainterProvider.Resource.ChevronDown -> R.drawable.chevron_down
       }
       return painterResource(id)
    }
