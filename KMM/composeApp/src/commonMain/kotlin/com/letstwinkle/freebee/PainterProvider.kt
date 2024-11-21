@@ -13,6 +13,7 @@ interface PainterProvider {
       Chevron("chevron-right.xml"),
       ChevronDown("chevron-down.xml"),
       Backspace("backspace.xml"),
+      XCircleFill("x-circle-fill.xml"),
       ;
    }
 }

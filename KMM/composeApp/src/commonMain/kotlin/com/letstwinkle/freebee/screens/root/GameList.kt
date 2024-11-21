@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
@@ -121,7 +122,7 @@ private val TableHorizontalPadding = 16.dp
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically
    ) {
-      Text(formatGameDateToDisplay(game.date), Modifier.weight(1f), fontSize = 17.sp)
+      Text(formatGameDateToDisplay(game.date), Modifier.weight(1f), style = bodyStyle)
       CompositionLocalProvider(
          LocalDensity provides Density(
             density = LocalDensity.current.density,
@@ -152,12 +153,13 @@ private val TableHorizontalPadding = 16.dp
          horizontalArrangement = Arrangement.End,
          verticalAlignment = Alignment.CenterVertically
       ) {
-         Text(if (game.isComplete) "💯" else "Score: ${game.score}", fontSize = 17.sp)
+         Text(if (game.isComplete) "💯" else "Score: ${game.score}", style = bodyStyle)
          Image(
             painterProvider.provide(PainterProvider.Resource.Chevron),
             null,
             modifier = Modifier.padding(start = 10.dp)
-               .width(with(LocalDensity.current) { 10.sp.toDp() })
+               .width(with(LocalDensity.current) { 10.sp.toDp() }),
+            colorFilter = ColorFilter.tint(disclosureIndicatorColor)
          )
       }
    }

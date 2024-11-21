@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.letstwinkle.freebee.bodyStyle
 import com.letstwinkle.freebee.indentedDivider
 import com.letstwinkle.freebee.statistics.StatisticsModel
 
@@ -46,7 +47,7 @@ private val padding = 16.dp
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.Bottom
    ) {
-      Text(label, fontSize = 17.sp)
+      Text(label, style = bodyStyle)
       Text(value.toString(), fontSize = 24.sp)
    }
 }

@@ -1,14 +1,16 @@
 package com.letstwinkle.freebee.screens.game
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -17,10 +19,12 @@ import androidx.compose.ui.unit.sp
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.database.IGame
 import com.letstwinkle.freebee.database.IGameWithWords
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
 private val log = logging()
+const val entryNotAcceptedMessageVisibleDuration = 3000
 
 @Composable fun GameScreen(
    game: IGame,
@@ -49,13 +53,28 @@ private val log = logging()
 ) {
    val gameWithWords = viewModel.gameWithWords.value
    val coroutineScope = rememberCoroutineScope()
+   val entryNotAcceptedAnimator = remember { Animatable(0f, Float.VectorConverter) }
+   val entryNotAcceptedMessage = remember { mutableStateOf("") }
+   
+   LaunchedEffect(Unit) {
+      for (message in viewModel.entryNotAcceptedEvents) {
+         entryNotAcceptedMessage.value = message
+         entryNotAcceptedAnimator.snapTo(1f)
+         entryNotAcceptedAnimator.animateTo(
+            0f, animationSpec = tween(
+               delayMillis = entryNotAcceptedMessageVisibleDuration,
+               easing = LinearEasing
+            )
+         )
+      }
+   }
    
    Column(modifier.fillMaxSize().padding(top = 12.dp).padding(horizontal = 16.dp)) {
       Row(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically) {
          Text(
             scoreString(gameWithWords?.game?.score),
             Modifier.padding(end = 8.dp),
-            fontSize = 17.sp
+            style = bodyStyle
          )
          LinearProgressIndicator(viewModel.gameProgress, Modifier.height(2.dp).fillMaxWidth())
       }
@@ -85,6 +104,20 @@ private val log = logging()
       }
       
       Spacer(Modifier.weight(1f))
+      
+      Row(
+         Modifier.fillMaxWidth().padding(vertical = 12.dp).alpha(entryNotAcceptedAnimator.value),
+         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+         verticalAlignment = Alignment.CenterVertically
+      ) {
+         Image(
+            painterProvider.provide(PainterProvider.Resource.XCircleFill),
+            "entry not accepted",
+            Modifier.size(15.667.dp, 15.667.dp),
+            colorFilter = ColorFilter.tint(Color.Red)
+         )
+         Text(entryNotAcceptedMessage.value, style = bodyStyle)
+      }
       
       // Temporary input mechanism for a word instead of the letter honeycomb
       TextField(gameWithWords?.game?.currentWord ?: "", singleLine = true, onValueChange = {

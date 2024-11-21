@@ -4,31 +4,31 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.letstwinkle.freebee.SettingKeys
 import com.letstwinkle.freebee.database.*
+import com.letstwinkle.freebee.secondaryTextColor
 import com.russhwolf.settings.Settings
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
 private val log = logging()
-private val MinWordLength = 4
+private const val minWordLength = 4
 
 class GameViewModel<GameWithWords: IGameWithWords>(
    private val repository: FreeBeeRepository<out IGame, GameWithWords>,
    private val gameID: EntityIdentifier,
 ) : ViewModel() {
    private val gameWithWordsMutable = mutableStateOf<GameWithWords?>(null, policy = neverEqualPolicy())
-   private val entryNotAcceptedMessageMutable = mutableStateOf<String?>(null)
    val gameWithWords: State<GameWithWords?>
       get() = gameWithWordsMutable
-   val entryNotAcceptedMessage: State<String?>
-      get() = entryNotAcceptedMessageMutable
+   val entryNotAcceptedEvents = Channel<String>()
    
    val gameProgress: Float
       get() = gameWithWords.value?.run { (0f + enteredWords.size) / game.allowedWords.size } ?: 0f
    
    val enterEnabled: Boolean
       get() = gameWithWords.value?.game?.let { 
-         it.currentWord.length >= MinWordLength && it.currentWord.contains(it.centerLetterCharacter)
+         it.currentWord.length >= minWordLength && it.currentWord.contains(it.centerLetterCharacter)
       } ?: false
    
    // Remember the enteredWords are stored oldest first, but display most recent first here.
@@ -50,7 +50,9 @@ class GameViewModel<GameWithWords: IGameWithWords>(
       }
    
    val enteredWordSummaryColor: Color
-      get() = Color.Black
+      get() = if (gameWithWords.value?.enteredWords.isNullOrEmpty())
+         secondaryTextColor
+      else Color.Black
    
    init {
       viewModelScope.launch {
@@ -82,16 +84,17 @@ class GameViewModel<GameWithWords: IGameWithWords>(
             }
          }
       } else {
-         entryNotAcceptedMessageMutable.value =
+         entryNotAcceptedEvents.send(
             if (wordIsEntered) "Word is already entered"
             else "Entry isn't accepted"
+         )
       }
       
       if (success) {
          gameWithWords.game.currentWord = ""
          gameWithWordsMutable.value = gameWithWords
       } else {
-         entryNotAcceptedMessageMutable.value = "Error performing operation, sorry"
+         entryNotAcceptedEvents.send("Error performing operation, sorry")
       }
    }
    

@@ -13,6 +13,7 @@ class PreviewPainterProvider : PainterProvider {
          PainterProvider.Resource.Chevron -> R.drawable.chevron_right
          PainterProvider.Resource.Backspace -> R.drawable.backspace
          PainterProvider.Resource.ChevronDown -> R.drawable.chevron_down
+         PainterProvider.Resource.XCircleFill -> R.drawable.x_circle_fill
       }
       return painterResource(id)
    }
