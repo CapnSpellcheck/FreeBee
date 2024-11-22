@@ -27,7 +27,7 @@ interface IEnteredWord {
 }
 
 inline val IGame.currentWordDisplay: String
-   get() = currentWord + "_"
+   get() = currentWord.uppercase() + "_"
 
 inline val IGame.centerLetterCharacter: Char
    get() = Char(centerLetterCode)

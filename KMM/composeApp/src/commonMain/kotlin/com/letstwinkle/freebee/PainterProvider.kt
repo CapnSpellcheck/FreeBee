@@ -14,6 +14,7 @@ interface PainterProvider {
       ChevronDown("chevron-down.xml"),
       Backspace("backspace.xml"),
       XCircleFill("x-circle-fill.xml"),
+      Enter("enter.png"),
       ;
    }
 }

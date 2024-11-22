@@ -13,3 +13,4 @@ val yellowAccentColor = Color(247, 218, 33)
 val secondaryTextColor = Color(0.235f, 0.235f, 0.263f, 0.6f)
 
 val bodyStyle = TextStyle(fontSize = 17.sp, lineHeight = 22.sp)
+val subheadStyle = TextStyle(fontSize = 15.sp, lineHeight = 20.sp)

@@ -16,10 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.idapgroup.autosizetext.AutoSizeText
 import com.letstwinkle.freebee.*
-import com.letstwinkle.freebee.database.IGame
-import com.letstwinkle.freebee.database.IGameWithWords
-import kotlinx.coroutines.flow.receiveAsFlow
+import com.letstwinkle.freebee.database.*
 import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
@@ -45,16 +44,15 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable fun <GameWithWords: IGameWithWords> Game(
    viewModel: GameViewModel<GameWithWords>,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
-   val gameWithWords = viewModel.gameWithWords.value
    val coroutineScope = rememberCoroutineScope()
    val entryNotAcceptedAnimator = remember { Animatable(0f, Float.VectorConverter) }
    val entryNotAcceptedMessage = remember { mutableStateOf("") }
+   val gameWithWords = viewModel.gameWithWords.value
    
    LaunchedEffect(Unit) {
       for (message in viewModel.entryNotAcceptedEvents) {
@@ -69,7 +67,10 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       }
    }
    
-   Column(modifier.fillMaxSize().padding(top = 12.dp).padding(horizontal = 16.dp)) {
+   Column(
+      modifier.fillMaxSize().padding(vertical = 12.dp, horizontal = 16.dp),
+      horizontalAlignment = Alignment.CenterHorizontally
+   ) {
       Row(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically) {
          Text(
             scoreString(gameWithWords?.game?.score),
@@ -106,38 +107,57 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       Spacer(Modifier.weight(1f))
       
       Row(
-         Modifier.fillMaxWidth().padding(vertical = 12.dp).alpha(entryNotAcceptedAnimator.value),
-         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+         Modifier.padding(bottom = 16.dp).alpha(entryNotAcceptedAnimator.value),
+         horizontalArrangement = Arrangement.spacedBy(8.dp,),
          verticalAlignment = Alignment.CenterVertically
       ) {
          Image(
             painterProvider.provide(PainterProvider.Resource.XCircleFill),
             "entry not accepted",
-            Modifier.size(15.667.dp, 15.667.dp),
+            Modifier.size(16.dp, 16.dp),
             colorFilter = ColorFilter.tint(Color.Red)
          )
-         Text(entryNotAcceptedMessage.value, style = bodyStyle)
+         Text(entryNotAcceptedMessage.value, style = subheadStyle)
+      }
+      
+      val gameIsComplete = gameWithWords?.game?.isComplete != false
+      
+      if (!gameIsComplete) {
+         AutoSizeText(
+            gameWithWords!!.game.currentWordDisplay,
+            maxLines = 1,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Medium,
+            letterSpacing = 2.sp
+         )
       }
       
       // Temporary input mechanism for a word instead of the letter honeycomb
       TextField(gameWithWords?.game?.currentWord ?: "", singleLine = true, onValueChange = {
-         log.d { "BasicTextField onValueChanged" }
          viewModel.updateCurrentWord(it)
       })
       
       Row(
-         Modifier.fillMaxWidth(),
-         horizontalArrangement = Arrangement.spacedBy(44.dp, Alignment.CenterHorizontally)
+         Modifier.alpha(if (gameIsComplete) 0f else 1f),
+         horizontalArrangement = Arrangement.spacedBy(44.dp)
       ) {
-         IconButton({ viewModel.backspace() }) {
-            Icon(painterProvider.provide(PainterProvider.Resource.Backspace), "delete last letter")
+         IconButton({ viewModel.backspace() }, Modifier.size(48.dp, 48.dp)) {
+            Icon(
+               painterProvider.provide(PainterProvider.Resource.Backspace),
+               "delete last letter",
+               Modifier.requiredWidth(40.dp).requiredHeight(32.dp)
+            )
          }
-         TextButton({
+         IconButton({
             coroutineScope.launch {
                viewModel.enter()
             }
-         }, enabled = viewModel.enterEnabled) {
-            Text("Enter")
+         }, Modifier.size(48.dp, 48.dp), enabled = viewModel.enterEnabled) {
+            Icon(
+               painterProvider.provide(PainterProvider.Resource.Enter),
+               "submit the entered letters",
+               Modifier.requiredWidth(46.dp).requiredHeight(32.dp)
+            )
          }
       }
    }

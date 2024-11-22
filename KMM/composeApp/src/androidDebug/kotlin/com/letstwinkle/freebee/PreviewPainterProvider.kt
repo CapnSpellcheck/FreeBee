@@ -14,6 +14,7 @@ class PreviewPainterProvider : PainterProvider {
          PainterProvider.Resource.Backspace -> R.drawable.backspace
          PainterProvider.Resource.ChevronDown -> R.drawable.chevron_down
          PainterProvider.Resource.XCircleFill -> R.drawable.x_circle_fill
+         PainterProvider.Resource.Enter -> R.drawable.enter
       }
       return painterResource(id)
    }

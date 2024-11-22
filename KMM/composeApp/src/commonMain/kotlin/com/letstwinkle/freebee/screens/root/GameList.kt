@@ -30,7 +30,6 @@ private val TableHorizontalPadding = 16.dp
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
    MaterialTheme {
-      val gameListViewModel = GameListViewModel(repository())
       val painter = painterProvider.provide(PainterProvider.Resource.ChartBarXaxis)
       
       Scaffold(topBar = {
@@ -43,9 +42,8 @@ private val TableHorizontalPadding = 16.dp
             })
       }) {
          GameList(
-            gameListViewModel,
-            Modifier.padding(it),
             navigator = navigator,
+            modifier = Modifier.padding(it),
             painterProvider = painterProvider
          )
       }
@@ -54,10 +52,10 @@ private val TableHorizontalPadding = 16.dp
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable fun GameList(
-   viewModel: GameListViewModel,
+   viewModel: GameListViewModel = GameListViewModel(repository()),
+   navigator: GameListNavigator?,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
-   navigator: GameListNavigator?
 ) {
    val games = viewModel.gamesFlow.collectAsState().value
    Column(modifier.background(groupedTableHeaderBackgroundColor)) {
