@@ -15,6 +15,7 @@ interface PainterProvider {
       Backspace("backspace.xml"),
       XCircleFill("x-circle-fill.xml"),
       Enter("enter.png"),
+      Rules("questionmark-circle.xml"),
       ;
    }
 }

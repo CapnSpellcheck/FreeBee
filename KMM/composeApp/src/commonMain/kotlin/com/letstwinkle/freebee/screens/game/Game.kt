@@ -25,6 +25,7 @@ import org.lighthousegames.logging.logging
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable fun GameScreen(
    game: IGame,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -32,15 +33,38 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    MaterialTheme {
       val gameViewModel = GameViewModel(repository(), game.uniqueID)
       val dateString = formatGameDateToDisplay(game.date)
+      val rulesState = 
+         rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
+      val coroutineScope = rememberCoroutineScope()
       
       Scaffold(topBar = {
          TopAppBar(
             title = { Text(dateString)},
             actions = {
+               IconButton( { coroutineScope.launch { rulesState.show() } }) {
+                  Icon(painterProvider.provide(PainterProvider.Resource.Rules), "rules")
+               }
             })
       }) {
-         Game(gameViewModel, painterProvider = painterProvider)
+         GameWithSheet(gameViewModel, rulesState, painterProvider = painterProvider)
       }
+   }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable fun <GameWithWords: IGameWithWords> GameWithSheet(
+   viewModel: GameViewModel<GameWithWords>,
+   rulesSheetState: ModalBottomSheetState,
+   modifier: Modifier = Modifier,
+   painterProvider: PainterProvider = ResourcePainterProvider(),
+) {
+   ModalBottomSheetLayout(
+      { RulesSheet() },
+      sheetState = rulesSheetState,
+      sheetShape = RoundedCornerShape(8.dp),
+      scrimColor = Color.Transparent
+   ) {
+      Game(viewModel, modifier, painterProvider)
    }
 }
 
@@ -53,6 +77,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    val entryNotAcceptedAnimator = remember { Animatable(0f, Float.VectorConverter) }
    val entryNotAcceptedMessage = remember { mutableStateOf("") }
    val gameWithWords = viewModel.gameWithWords.value
+   val isEnteredWordOverflow = remember { mutableStateOf(false) }
    
    LaunchedEffect(Unit) {
       for (message in viewModel.entryNotAcceptedEvents) {
@@ -82,25 +107,31 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       
       Row(
          Modifier.fillMaxWidth()
-            .clickable {}
+            .clickable(isEnteredWordOverflow.value) {}
             .border(1.5.dp, Color.LightGray, RoundedCornerShape(6.dp))
             .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+         horizontalArrangement = Arrangement.SpaceBetween,
          verticalAlignment = Alignment.CenterVertically,
       ) {
          Text(
             viewModel.enteredWordSummary,
+            Modifier.weight(1f).padding(end = 4.dp),
             overflow = TextOverflow.Ellipsis,
             color = viewModel.enteredWordSummaryColor,
             maxLines = 1,
             fontSize = 16.sp,
+            onTextLayout = { layoutResult -> 
+               log.d { "hasVisualOverlow = ${layoutResult.hasVisualOverflow}" }
+               isEnteredWordOverflow.value = layoutResult.hasVisualOverflow
+            }
          )
          Image(
             painterProvider.provide(PainterProvider.Resource.ChevronDown),
-            "toggle the bottom sheet listing the words already entered",
+            "toggle the bottom sheet that lists the words already entered",
             // SwiftUI magically chooses appropriate sizes for system images, this is what it comes up
             // with in the SwiftUI app
-            Modifier.size(18.667.dp, 10.333.dp)
+            Modifier.size(18.667.dp, 10.333.dp),
+            alpha = if (isEnteredWordOverflow.value) 1f else 0f,
          )
       }
       
@@ -108,7 +139,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       
       Row(
          Modifier.padding(bottom = 16.dp).alpha(entryNotAcceptedAnimator.value),
-         horizontalArrangement = Arrangement.spacedBy(8.dp,),
+         horizontalArrangement = Arrangement.spacedBy(8.dp),
          verticalAlignment = Alignment.CenterVertically
       ) {
          Image(

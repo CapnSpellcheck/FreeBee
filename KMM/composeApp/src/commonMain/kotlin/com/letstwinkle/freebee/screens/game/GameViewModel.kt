@@ -13,12 +13,19 @@ import org.lighthousegames.logging.logging
 
 private val log = logging()
 private const val minWordLength = 4
+private const val enteredWordSpacer = "\u2003"
 
 class GameViewModel<GameWithWords: IGameWithWords>(
    private val repository: FreeBeeRepository<out IGame, GameWithWords>,
    private val gameID: EntityIdentifier,
 ) : ViewModel() {
    private val gameWithWordsMutable = mutableStateOf<GameWithWords?>(null, policy = neverEqualPolicy())
+   /**
+    * This is calculated when the game is loaded by joining the initial entered words, then
+    * updated when the user correctly enters another word.
+    */
+   private var joinedEnteredWords = ""
+   
    val gameWithWords: State<GameWithWords?>
       get() = gameWithWordsMutable
    val entryNotAcceptedEvents = Channel<String>()
@@ -33,21 +40,9 @@ class GameViewModel<GameWithWords: IGameWithWords>(
    
    // Remember the enteredWords are stored oldest first, but display most recent first here.
    val enteredWordSummary: String
-      get() {
-         val estimateNumberOfCharactersThatCouldBeShown = 60
-         var length = 0; var taken = 0
-         val enteredWords = gameWithWords.value?.enteredWords
-         return enteredWords?.toList()?.asReversed()?.takeWhile {
-            length += it.value.length + 2
-            if (length <= 60)
-               taken++
-            length <= 60
-         }?.joinToString(
-            "\u2003",
-            postfix = if (taken < enteredWords.size) "…" else ""
-         ) { it.value.replaceFirstChar(Char::titlecase) }
-            ?: "No words yet"
-      }
+      get() = 
+         if (gameWithWords.value?.enteredWords?.isEmpty() == true) "No words yet" 
+      else joinedEnteredWords
    
    val enteredWordSummaryColor: Color
       get() = if (gameWithWords.value?.enteredWords.isNullOrEmpty())
@@ -56,12 +51,17 @@ class GameViewModel<GameWithWords: IGameWithWords>(
    
    init {
       viewModelScope.launch {
-         gameWithWordsMutable.value = repository.fetchGameWithWords(gameID)
+         val fetchedGameWithWords = repository.fetchGameWithWords(gameID)
+         gameWithWordsMutable.value = fetchedGameWithWords
+         joinedEnteredWords = fetchedGameWithWords.enteredWords
+            .toList().asReversed()
+            .joinToString(enteredWordSpacer) { it.value.replaceFirstChar(Char::titlecaseChar)}
       }
    }
    
    suspend fun enter() {
-      var success = true
+      var committed = false
+      var errored = false
       val gameWithWords = gameWithWords.value ?: return
       val enteredWord = gameWithWords.game.currentWord
       val wordIsAllowed = gameWithWords.isAllowed(enteredWord)
@@ -69,20 +69,11 @@ class GameViewModel<GameWithWords: IGameWithWords>(
       
       if (wordIsAllowed && !wordIsEntered) {
          val updatedScore = (gameWithWords.game.score + scoreWord(enteredWord)).toShort()
-         success = repository.executeAndSave {
+         committed = repository.executeAndSave {
             repository.updateGameScore(gameWithWords, updatedScore)
             repository.addEnteredWord(gameWithWords, enteredWord)
          }
-         if (success && gameWithWords.game.isPangram(enteredWord)) {
-            log.d { "Pangram entered: $enteredWord" }
-            Settings().also {
-               it.putInt(
-                  SettingKeys.PangramCount,
-                  it.getInt(SettingKeys.PangramCount, 0) + 1
-               )
-               log.d { "Total pangrams: ${it.getInt(SettingKeys.PangramCount, 0)}" }
-            }
-         }
+         errored = committed.not()
       } else {
          entryNotAcceptedEvents.send(
             if (wordIsEntered) "Word is already entered"
@@ -90,7 +81,16 @@ class GameViewModel<GameWithWords: IGameWithWords>(
          )
       }
       
-      if (success) {
+      if (committed) {
+         if (gameWithWords.game.isPangram(enteredWord)) {
+            log.d { "Pangram entered: $enteredWord" }
+            recordPangram()
+         }
+         val enteredWordCapitalized = enteredWord.replaceFirstChar(Char::titlecaseChar)
+         joinedEnteredWords = 
+            enteredWordCapitalized + enteredWordSpacer + joinedEnteredWords
+      }
+      if (!errored) {
          gameWithWords.game.currentWord = ""
          gameWithWordsMutable.value = gameWithWords
       } else {
@@ -122,4 +122,13 @@ class GameViewModel<GameWithWords: IGameWithWords>(
       return score.toShort()
    }
    
+   private fun recordPangram() {
+      Settings().also {
+         it.putInt(
+            SettingKeys.PangramCount,
+            it.getInt(SettingKeys.PangramCount, 0) + 1
+         )
+         log.d { "Total pangrams: ${it.getInt(SettingKeys.PangramCount, 0)}" }
+      }
+   }
 }

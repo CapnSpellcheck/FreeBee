@@ -11,7 +11,8 @@ import androidx.compose.ui.unit.Dp
 @Composable
 fun indentedDivider(startIndentation: Dp, backgroundColor: Color = Color.White) {
    Divider(
-      Modifier.background(backgroundColor).padding(start = startIndentation),
-      color = rowDividerColor
+      Modifier.background(backgroundColor),
+      color = rowDividerColor,
+      startIndent = startIndentation
    )
 }
