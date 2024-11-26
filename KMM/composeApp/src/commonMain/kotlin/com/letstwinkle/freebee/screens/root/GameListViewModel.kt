@@ -17,8 +17,9 @@ class GameListViewModel(private val repository: CovariantFreeBeeRepository) : Vi
    val gamesFlow: CStateFlow<List<IGame>> = gamesFlowMutable.asStateFlow().cStateFlow()
    
    init {
+      log.d { "init" }
       viewModelScope.launch {
-         log.d { "launching fetchGamesLive" }
+         log.d { "launch fetchGamesLive" }
          repository.fetchGamesLive().collect { games ->
             log.d { "fetchGamesLive yielded" }
             gamesFlowMutable.value = games

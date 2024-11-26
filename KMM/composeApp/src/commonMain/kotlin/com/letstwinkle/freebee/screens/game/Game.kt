@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.sp
 import com.idapgroup.autosizetext.AutoSizeText
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.database.*
+import io.woong.compose.grid.SimpleGridCells
+import io.woong.compose.grid.VerticalGrid
 import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
@@ -33,7 +35,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    MaterialTheme {
       val gameViewModel = GameViewModel(repository(), game.uniqueID)
       val dateString = formatGameDateToDisplay(game.date)
-      val rulesState = 
+      val rulesState =
          rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
       val coroutineScope = rememberCoroutineScope()
       
@@ -46,30 +48,43 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
                }
             })
       }) {
-         GameWithSheet(gameViewModel, rulesState, painterProvider = painterProvider)
+         GameWithSheets(gameViewModel, rulesState, painterProvider = painterProvider)
       }
    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable fun <GameWithWords: IGameWithWords> GameWithSheet(
+@Composable fun <GameWithWords: IGameWithWords> GameWithSheets(
    viewModel: GameViewModel<GameWithWords>,
    rulesSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
+   val enteredWordsSheetState = rememberModalBottomSheetState(
+      ModalBottomSheetValue.Hidden,
+      skipHalfExpanded = true,
+   )
+   
    ModalBottomSheetLayout(
       { RulesSheet() },
       sheetState = rulesSheetState,
       sheetShape = RoundedCornerShape(8.dp),
-      scrimColor = Color.Transparent
    ) {
-      Game(viewModel, modifier, painterProvider)
+      ModalBottomSheetLayout(
+         { EnteredWordsSheet(viewModel.gameWithWords.value?.enteredWords.orEmpty().toList()) },
+         sheetState = enteredWordsSheetState,
+         sheetShape = RoundedCornerShape(8.dp),
+         scrimColor = Color.Transparent
+      ) {
+         Game(viewModel, enteredWordsSheetState, modifier, painterProvider)
+      }
    }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable fun <GameWithWords: IGameWithWords> Game(
    viewModel: GameViewModel<GameWithWords>,
+   enteredWordsSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
@@ -96,7 +111,10 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       modifier.fillMaxSize().padding(vertical = 12.dp, horizontal = 16.dp),
       horizontalAlignment = Alignment.CenterHorizontally
    ) {
-      Row(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+      Row(
+         Modifier.fillMaxWidth().padding(bottom = 16.dp),
+         verticalAlignment = Alignment.CenterVertically
+      ) {
          Text(
             scoreString(gameWithWords?.game?.score),
             Modifier.padding(end = 8.dp),
@@ -107,7 +125,11 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       
       Row(
          Modifier.fillMaxWidth()
-            .clickable(isEnteredWordOverflow.value) {}
+            .clickable(isEnteredWordOverflow.value) {
+               coroutineScope.launch {
+                  enteredWordsSheetState.show()
+               }
+            }
             .border(1.5.dp, Color.LightGray, RoundedCornerShape(6.dp))
             .padding(8.dp),
          horizontalArrangement = Arrangement.SpaceBetween,
@@ -120,7 +142,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
             color = viewModel.enteredWordSummaryColor,
             maxLines = 1,
             fontSize = 16.sp,
-            onTextLayout = { layoutResult -> 
+            onTextLayout = { layoutResult ->
                log.d { "hasVisualOverlow = ${layoutResult.hasVisualOverflow}" }
                isEnteredWordOverflow.value = layoutResult.hasVisualOverflow
             }
@@ -189,6 +211,25 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
                "submit the entered letters",
                Modifier.requiredWidth(46.dp).requiredHeight(32.dp)
             )
+         }
+      }
+   }
+}
+
+@Composable
+fun EnteredWordsSheet(words: List<IEnteredWord>) {
+   log.d {"Entered words: $words" }
+   Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+      Text("Entered words", style = headlineStyle, maxLines = 1)
+      VerticalGrid(
+         SimpleGridCells.Adaptive(100.dp),
+         Modifier.padding(top = 12.dp)
+      ) {
+         val sortedWords = words.sortedBy { it.value }
+            .map { it.value.replaceFirstChar(Char::titlecaseChar) }
+         // convert from rows to columns
+         for (word in sortedWords) {
+            Text(word, Modifier.padding(bottom = 4.dp), style = bodyStyle)
          }
       }
    }

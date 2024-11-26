@@ -10,10 +10,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.letstwinkle.freebee.bodyStyle
+import com.letstwinkle.freebee.tableSectionHeaderStyle
 
 @Composable
 fun RulesSheet() {
-   val headerStyle = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
    val ruleModifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 12.dp)
    
    Column(Modifier.fillMaxWidth().padding(16.dp)) {
@@ -23,7 +23,7 @@ fun RulesSheet() {
       Text(
          "Create words using letters from the hive",
          Modifier.padding(vertical = 3.dp),
-         style = headerStyle
+         style = tableSectionHeaderStyle
       )
       Divider()
       Text("Words must contain at least 4 letters.", ruleModifier, style = bodyStyle)
@@ -34,7 +34,7 @@ fun RulesSheet() {
       
       Spacer(Modifier.height(22.dp))
       
-      Text("How to score", Modifier.padding(vertical = 3.dp), style = headerStyle)
+      Text("How to score", Modifier.padding(vertical = 3.dp), style = tableSectionHeaderStyle)
       Divider()
       Text("4-letter words are worth 1 point each.", ruleModifier, style = bodyStyle)
       Text("Longer words earn 1 point per letter.", ruleModifier, style = bodyStyle)

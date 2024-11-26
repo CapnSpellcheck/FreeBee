@@ -87,7 +87,7 @@ fun GamePreview() {
             }
          })
    }) {
-      GameWithSheet(gameViewModel, rulesState, painterProvider = PreviewPainterProvider())
+      GameWithSheets(gameViewModel, rulesState, painterProvider = PreviewPainterProvider())
    }
 }
 
