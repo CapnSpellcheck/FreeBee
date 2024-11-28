@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.idapgroup.autosizetext.AutoSizeText
 import com.letstwinkle.freebee.*
+import com.letstwinkle.freebee.compose.AutoRepeatingIconButton
 import com.letstwinkle.freebee.database.*
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
@@ -194,7 +195,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
          Modifier.alpha(if (gameIsComplete) 0f else 1f),
          horizontalArrangement = Arrangement.spacedBy(44.dp)
       ) {
-         IconButton({ viewModel.backspace() }, Modifier.size(48.dp, 48.dp)) {
+         AutoRepeatingIconButton({ viewModel.backspace() }, Modifier.size(48.dp, 48.dp)) {
             Icon(
                painterProvider.provide(PainterProvider.Resource.Backspace),
                "delete last letter",
@@ -218,7 +219,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
 
 @Composable
 fun EnteredWordsSheet(words: List<IEnteredWord>) {
-   log.d {"Entered words: $words" }
+   log.d { "Entered words: $words" }
    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
       Text("Entered words", style = headlineStyle, maxLines = 1)
       VerticalGrid(
