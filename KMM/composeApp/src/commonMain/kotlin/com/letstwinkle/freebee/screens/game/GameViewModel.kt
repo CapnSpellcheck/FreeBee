@@ -13,12 +13,14 @@ import org.lighthousegames.logging.logging
 
 private val log = logging()
 private const val minWordLength = 4
+private const val maxWordLength = 19
 private const val enteredWordSpacer = "\u2003"
 
 class GameViewModel<GameWithWords: IGameWithWords>(
    private val repository: FreeBeeRepository<out IGame, GameWithWords>,
    private val gameID: EntityIdentifier,
-) : ViewModel() {
+) : ViewModel()
+{
    private val gameWithWordsMutable = mutableStateOf<GameWithWords?>(null, policy = neverEqualPolicy())
    /**
     * This is calculated when the game is loaded by joining the initial entered words, then
@@ -48,6 +50,11 @@ class GameViewModel<GameWithWords: IGameWithWords>(
       get() = if (gameWithWords.value?.enteredWords.isNullOrEmpty())
          secondaryTextColor
       else Color.Black
+   
+   val currentWordDisplay: String 
+      get() = gameWithWords.value?.game?.let {
+         if (it.isComplete) "" else it.currentWordDisplay
+      } ?: ""
    
    init {
       viewModelScope.launch {
@@ -106,11 +113,13 @@ class GameViewModel<GameWithWords: IGameWithWords>(
       gameWithWordsMutable.value = gameWithWords
    }
    
-   // temporary, until the LetterHoneycomb is implemented
-   fun updateCurrentWord(new: String) {
-      val gameWithWords = gameWithWordsMutable.value
-      gameWithWords?.game?.currentWord = new
-      gameWithWordsMutable.value = gameWithWords
+   fun append(letter: Char) {
+      gameWithWords.value?.game?.currentWord?.let {
+         if (it.length < maxWordLength) {
+            gameWithWords.value?.game?.currentWord = it + letter
+            gameWithWordsMutable.value = gameWithWords.value
+         }
+      }
    }
    
    private fun scoreWord(word: String): Short {

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.idapgroup.autosizetext.AutoSizeText
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.AutoRepeatingIconButton
+import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.database.*
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
@@ -33,7 +35,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    game: IGame,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
-   MaterialTheme {
+   MyAppTheme {
       val gameViewModel = GameViewModel(repository(), game.uniqueID)
       val dateString = formatGameDateToDisplay(game.date)
       val rulesState =
@@ -99,12 +101,14 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       for (message in viewModel.entryNotAcceptedEvents) {
          entryNotAcceptedMessage.value = message
          entryNotAcceptedAnimator.snapTo(1f)
-         entryNotAcceptedAnimator.animateTo(
-            0f, animationSpec = tween(
-               delayMillis = entryNotAcceptedMessageVisibleDuration,
-               easing = LinearEasing
+         launch {
+            entryNotAcceptedAnimator.animateTo(
+               0f, animationSpec = tween(
+                  delayMillis = entryNotAcceptedMessageVisibleDuration,
+                  easing = LinearEasing
+               )
             )
-         )
+         }
       }
    }
    
@@ -174,25 +178,35 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
          Text(entryNotAcceptedMessage.value, style = subheadStyle)
       }
       
-      val gameIsComplete = gameWithWords?.game?.isComplete != false
+      AutoSizeText(
+         viewModel.currentWordDisplay, 
+         maxLines = 1,
+         fontSize = 28.sp,
+         fontWeight = FontWeight.Medium,
+         letterSpacing = 2.sp
+      )
       
-      if (!gameIsComplete) {
-         AutoSizeText(
-            gameWithWords!!.game.currentWordDisplay,
-            maxLines = 1,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Medium,
-            letterSpacing = 2.sp
-         )
+      val gameIsCompleteOrNull = gameWithWords?.game?.isComplete != false
+      
+      Box(contentAlignment = Alignment.Center) {
+         gameWithWords?.let {
+            LetterHoneycomb(
+               gameWithWords.game.centerLetterCharacter,
+               gameWithWords.game.otherLetters.toList(),
+               viewModel::append,
+               Modifier.fillMaxWidth().padding(vertical = 16.dp)
+                  .alpha(if (gameIsCompleteOrNull) 0.4f else 1f)
+            )
+         }
+         if (gameIsCompleteOrNull && gameWithWords != null) {
+            Text("\uD83D\uDCAF", fontSize = (150f / LocalDensity.current.fontScale).sp)
+         }
       }
       
-      // Temporary input mechanism for a word instead of the letter honeycomb
-      TextField(gameWithWords?.game?.currentWord ?: "", singleLine = true, onValueChange = {
-         viewModel.updateCurrentWord(it)
-      })
+      Spacer(Modifier.weight(1f))
       
       Row(
-         Modifier.alpha(if (gameIsComplete) 0f else 1f),
+         Modifier.alpha(if (gameIsCompleteOrNull) 0f else 1f).padding(bottom = 8.dp),
          horizontalArrangement = Arrangement.spacedBy(44.dp)
       ) {
          AutoRepeatingIconButton({ viewModel.backspace() }, Modifier.size(48.dp, 48.dp)) {
@@ -217,8 +231,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    }
 }
 
-@Composable
-fun EnteredWordsSheet(words: List<IEnteredWord>) {
+@Composable fun EnteredWordsSheet(words: List<IEnteredWord>) {
    log.d { "Entered words: $words" }
    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
       Text("Entered words", style = headlineStyle, maxLines = 1)

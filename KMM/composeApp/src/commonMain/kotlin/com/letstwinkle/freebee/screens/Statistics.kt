@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.letstwinkle.freebee.bodyStyle
-import com.letstwinkle.freebee.indentedDivider
+import com.letstwinkle.freebee.compose.indentedDivider
 import com.letstwinkle.freebee.statistics.StatisticsModel
 
 @Composable fun StatisticsScreen() {

@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +18,8 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.unit.*
 import com.letstwinkle.freebee.*
+import com.letstwinkle.freebee.compose.MyAppTheme
+import com.letstwinkle.freebee.compose.indentedDivider
 import com.letstwinkle.freebee.database.IGame
 import com.letstwinkle.freebee.database.isComplete
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -29,7 +30,7 @@ private val TableHorizontalPadding = 16.dp
    navigator: GameListNavigator?,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
-   MaterialTheme {
+   MyAppTheme {
       val painter = painterProvider.provide(PainterProvider.Resource.ChartBarXaxis)
       
       Scaffold(topBar = {
@@ -155,7 +156,8 @@ private val TableHorizontalPadding = 16.dp
          Image(
             painterProvider.provide(PainterProvider.Resource.Chevron),
             null,
-            modifier = Modifier.padding(start = 10.dp)
+            modifier = Modifier
+               .padding(start = 10.dp)
                .width(with(LocalDensity.current) { 10.sp.toDp() }),
             colorFilter = ColorFilter.tint(disclosureIndicatorColor)
          )

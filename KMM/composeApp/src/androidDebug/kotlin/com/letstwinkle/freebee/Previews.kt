@@ -1,14 +1,20 @@
 package com.letstwinkle.freebee
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.letstwinkle.freebee.compose.LetterHexagon
+import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.database.IGame
-import com.letstwinkle.freebee.screens.root.*
 import com.letstwinkle.freebee.screens.Statistics
 import com.letstwinkle.freebee.screens.game.*
+import com.letstwinkle.freebee.screens.root.*
 import com.letstwinkle.freebee.statistics.StatisticsModel
 import kotlinx.coroutines.launch
 
@@ -70,7 +76,7 @@ fun StatisticsPreview() {
 @Composable
 @Preview(
    apiLevel = 34,
-   device = "id:pixel_8"
+   device = "id:pixel_6"
 )
 fun GamePreview() {
    val gameViewModel = GameViewModel(PreviewRepository(), 3)
@@ -98,4 +104,10 @@ fun GamePreview() {
 )
 fun RulesPreview() {
    RulesSheet()
+}
+
+@Composable
+@Preview
+fun HoneycombPreview() {
+   LetterHoneycomb(centerLetter = 'e', otherLetters = "yatpcf".toList(), onLetterTap = {}, modifier = Modifier.padding(16.dp))
 }
