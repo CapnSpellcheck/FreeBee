@@ -21,7 +21,7 @@ import kotlin.math.sin
 }
 
 @Composable fun MyAppTheme(content: @Composable () -> Unit) {
-   val lightColors = lightColors(Color.White, secondary = yellowAccentColor)
+   val lightColors = lightColors(Color.White, secondary = yellowAccentColor, onPrimary = Color.Black)
    MaterialTheme(colors = lightColors, content = content)
 }
 

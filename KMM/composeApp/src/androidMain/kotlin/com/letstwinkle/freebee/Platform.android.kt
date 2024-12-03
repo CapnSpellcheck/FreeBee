@@ -3,6 +3,7 @@ package com.letstwinkle.freebee
 import android.content.Context
 import android.os.Build
 import android.os.Parcel
+import androidx.compose.ui.text.font.*
 import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.database.android.RoomDatabase
 import kotlinx.datetime.Instant
@@ -43,3 +44,7 @@ private lateinit var applicationContext: Context
 fun setApplicationContext(context: Context) {
     applicationContext = context
 }
+
+actual fun gameLettersFontFamily() = FontFamily(
+    Font(R.font.ibmplexsans_medium, FontWeight.Medium)
+)

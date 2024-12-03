@@ -144,7 +144,9 @@ private val TableHorizontalPadding = 16.dp
          }
          Text(
             annotatedString.toUpperCase(LocaleList(Locale("en"))),
-            Modifier.padding(horizontal = 8.dp)
+            Modifier.padding(horizontal = 8.dp),
+            fontFamily = gameLettersFontFamily(),
+            fontWeight = FontWeight.Medium,
          )
       }
       Row(

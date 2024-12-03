@@ -183,6 +183,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
          maxLines = 1,
          fontSize = 28.sp,
          fontWeight = FontWeight.Medium,
+         fontFamily = gameLettersFontFamily(),
          letterSpacing = 2.sp
       )
       

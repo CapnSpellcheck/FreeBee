@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.letstwinkle.freebee.gameLettersFontFamily
 import kotlin.math.*
 
 private val peripheralLetterBackground = Color(230f/255, 230f/255, 230f/255)
@@ -34,6 +35,7 @@ fun LetterHexagon(letter: Char, isCenter: Boolean, onPress: (Char) -> Unit, modi
          letter.uppercase(),
          fontSize = ((this.maxWidth.value / 3) / LocalDensity.current.fontScale).sp,
          fontWeight = FontWeight.Medium,
+         fontFamily = gameLettersFontFamily(),
          color = Color.Black
       )
       

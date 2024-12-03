@@ -30,7 +30,7 @@ class GameListActivity : ComponentActivity(), GameListNavigator {
             intent.putGameExtra(game)
             startActivity(intent)
         } else {
-            throw IllegalArgumentException("game should be a com.letstwinkle.freebee.database.android.Game")
+            error("game should be a com.letstwinkle.freebee.database.android.Game")
         }
     }
     
