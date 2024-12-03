@@ -2,6 +2,7 @@ package com.letstwinkle.freebee.screens.game
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -17,10 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.idapgroup.autosizetext.AutoSizeText
 import com.letstwinkle.freebee.*
-import com.letstwinkle.freebee.compose.AutoRepeatingIconButton
-import com.letstwinkle.freebee.compose.MyAppTheme
+import com.letstwinkle.freebee.compose.*
 import com.letstwinkle.freebee.database.*
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
@@ -47,7 +46,8 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
             title = { Text(dateString)},
             actions = {
                IconButton( { coroutineScope.launch { rulesState.show() } }) {
-                  Icon(painterProvider.provide(PainterProvider.Resource.Rules), "rules")
+                  val rulesPaint = painterProvider.provide(PainterProvider.Resource.Rules)
+                  Icon(rulesPaint, "rules", tint = yellowAccentColor)
                }
             })
       }) {
@@ -181,10 +181,10 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       AutoSizeText(
          viewModel.currentWordDisplay, 
          maxLines = 1,
-         fontSize = 28.sp,
-         fontWeight = FontWeight.Medium,
+         maxTextSize = 28.sp,
+         fontWeight = FontWeight.SemiBold,
          fontFamily = gameLettersFontFamily(),
-         letterSpacing = 2.sp
+         letterSpacing = 2.sp,
       )
       
       val gameIsCompleteOrNull = gameWithWords?.game?.isComplete != false
@@ -203,30 +203,37 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
             Text("\uD83D\uDCAF", fontSize = (150f / LocalDensity.current.fontScale).sp)
          }
       }
-      
+
       Spacer(Modifier.weight(1f))
       
-      Row(
-         Modifier.alpha(if (gameIsCompleteOrNull) 0f else 1f).padding(bottom = 8.dp),
-         horizontalArrangement = Arrangement.spacedBy(44.dp)
-      ) {
-         AutoRepeatingIconButton({ viewModel.backspace() }, Modifier.size(48.dp, 48.dp)) {
-            Icon(
-               painterProvider.provide(PainterProvider.Resource.Backspace),
-               "delete last letter",
-               Modifier.requiredWidth(40.dp).requiredHeight(32.dp)
-            )
-         }
-         IconButton({
-            coroutineScope.launch {
-               viewModel.enter()
+      CompositionLocalProvider(LocalContentAlpha provides 1f) {
+         Row(
+            Modifier.alpha(if (gameIsCompleteOrNull) 0f else 1f).padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(44.dp)
+         ) {
+            iOSStyleIconButton(
+               {},
+               Modifier.size(48.dp, 48.dp).autorepeatingClickable(
+                  remember { MutableInteractionSource() }, fireAction = { viewModel.backspace() }
+               )
+            ) {
+               BlueIcon(
+                  painterProvider.provide(PainterProvider.Resource.Backspace),
+                  "delete last letter",
+                  Modifier.requiredWidth(40.dp).requiredHeight(32.dp)
+               )
             }
-         }, Modifier.size(48.dp, 48.dp), enabled = viewModel.enterEnabled) {
-            Icon(
-               painterProvider.provide(PainterProvider.Resource.Enter),
-               "submit the entered letters",
-               Modifier.requiredWidth(46.dp).requiredHeight(32.dp)
-            )
+            iOSStyleIconButton({
+               coroutineScope.launch {
+                  viewModel.enter()
+               }
+            }, Modifier.size(48.dp, 48.dp), enabled = viewModel.enterEnabled) {
+               BlueIcon(
+                  painterProvider.provide(PainterProvider.Resource.Enter),
+                  "submit the entered letters",
+                  Modifier.requiredWidth(46.dp).requiredHeight(32.dp)
+               )
+            }
          }
       }
    }

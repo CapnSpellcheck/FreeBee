@@ -1,43 +1,21 @@
 package com.letstwinkle.freebee.compose
 
 import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.material.IconButton
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.*
 
-@Composable fun AutoRepeatingIconButton(
-   fireAction: () -> Unit,
-   modifier: Modifier = Modifier,
-   enabled: Boolean = true,
-   autoRepeatDelay: Int = 500,
-   autoRepeatInterval: Int = 100,
-   interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-   content: @Composable () -> Unit
-) {
-   val modifier1 = modifier.repeatingClickable(
-      interactionSource,
-      enabled,
-      autoRepeatDelay.toLong(),
-      autoRepeatInterval.toLong(),
-      fireAction
-   )
-   IconButton({ }, modifier1, enabled, interactionSource, content)
-}
-
-@Composable private fun Modifier.repeatingClickable(
+@Composable fun Modifier.autorepeatingClickable(
    interactionSource: MutableInteractionSource,
-   enabled: Boolean,
-   repeatDelay: Long,
-   repeatInterval: Long,
+   enabled: Boolean = true,
+   repeatDelay: Long = 500,
+   repeatInterval: Long = 1000 / 6,
    fireAction: () -> Unit
-): Modifier = this.then(
+): Modifier = composed {
    pointerInput(interactionSource, enabled) {
       coroutineScope {
          awaitEachGesture {
@@ -67,8 +45,5 @@ import kotlinx.coroutines.*
             }
          }
       }
-   }.indication(
-      interactionSource = interactionSource,
-      indication = rememberRipple()
-   )
-)
+   }
+}

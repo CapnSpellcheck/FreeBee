@@ -4,13 +4,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.platform.Typeface
 import com.letstwinkle.freebee.database.CoreDataDatabase
 import com.letstwinkle.freebee.database.CovariantFreeBeeRepository
-import kotlinx.cinterop.*
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import org.jetbrains.skia.*
 import platform.Foundation.*
 import platform.UIKit.UIDevice
-import platform.posix.memcpy
 import org.jetbrains.skia.Typeface as SkTypeface
 
 class IOSPlatform: Platform {
@@ -35,7 +33,6 @@ actual fun repository(): CovariantFreeBeeRepository {
    return CoreDataDatabase.shared
 }
 
-@OptIn(BetaInteropApi::class)
 actual fun gameLettersFontFamily() = FontFamily(
    Typeface(
       SkTypeface.makeFromName(
