@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
 import com.letstwinkle.freebee.database.*
@@ -35,7 +36,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
    MyAppTheme {
-      val gameViewModel = GameViewModel(repository(), game.uniqueID)
+      val gameViewModel = viewModel { GameViewModel(repository(), game.uniqueID) }
       val dateString = formatGameDateToDisplay(game.date)
       val rulesState =
          rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
@@ -45,9 +46,9 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
          TopAppBar(
             title = { Text(dateString)},
             actions = {
-               IconButton( { coroutineScope.launch { rulesState.show() } }) {
+               iOSStyleIconButton( { coroutineScope.launch { rulesState.show() } }) {
                   val rulesPaint = painterProvider.provide(PainterProvider.Resource.Rules)
-                  Icon(rulesPaint, "rules", tint = yellowAccentColor)
+                  AccentIcon(rulesPaint, "rules")
                }
             })
       }) {
@@ -85,7 +86,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable fun <GameWithWords: IGameWithWords> Game(
+@Composable private fun <GameWithWords: IGameWithWords> Game(
    viewModel: GameViewModel<GameWithWords>,
    enteredWordsSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
@@ -203,37 +204,41 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
             Text("\uD83D\uDCAF", fontSize = (150f / LocalDensity.current.fontScale).sp)
          }
       }
-
+      
       Spacer(Modifier.weight(1f))
       
-      CompositionLocalProvider(LocalContentAlpha provides 1f) {
-         Row(
-            Modifier.alpha(if (gameIsCompleteOrNull) 0f else 1f).padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(44.dp)
+      Row(
+         Modifier.alpha(if (gameIsCompleteOrNull) 0f else 1f).padding(bottom = 8.dp),
+         horizontalArrangement = Arrangement.spacedBy(44.dp)
+      ) {
+         iOSStyleIconButton(
+            {},
+            Modifier.size(48.dp, 48.dp).autorepeatingClickable(
+               remember { MutableInteractionSource() }, fireAction = { viewModel.backspace() }
+            ),
+            placement = IconButtonPlacement.Content
          ) {
-            iOSStyleIconButton(
-               {},
-               Modifier.size(48.dp, 48.dp).autorepeatingClickable(
-                  remember { MutableInteractionSource() }, fireAction = { viewModel.backspace() }
-               )
-            ) {
-               BlueIcon(
-                  painterProvider.provide(PainterProvider.Resource.Backspace),
-                  "delete last letter",
-                  Modifier.requiredWidth(40.dp).requiredHeight(32.dp)
-               )
-            }
-            iOSStyleIconButton({
+            BlueIcon(
+               painterProvider.provide(PainterProvider.Resource.Backspace),
+               "delete last letter",
+               Modifier.requiredWidth(40.dp).requiredHeight(32.dp)
+            )
+         }
+         iOSStyleIconButton(
+            {
                coroutineScope.launch {
                   viewModel.enter()
                }
-            }, Modifier.size(48.dp, 48.dp), enabled = viewModel.enterEnabled) {
-               BlueIcon(
-                  painterProvider.provide(PainterProvider.Resource.Enter),
-                  "submit the entered letters",
-                  Modifier.requiredWidth(46.dp).requiredHeight(32.dp)
-               )
-            }
+            },
+            Modifier.size(48.dp, 48.dp),
+            enabled = viewModel.enterEnabled,
+            placement = IconButtonPlacement.Content
+         ) {
+            BlueIcon(
+               painterProvider.provide(PainterProvider.Resource.Enter),
+               "submit the entered letters",
+               Modifier.requiredWidth(46.dp).requiredHeight(32.dp)
+            )
          }
       }
    }

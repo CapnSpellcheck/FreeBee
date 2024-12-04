@@ -24,7 +24,6 @@ kotlin {
             baseName = "ComposeApp"
             binaryOption("bundleId", "FreeBeeKMM")
             isStatic = true
-            export("dev.icerock.moko:mvvm-core:${libs.versions.moko.mvvm.get()}")
         }
     }
     
@@ -49,14 +48,10 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.multiplatform.settings)
             
-            api("dev.icerock.moko:mvvm-compose:${libs.versions.moko.mvvm.get()}") // api mvvm-core, getViewModel for Compose Multiplatform
-            api("dev.icerock.moko:mvvm-flow-compose:${libs.versions.moko.mvvm.get()}") // api mvvm-flow, binding extensions for Compose Multiplatform
+            api(libs.moko.mvvm.flow)
             api(libs.multiplatform.logging)
         }
         
-        commonTest.dependencies {
-            implementation("dev.icerock.moko:mvvm-test:${libs.versions.moko.mvvm.get()}") // test utilities
-        }
     }
 }
 

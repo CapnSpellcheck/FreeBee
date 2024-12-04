@@ -17,9 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
-import com.letstwinkle.freebee.compose.MyAppTheme
-import com.letstwinkle.freebee.compose.indentedDivider
+import com.letstwinkle.freebee.compose.*
 import com.letstwinkle.freebee.database.IGame
 import com.letstwinkle.freebee.database.isComplete
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -37,8 +37,8 @@ private val TableHorizontalPadding = 16.dp
          TopAppBar(
             title = { Text("Games") },
             actions = {
-               IconButton( { navigator?.showStatistics() }) {
-                  Icon(contentDescription = "Statistics", painter = painter)
+               iOSStyleIconButton( { navigator?.showStatistics() }) {
+                  AccentIcon(contentDescription = "Statistics", painter = painter)
                }
             })
       }) {
@@ -53,7 +53,7 @@ private val TableHorizontalPadding = 16.dp
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable fun GameList(
-   viewModel: GameListViewModel = GameListViewModel(repository()),
+   viewModel: GameListViewModel = viewModel { GameListViewModel(repository()) },
    navigator: GameListNavigator?,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),

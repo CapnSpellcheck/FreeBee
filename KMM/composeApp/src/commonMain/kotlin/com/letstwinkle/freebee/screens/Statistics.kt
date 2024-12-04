@@ -9,20 +9,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.letstwinkle.freebee.bodyStyle
+import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.compose.indentedDivider
 import com.letstwinkle.freebee.statistics.StatisticsModel
 
 @Composable fun StatisticsScreen() {
-   val statisticsModel = rememberSaveable { mutableStateOf<StatisticsModel?>(null) }
-   LaunchedEffect(Unit) {
-      statisticsModel.value = StatisticsModel()
-   }
-   Scaffold(topBar = {
-      TopAppBar(
-         title = { Text("Statistics") },
-      )
-   }) {
-      statisticsModel.value?.let { Statistics(it) }
+   MyAppTheme {
+      val statisticsModel = rememberSaveable { mutableStateOf<StatisticsModel?>(null) }
+      LaunchedEffect(Unit) {
+         statisticsModel.value = StatisticsModel()
+      }
+      Scaffold(topBar = {
+         TopAppBar(
+            title = { Text("Statistics") },
+         )
+      }) {
+         statisticsModel.value?.let { Statistics(it) }
+      }
    }
 }
 

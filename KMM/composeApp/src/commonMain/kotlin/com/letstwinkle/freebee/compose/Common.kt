@@ -1,7 +1,7 @@
 package com.letstwinkle.freebee.compose
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
@@ -16,8 +16,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import com.letstwinkle.freebee.*
+import org.lighthousegames.logging.logging
 import kotlin.math.cos
 import kotlin.math.sin
+
+private val log = logging()
 
 @Composable fun indentedDivider(startIndentation: Dp, backgroundColor: Color = Color.White) {
    Divider(
@@ -34,15 +37,22 @@ import kotlin.math.sin
    }
 }
 
+enum class IconButtonPlacement(val pressOpacity: Float) {
+   Toolbar(0.2f),
+   Content(0.75f),
+   ;
+}
+
 @Composable fun iOSStyleIconButton(
    onClick: () -> Unit,
    modifier: Modifier = Modifier,
    enabled: Boolean = true,
    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+   placement: IconButtonPlacement = IconButtonPlacement.Toolbar,
    content: @Composable () -> Unit
 ) {
-   val localAlpha = LocalContentAlpha.current
-   var currentAlpha by remember { mutableStateOf(localAlpha) }
+   val defaultAlpha = 1f
+   var currentAlpha by remember { mutableStateOf(defaultAlpha) }
    Box(
       modifier = modifier
          .minimumInteractiveComponentSize()
@@ -54,14 +64,14 @@ import kotlin.math.sin
             indication = null
          )
          .pointerInput(Unit) {
-            detectTapGestures(
-               onPress = {
-                  // TODO: mimic iOS's dynamic opacity
-                  currentAlpha = 0.75f
-                  tryAwaitRelease()
-                  currentAlpha = localAlpha
-               }
-            )
+            awaitEachGesture { 
+               log.d { "awaitEachGesture" }
+               awaitFirstDown(true)
+               log.d { "awaitFirstDown" }
+               currentAlpha = placement.pressOpacity
+               waitForUpOrCancellation()
+               currentAlpha = defaultAlpha
+            }
          },
       contentAlignment = Alignment.Center
    ) {
@@ -70,12 +80,29 @@ import kotlin.math.sin
    }
 }
 
-@Composable inline fun BlueIcon(
+@Composable fun BlueIcon(
    painter: Painter,
    contentDescription: String?,
    modifier: Modifier = Modifier,
 ) {
-   Icon(painter, contentDescription, modifier, iOSInspiredBlueActionColor.copy(alpha = LocalContentAlpha.current))
+   PressIcon(painter, contentDescription, iOSInspiredBlueActionColor, modifier)
+}
+
+@Composable fun AccentIcon(
+   painter: Painter,
+   contentDescription: String?,
+   modifier: Modifier = Modifier,
+) {
+   PressIcon(painter, contentDescription, yellowAccentColor, modifier)
+}
+
+@Composable private inline fun PressIcon(
+   painter: Painter,
+   contentDescription: String?,
+   baseColor: Color,
+   modifier: Modifier = Modifier,
+) {
+   Icon(painter, contentDescription, modifier, baseColor.copy(alpha = LocalContentAlpha.current))
 }
 
 inline fun Modifier.polarOffset(r: Dp, theta: Float): Modifier =
