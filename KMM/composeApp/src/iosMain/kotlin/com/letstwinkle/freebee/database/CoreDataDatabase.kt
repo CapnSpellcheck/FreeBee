@@ -1,28 +1,20 @@
 package com.letstwinkle.freebee.database
 
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.convert
-import kotlinx.coroutines.Dispatchers
+import com.letstwinkle.freebee.database.swift.*
+import kotlinx.cinterop.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.*
 import kotlinx.datetime.Instant
-import platform.CoreData.NSFetchRequest
-import platform.CoreData.NSFetchedResultsController
-import platform.CoreData.NSFetchedResultsControllerDelegateProtocol
-import platform.CoreData.NSManagedObject
-import platform.CoreData.NSPersistentContainer
-import platform.CoreData.NSPersistentStoreDescription
+import kotlinx.datetime.toNSDate
+import platform.CoreData.*
 import platform.Foundation.*
 import platform.darwin.NSObject
-
-// TODO: Remove NSLog
+import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalForeignApi::class)
-class CoreDataDatabase private constructor(val container: NSPersistentContainer) : FreeBeeRepository<Game, Game> {
+class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePrivate") val container: NSPersistentContainer) : FreeBeeRepository {
    
    companion object {
       val shared = create()
@@ -63,7 +55,7 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
                throw AssertionError(message = "Unresolved error - Code: ${it.code}, description: ${it.localizedDescription}")
             }
          }
-         return CoreDataDatabase(container)
+         return CoreDataDatabase(container).debugSeed()
       }
    }
    
@@ -75,21 +67,25 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
       geniusScore: Short,
       maximumScore: Short,
    ) {
-      val game = Game(container.viewContext)
-      game.date = date
-      game.allowedWords = allowedWords
-      game.centerLetterCode = centerLetterCode
-      game.otherLetters = otherLetters
-      game.geniusScore = geniusScore
-      game.maximumScore = maximumScore
-      val succeeded = container.viewContext.save(null)
-      if (!succeeded) {
-         NSLog("[CoreDataDatabase] Couldn't save game")
+      val gameManagedObject = CDGame(container.viewContext)
+      gameManagedObject.setDate(date.toNSDate())
+      gameManagedObject.setAllowedWords(allowedWords)
+      gameManagedObject.setCenterLetterCode(centerLetterCode)
+      gameManagedObject.setOtherLetters(otherLetters)
+      gameManagedObject.setGeniusScore(geniusScore)
+      gameManagedObject.setMaximumScore(maximumScore)
+      
+      memScoped {
+         val error = alloc<ObjCObjectVar<NSError?>>()
+         val succeeded = container.viewContext.save(error.ptr)
+         if (!succeeded) {
+            NSLog("[CoreDataDatabase] Couldn't save game: %@", error.value)
+         }
       }
    }
    
    override fun fetchGamesLive(): Flow<List<Game>> = callbackFlow {
-      val fetchRequest = gameFetchRequest
+      val fetchRequest = CDGame.fetchRequest()
       fetchRequest.sortDescriptors = listOf(NSSortDescriptor(key = "date", ascending = false))
       val fetchResultsController = NSFetchedResultsController(
          fetchRequest = fetchRequest,
@@ -99,7 +95,7 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
       )
       fun sendResults() {
          val wrappedGames = (fetchResultsController.fetchedObjects ?: emptyList<NSManagedObject>())
-            .map { gameManagedObject -> Game(gameManagedObject as NSManagedObject) }
+            .map { gameManagedObject -> Game(gameManagedObject as CDGame) }
          trySendBlocking(wrappedGames)
       }
       val delegate = object : NSObject(), NSFetchedResultsControllerDelegateProtocol {
@@ -121,39 +117,40 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
       }
    }.buffer(2)
    
-   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): Game {
-      return Game(container.viewContext.objectWithID(gameID))
+   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
+      return Game(container.viewContext.objectWithID(gameID) as CDGame).withWords()
    }
    
    override suspend fun getStartedGameCount(): Int {
-      val request = gameFetchRequest
+      val request = CDGameProgress.fetchRequest()
       request.predicate = NSPredicate.predicateWithFormat("score > 0")
       return container.viewContext.countForFetchRequest(request, null).convert()
    }
    
    override suspend fun getGeniusGameCount(): Int {
-      val request = NSFetchRequest("GameProgress")
+      val request = CDGameProgress.fetchRequest()
       request.predicate = NSPredicate.predicateWithFormat("score >= game.geniusScore")
       return container.viewContext.countForFetchRequest(request, null).convert()
    }
    
    override suspend fun getEnteredWordCount(): Int {
-      val request = NSFetchRequest("EnteredWord")
+      val request = CDEnteredWord.fetchRequest()
       return container.viewContext.countForFetchRequest(request, null).convert()
    }
    
-   override suspend fun updateGameScore(game: Game, score: Short) {
-      game.progress.score = score
+   override suspend fun updateGameScore(game: GameWithWords, score: Short) {
+      game.game.score = score
    }
    
-   override suspend fun addEnteredWord(gameWithWords: Game, word: String): Boolean {
-      val enteredWord = EnteredWord(container.viewContext, word)
-      gameWithWords.progress.addEnteredWord(enteredWord)
+   override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
+      val enteredWord = CDEnteredWord(container.viewContext, word)
+      enteredWord.setValue(word)
+      gameWithWords.game.cdGame.progress().addEnteredWordsObject(enteredWord)
       return container.viewContext.save(null)
    }
    
    override suspend fun
-      executeAndSave(transaction: suspend (FreeBeeRepository<Game, Game>) -> Unit): Boolean
+      executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
    {
       val success: Boolean
       withContext(Dispatchers.Main) {
@@ -165,9 +162,111 @@ class CoreDataDatabase private constructor(val container: NSPersistentContainer)
       }
       return success
    }
-   
-   
-   private val gameFetchRequest: NSFetchRequest
-      get() = NSFetchRequest("Game")
-   
+
+   @OptIn(ExperimentalNativeApi::class)
+   private fun debugSeed(): CoreDataDatabase {
+      if (Platform.isDebugBinary) {
+         GlobalScope.launch(Dispatchers.Main) {
+            val count = 
+               container.viewContext.countForFetchRequest(NSFetchRequest("Game"), null)
+            if (count.convert<Long>() > 0)
+               return@launch
+            createGame(
+               date = Instant.fromEpochSeconds(1725840000),
+               allowedWords = setOf(
+                  "accept",
+                  "acetate",
+                  "affect",
+                  "cafe",
+                  "cape",
+                  "effect",
+                  "face",
+                  "facet",
+                  "fate",
+                  "feet",
+                  "pace"
+               ),
+               centerLetterCode = 'e'.code,
+               otherLetters = "yatpcf",
+               geniusScore = 89,
+               maximumScore = 127,
+            )
+            
+            createGame(
+               date = Instant.fromEpochSeconds(1540166400),
+               allowedWords = setOf(
+                  "accrual",
+                  "accuracy",
+                  "actual",
+                  "actually",
+                  "actuary",
+                  "aura",
+                  "aural",
+                  "cull",
+                  "cult",
+                  "cultural",
+                  "culturally",
+                  "curl",
+                  "curly",
+                  "curry",
+                  "curt",
+                  "lull",
+                  "rural",
+                  "rutty",
+                  "tactual",
+                  "taut",
+                  "truly",
+                  "tutu",
+                  "yucca"
+               ),
+               centerLetterCode = 'u'.code,
+               otherLetters = "rlcayt",
+               geniusScore = 113,
+               maximumScore = 161,
+            )
+            
+            createGame(
+               date = Instant.fromEpochSeconds(1614902400),
+               allowedWords = setOf(
+                  "acacia",
+                  "arch",
+                  "archaic",
+                  "arctic",
+                  "attach",
+                  "attic",
+                  "attract",
+                  "carat",
+                  "cart",
+                  "cataract",
+                  "catch",
+                  "cathartic",
+                  "chair",
+                  "charm",
+                  "chart",
+                  "chat",
+                  "chia",
+                  "chit",
+                  "chitchat",
+                  "citric",
+                  "cram",
+                  "critic",
+                  "hatch",
+                  "itch",
+                  "march",
+                  "match",
+                  "mimic",
+                  "rich",
+                  "tactic",
+                  "tract"
+               ),
+               centerLetterCode = 'c'.code,
+               otherLetters = "mihatr",
+               geniusScore = 186,
+               maximumScore = 266,
+            )
+         }
+      }
+      return this
+   }
 }
+

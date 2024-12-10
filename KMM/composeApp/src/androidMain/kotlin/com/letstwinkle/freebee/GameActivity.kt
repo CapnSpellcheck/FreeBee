@@ -5,18 +5,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.content.IntentCompat
-import com.letstwinkle.freebee.database.android.Game
+import com.letstwinkle.freebee.database.Game
+import com.letstwinkle.freebee.screens.game.BackNavigator
 import com.letstwinkle.freebee.screens.game.GameScreen
 
-class GameActivity : ComponentActivity() {
+class GameActivity : ComponentActivity(), BackNavigator {
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
       
       intent.getGameExtra()?.let { game ->
          setContent {
-            GameScreen(game)
+            GameScreen(game, this)
          }
       }
+   }
+   
+   override fun goBack() {
+      finish()
    }
 }
 

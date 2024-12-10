@@ -1,15 +1,11 @@
 package com.letstwinkle.freebee
 
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.platform.Typeface
 import com.letstwinkle.freebee.database.CoreDataDatabase
-import com.letstwinkle.freebee.database.CovariantFreeBeeRepository
+import com.letstwinkle.freebee.database.FreeBeeRepository
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
-import org.jetbrains.skia.*
 import platform.Foundation.*
 import platform.UIKit.UIDevice
-import org.jetbrains.skia.Typeface as SkTypeface
 
 class IOSPlatform: Platform {
    override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
@@ -29,15 +25,6 @@ val gameDateDisplayFormatter: NSDateFormatter = run {
    df
 }
 
-actual fun repository(): CovariantFreeBeeRepository {
+actual fun repository(): FreeBeeRepository {
    return CoreDataDatabase.shared
 }
-
-actual fun gameLettersFontFamily() = FontFamily(
-   Typeface(
-      SkTypeface.makeFromName(
-         "IBMPlexSans-Medium.ttf",
-         FontStyle(FontWeight.MEDIUM, FontWidth.NORMAL, FontSlant.UPRIGHT)
-      )
-   )
-)

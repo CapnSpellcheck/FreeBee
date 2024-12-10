@@ -14,8 +14,13 @@ import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import com.letstwinkle.freebee.*
+import freebee.composeapp.generated.resources.Lexend
+import freebee.composeapp.generated.resources.Res
+import org.jetbrains.compose.resources.Font
 import org.lighthousegames.logging.logging
 import kotlin.math.cos
 import kotlin.math.sin
@@ -104,6 +109,11 @@ enum class IconButtonPlacement(val pressOpacity: Float) {
 ) {
    Icon(painter, contentDescription, modifier, baseColor.copy(alpha = LocalContentAlpha.current))
 }
+
+@Composable inline fun gameLettersFontFamily() = FontFamily(
+   Font(Res.font.Lexend, weight = FontWeight.Medium),
+   Font(Res.font.Lexend, weight = FontWeight.SemiBold),
+)
 
 inline fun Modifier.polarOffset(r: Dp, theta: Float): Modifier =
    this.absoluteOffset(r * cos(theta), -r * sin(theta))

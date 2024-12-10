@@ -1,35 +1,32 @@
-package com.letstwinkle.freebee.database.android
+package com.letstwinkle.freebee.database
 
 import android.os.Parcelable
 import androidx.room.*
 import com.letstwinkle.freebee.InstantClassParceler
-import com.letstwinkle.freebee.database.*
 import kotlinx.datetime.Instant
 import kotlinx.parcelize.*
-
 
 @Entity(indices = [Index("date", unique=true, orders=[Index.Order.DESC])])
 @Parcelize
 @TypeParceler<Instant, InstantClassParceler>
-data class Game(
+actual data class Game(
    @PrimaryKey(autoGenerate = true) val id: EntityIdentifier,
-   override val date: Instant,
-   override val allowedWords: Set<String>,
-   override val centerLetterCode: Int,
-   override val otherLetters: String,
-   override val geniusScore: Short,
-   override val maximumScore: Short,
-   override var score: Short = 0,
-) : IGame, Parcelable {
+   actual val date: Instant,
+   actual val allowedWords: Set<String>,
+   actual val centerLetterCode: Int,
+   actual val otherLetters: String,
+   actual val geniusScore: Short,
+   actual val maximumScore: Short,
+   actual var score: Short = 0,
+) : Parcelable {
    @Ignore @IgnoredOnParcel
-   override var currentWord: String = 
-      currentWordStore.getOrDefault(id, "")
+   actual var currentWord: String = currentWordStore.getOrDefault(id, "")
       set(value) {
          field = value
          currentWordStore[id] = value
       }
    
-   override val uniqueID: EntityIdentifier
+   actual val uniqueID: EntityIdentifier
       get() = id
    
    override fun equals(other: Any?): Boolean {
@@ -70,22 +67,25 @@ data class Game(
    }
 }
 
-data class GameWithWords(
-   override val game: Game,
-   override val enteredWords: LinkedHashSet<EnteredWord>
-) : IGameWithWords
+actual data class GameWithWords(
+   actual val game: Game,
+   val enteredWordsHash: LinkedHashSet<EnteredWord>
+) {
+   actual val enteredWords: Set<EnteredWord>
+      get() = enteredWordsHash
+}
 
 @Entity(
    foreignKeys = [ForeignKey(Game::class, arrayOf("id"), arrayOf("gameId"), ForeignKey.RESTRICT)],
    indices = [Index("gameId", "value", unique=true)]
    )
-data class EnteredWord(
+actual data class EnteredWord(
    @PrimaryKey(autoGenerate = true) val id: EntityIdentifier = 0,
    @ColumnInfo(index = true) val gameId: EntityIdentifier,
-   override val value: String,
-) : IEnteredWord
+   actual val value: String,
+)
 
 data class GameScore(
-   val id: EntityIdentifier,
+   @ColumnInfo("id") val gameId: EntityIdentifier,
    val score: Short
 )

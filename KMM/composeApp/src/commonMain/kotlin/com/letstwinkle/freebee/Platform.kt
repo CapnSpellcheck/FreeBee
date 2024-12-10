@@ -12,6 +12,5 @@ expect fun getPlatform(): Platform
 
 expect fun formatGameDateToDisplay(date: Instant): String
 
-expect fun repository(): FreeBeeRepository<out IGame, out IGameWithWords>
+expect fun repository(): FreeBeeRepository
 
-expect fun gameLettersFontFamily(): FontFamily

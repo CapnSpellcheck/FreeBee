@@ -24,4 +24,5 @@ struct SceneActivityKeys {
    static let pickerDate = "pickerDate"
    static let gameDate = "date"
    static let gameEnteredLetters = "enteredLetters"
+   static let gameURL = "url"
 }

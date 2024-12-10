@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.swiftklib)
+    alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
 }
 
@@ -19,12 +21,21 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
+       iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             binaryOption("bundleId", "FreeBeeKMM")
             isStatic = true
+            export(libs.kotlinx.datetime)
         }
+       iosTarget.compilations {
+          val main by getting {
+             cinterops {
+                create("FreeBeeData")
+             }
+          }
+       }
     }
     
     sourceSets {
@@ -45,11 +56,11 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.kotlinx.datetime)
             implementation(libs.multiplatform.settings)
             
             api(libs.moko.mvvm.flow)
             api(libs.multiplatform.logging)
+            api(libs.kotlinx.datetime) // api for exporting
         }
         
     }
@@ -92,4 +103,15 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
     "kapt"(libs.androidx.room.compiler)
+}
+
+compose.resources {
+   publicResClass = true
+}
+
+swiftklib {
+   create("FreeBeeData") {
+      path = file("src/iosMain/swift")
+      packageName("com.letstwinkle.freebee.database.swift")
+   }
 }

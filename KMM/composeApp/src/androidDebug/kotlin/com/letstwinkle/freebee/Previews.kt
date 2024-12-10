@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letstwinkle.freebee.compose.LetterHexagon
 import com.letstwinkle.freebee.compose.MyAppTheme
-import com.letstwinkle.freebee.database.IGame
+import com.letstwinkle.freebee.database.Game
 import com.letstwinkle.freebee.screens.Statistics
 import com.letstwinkle.freebee.screens.game.*
 import com.letstwinkle.freebee.screens.root.*
@@ -37,7 +37,7 @@ fun GameListPreview() {
             override fun showStatistics() {
             }
             
-            override fun openGame(game: IGame) {
+            override fun openGame(game: Game) {
             }
             
             override fun openGamePicker() {

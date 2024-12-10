@@ -1,9 +1,9 @@
 package com.letstwinkle.freebee.screens.root
 
-import com.letstwinkle.freebee.database.IGame
+import com.letstwinkle.freebee.database.Game
 
 interface GameListNavigator {
    fun showStatistics()
-   fun openGame(game: IGame)
+   fun openGame(game: Game)
    fun openGamePicker()
 }

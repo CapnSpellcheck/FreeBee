@@ -1,12 +1,12 @@
 package com.letstwinkle.freebee
 
-import com.letstwinkle.freebee.database.FreeBeeRepository
+import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.database.android.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Instant
 
-class PreviewRepository : FreeBeeRepository<Game, GameWithWords> {
+class PreviewRepository : FreeBeeRepository {
    private var games = mutableListOf(
       Game(
          id = 1,
@@ -146,7 +146,7 @@ class PreviewRepository : FreeBeeRepository<Game, GameWithWords> {
    override suspend fun getGeniusGameCount(): Int = 188
    
    override suspend fun getEnteredWordCount(): Int = 999
-   override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository<Game, GameWithWords>) -> Unit): Boolean {
+   override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean {
       transaction(this)
       return true
    }
@@ -156,7 +156,7 @@ class PreviewRepository : FreeBeeRepository<Game, GameWithWords> {
    }
    
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
-      gameWithWords.enteredWords.add(EnteredWord(gameId = gameWithWords.game.id, value = word))
+      gameWithWords.enteredWordsHash.add(EnteredWord(gameId = gameWithWords.game.id, value = word))
       return true
    }
    

@@ -14,7 +14,7 @@ data class StatisticsModel(
 )
 
 suspend fun StatisticsModel(
-   database: CovariantFreeBeeRepository = repository(),
+   database: FreeBeeRepository = repository(),
    settings: Settings = Settings()
 ): StatisticsModel = 
    StatisticsModel(

@@ -12,7 +12,7 @@ import kotlinx.datetime.Instant
 
 @Database(entities = [Game::class, EnteredWord::class], version = 5)
 @TypeConverters(RoomConverters::class)
-abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository<Game, GameWithWords> {
+abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
    abstract fun gameDAO(): GameDAO
    abstract fun enteredWordDAO(): EnteredWordDAO
    
@@ -48,7 +48,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository<Ga
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
       val enteredWord = EnteredWord(gameId = gameWithWords.game.id, value = word)
       enteredWordDAO().addEnteredWord(enteredWord)
-      gameWithWords.enteredWords.add(enteredWord)
+      gameWithWords.enteredWordsHash.add(enteredWord)
       return true
    }
    
@@ -59,7 +59,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository<Ga
    
    // TODO: to match iOS, model revert should be implemented on failure, somehow…
    override suspend fun
-      executeAndSave(transaction: suspend (FreeBeeRepository<Game, GameWithWords>) -> Unit): Boolean
+      executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
    {
       try {
          withTransaction {

@@ -17,8 +17,8 @@ private const val minWordLength = 4
 private const val maxWordLength = 19
 private const val enteredWordSpacer = "\u2003"
 
-class GameViewModel<GameWithWords: IGameWithWords>(
-   private val repository: FreeBeeRepository<out IGame, GameWithWords>,
+class GameViewModel(
+   private val repository: FreeBeeRepository,
    private val gameID: EntityIdentifier,
 ) : ViewModel()
 {

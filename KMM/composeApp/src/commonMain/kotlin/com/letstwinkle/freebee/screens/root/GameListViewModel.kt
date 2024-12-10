@@ -13,9 +13,9 @@ import org.lighthousegames.logging.logging
 
 private val log = logging()
 
-class GameListViewModel(private val repository: CovariantFreeBeeRepository) : ViewModel() {
-   private val gamesFlowMutable: MutableStateFlow<List<IGame>> = MutableStateFlow(emptyList())
-   val gamesFlow: CStateFlow<List<IGame>> = gamesFlowMutable.asStateFlow().cStateFlow()
+class GameListViewModel(private val repository: FreeBeeRepository) : ViewModel() {
+   private val gamesFlowMutable: MutableStateFlow<List<Game>> = MutableStateFlow(emptyList())
+   val gamesFlow: CStateFlow<List<Game>> = gamesFlowMutable.asStateFlow().cStateFlow()
    
    init {
       log.d { "init" }

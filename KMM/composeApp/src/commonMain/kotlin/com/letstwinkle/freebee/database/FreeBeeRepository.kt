@@ -3,7 +3,7 @@ package com.letstwinkle.freebee.database
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 
-interface FreeBeeRepository<Game: IGame, GameWithWords: IGameWithWords> {
+interface FreeBeeRepository {
    suspend fun createGame(
       date: Instant,
       allowedWords: Set<String>,
@@ -27,7 +27,5 @@ interface FreeBeeRepository<Game: IGame, GameWithWords: IGameWithWords> {
    
    suspend fun updateGameScore(game: GameWithWords, score: Short)
    
-   suspend fun executeAndSave(transaction: suspend (FreeBeeRepository<Game, GameWithWords>) -> Unit): Boolean
+   suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
 }
-
-typealias CovariantFreeBeeRepository = FreeBeeRepository<out IGame, out IGameWithWords>

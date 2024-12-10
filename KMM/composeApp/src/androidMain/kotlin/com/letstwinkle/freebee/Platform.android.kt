@@ -27,7 +27,7 @@ val gameDateDisplayFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedD
 ).withLocale(Locale("en", "US", "POSIX"))
    .withZone(ZoneId.of("Z"))
 
-actual fun repository(): CovariantFreeBeeRepository {
+actual fun repository(): FreeBeeRepository {
    return RoomDatabase.getDatabase(applicationContext)
 }
 
@@ -44,8 +44,3 @@ private lateinit var applicationContext: Context
 fun setApplicationContext(context: Context) {
    applicationContext = context
 }
-
-actual fun gameLettersFontFamily() = FontFamily(
-   Font(R.font.ibmplexsans_medium, FontWeight.Medium),
-   Font(R.font.ibmplexsans_semibold, FontWeight.SemiBold),
-)

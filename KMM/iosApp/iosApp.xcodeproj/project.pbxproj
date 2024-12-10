@@ -3,16 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		0657D6782CD721A200510DF7 /* Free_Bee.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0657D6762CD721A200510DF7 /* Free_Bee.xcdatamodeld */; };
+		068A3C482D07DE4900AEB7FA /* FreeBeeData in Frameworks */ = {isa = PBXBuildFile; productRef = 068A3C472D07DE4900AEB7FA /* FreeBeeData */; };
+		068A3C492D07DF5000AEB7FA /* Lexend-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 069D3FFC2D0263D9005F8274 /* Lexend-VariableFont_wght.ttf */; };
+		068A3C4B2D08044000AEB7FA /* Free-Bee-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 068A3C4A2D08044000AEB7FA /* Free-Bee-Info.plist */; };
+		068A3C4D2D08086400AEB7FA /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068A3C4C2D08086400AEB7FA /* DateExtension.swift */; };
+		069D40002D0535AC005F8274 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D3FFF2D0535AB005F8274 /* Router.swift */; };
+		069D40042D05386B005F8274 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D40012D05386B005F8274 /* SceneDelegate.swift */; };
+		069D40052D05386B005F8274 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D40022D05386B005F8274 /* AppDelegate.swift */; };
+		069D40082D055582005F8274 /* SceneActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D40072D055582005F8274 /* SceneActivity.swift */; };
+		069D400A2D055A01005F8274 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D40092D055A01005F8274 /* NavigationController.swift */; };
 		06AA0A152CFE65FA0075EEF1 /* IBMPlexSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06AA0A142CFE65F40075EEF1 /* IBMPlexSans-Medium.ttf */; };
-		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
-		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,11 +27,16 @@
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0657D6772CD721A200510DF7 /* Free_Bee.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Free_Bee.xcdatamodel; sourceTree = "<group>"; };
 		0657D6792CD7369000510DF7 /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
+		068A3C4A2D08044000AEB7FA /* Free-Bee-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Free-Bee-Info.plist"; path = "../../../iOS shared/Free-Bee-Info.plist"; sourceTree = "<group>"; };
+		068A3C4C2D08086400AEB7FA /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		069D3FFC2D0263D9005F8274 /* Lexend-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lexend-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		069D3FFF2D0535AB005F8274 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		069D40012D05386B005F8274 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "../../../iOS shared/SceneDelegate.swift"; sourceTree = "<group>"; };
+		069D40022D05386B005F8274 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../../iOS shared/AppDelegate.swift"; sourceTree = "<group>"; };
+		069D40072D055582005F8274 /* SceneActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneActivity.swift; path = "../../../iOS shared/SceneActivity.swift"; sourceTree = "<group>"; };
+		069D40092D055A01005F8274 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		06AA0A142CFE65F40075EEF1 /* IBMPlexSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBMPlexSans-Medium.ttf"; sourceTree = "<group>"; };
-		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* Free Bee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Free Bee.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -33,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				068A3C482D07DE4900AEB7FA /* FreeBeeData in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,13 +89,18 @@
 			isa = PBXGroup;
 			children = (
 				06AA0A142CFE65F40075EEF1 /* IBMPlexSans-Medium.ttf */,
+				069D3FFC2D0263D9005F8274 /* Lexend-VariableFont_wght.ttf */,
 				0657D6792CD7369000510DF7 /* iosApp.entitlements */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
-				7555FF82242A565900829871 /* ContentView.swift */,
-				7555FF8C242A565B00829871 /* Info.plist */,
-				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				0657D6762CD721A200510DF7 /* Free_Bee.xcdatamodeld */,
+				069D40022D05386B005F8274 /* AppDelegate.swift */,
+				069D40012D05386B005F8274 /* SceneDelegate.swift */,
+				069D40072D055582005F8274 /* SceneActivity.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
+				069D3FFF2D0535AB005F8274 /* Router.swift */,
+				069D40092D055A01005F8274 /* NavigationController.swift */,
+				068A3C4A2D08044000AEB7FA /* Free-Bee-Info.plist */,
+				068A3C4C2D08086400AEB7FA /* DateExtension.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -113,6 +131,7 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				068A3C472D07DE4900AEB7FA /* FreeBeeData */,
 			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* Free Bee.app */;
@@ -144,6 +163,7 @@
 			);
 			mainGroup = 7555FF72242A565900829871;
 			packageReferences = (
+				068A3C462D07DE4900AEB7FA /* XCLocalSwiftPackageReference "../composeApp/build/swiftklib/FreeBeeData/iosX64/swiftBuild" */,
 			);
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
 			projectDirPath = "";
@@ -159,8 +179,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				068A3C492D07DF5000AEB7FA /* Lexend-VariableFont_wght.ttf in Resources */,
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
+				068A3C4B2D08044000AEB7FA /* Free-Bee-Info.plist in Resources */,
 				06AA0A152CFE65FA0075EEF1 /* IBMPlexSans-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,9 +215,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
+				069D40002D0535AC005F8274 /* Router.swift in Sources */,
+				068A3C4D2D08086400AEB7FA /* DateExtension.swift in Sources */,
 				0657D6782CD721A200510DF7 /* Free_Bee.xcdatamodeld in Sources */,
-				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				069D40052D05386B005F8274 /* AppDelegate.swift in Sources */,
+				069D40042D05386B005F8274 /* SceneDelegate.swift in Sources */,
+				069D40082D055582005F8274 /* SceneActivity.swift in Sources */,
+				069D400A2D055A01005F8274 /* NavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,30 +352,36 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = N2B7D3V574;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
-				INFOPLIST_FILE = iosApp/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "../../iOS shared/Free-Bee-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Free Bee (KMM)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
 				PRODUCT_NAME = "${APP_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -359,30 +391,36 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = N2B7D3V574;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
-				INFOPLIST_FILE = iosApp/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "../../iOS shared/Free-Bee-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Free Bee (KMM)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
 				PRODUCT_NAME = "${APP_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -410,6 +448,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		068A3C462D07DE4900AEB7FA /* XCLocalSwiftPackageReference "../composeApp/build/swiftklib/FreeBeeData/iosX64/swiftBuild" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../composeApp/build/swiftklib/FreeBeeData/iosX64/swiftBuild;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		068A3C472D07DE4900AEB7FA /* FreeBeeData */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FreeBeeData;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		0657D6762CD721A200510DF7 /* Free_Bee.xcdatamodeld */ = {

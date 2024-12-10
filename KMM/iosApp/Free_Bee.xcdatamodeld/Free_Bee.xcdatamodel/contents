@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="21H1320" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="EnteredWord" representedClassName="" syncable="YES">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="22H221" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="EnteredWord" representedClassName="FreeBeeData.CDEnteredWord" syncable="YES">
         <attribute name="value" attributeType="String" minValueString="4"/>
     </entity>
-    <entity name="Game" representedClassName="" syncable="YES">
+    <entity name="Game" representedClassName="FreeBeeData.CDGame" syncable="YES">
         <attribute name="allowedWords" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="Set&lt;String&gt;"/>
         <attribute name="centerLetterCode" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
@@ -21,7 +21,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="GameProgress" representedClassName="" syncable="YES">
+    <entity name="GameProgress" representedClassName="FreeBeeData.CDGameProgress" syncable="YES">
         <attribute name="currentWord" optional="YES" transient="YES" attributeType="String" defaultValueString=""/>
         <attribute name="score" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="enteredWords" optional="YES" toMany="YES" deletionRule="Deny" ordered="YES" destinationEntity="EnteredWord"/>

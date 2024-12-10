@@ -25,19 +25,31 @@ import com.letstwinkle.freebee.database.*
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import org.lighthousegames.logging.logging
 
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
 @OptIn(ExperimentalMaterialApi::class)
+@Composable inline fun GameScreen(
+   game: Game,
+   backNavigator: BackNavigator,
+   painterProvider: PainterProvider = ResourcePainterProvider(),
+   ) {
+   GameScreen(game.uniqueID, game.date, backNavigator, painterProvider)
+}
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable fun GameScreen(
-   game: IGame,
+   gameID: EntityIdentifier,
+   gameDate: Instant,
+   backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
    MyAppTheme {
-      val gameViewModel = viewModel { GameViewModel(repository(), game.uniqueID) }
-      val dateString = formatGameDateToDisplay(game.date)
+      val gameViewModel = viewModel { GameViewModel(repository(), gameID) }
+      val dateString = formatGameDateToDisplay(gameDate)
       val rulesState =
          rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
       val coroutineScope = rememberCoroutineScope()
@@ -58,8 +70,8 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable fun <GameWithWords: IGameWithWords> GameWithSheets(
-   viewModel: GameViewModel<GameWithWords>,
+@Composable fun GameWithSheets(
+   viewModel: GameViewModel,
    rulesSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -86,8 +98,8 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable private fun <GameWithWords: IGameWithWords> Game(
-   viewModel: GameViewModel<GameWithWords>,
+@Composable private fun Game(
+   viewModel: GameViewModel,
    enteredWordsSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -244,8 +256,8 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    }
 }
 
-@Composable fun EnteredWordsSheet(words: List<IEnteredWord>) {
-   log.d { "Entered words: $words" }
+@Composable fun EnteredWordsSheet(words: List<EnteredWord>) {
+   log.d { "Entered words: ${words.map { it.value }}" }
    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
       Text("Entered words", style = headlineStyle, maxLines = 1)
       VerticalGrid(

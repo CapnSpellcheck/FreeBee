@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
-import com.letstwinkle.freebee.database.IGame
+import com.letstwinkle.freebee.database.Game
 import com.letstwinkle.freebee.database.isComplete
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -107,8 +107,8 @@ private val TableHorizontalPadding = 16.dp
 }
 
 @Composable fun GameRow(
-   game: IGame,
-   onClick: (IGame) -> Unit,
+   game: Game,
+   onClick: (Game) -> Unit,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider,
 ) {
@@ -146,7 +146,6 @@ private val TableHorizontalPadding = 16.dp
             annotatedString.toUpperCase(LocaleList(Locale("en"))),
             Modifier.padding(horizontal = 8.dp),
             fontFamily = gameLettersFontFamily(),
-            fontWeight = FontWeight.Medium,
          )
       }
       Row(
