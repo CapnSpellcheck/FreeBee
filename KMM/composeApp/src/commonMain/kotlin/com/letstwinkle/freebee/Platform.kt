@@ -1,5 +1,6 @@
 package com.letstwinkle.freebee
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import com.letstwinkle.freebee.database.*
 import kotlinx.datetime.Instant
@@ -14,3 +15,4 @@ expect fun formatGameDateToDisplay(date: Instant): String
 
 expect fun repository(): FreeBeeRepository
 
+expect fun backNavigationButton(onClick: () -> Unit): @Composable () -> Unit

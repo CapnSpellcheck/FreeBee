@@ -1,4 +1,4 @@
-package com.letstwinkle.freebee.screens.game
+package com.letstwinkle.freebee.screens
 
 interface BackNavigator {
    fun goBack()

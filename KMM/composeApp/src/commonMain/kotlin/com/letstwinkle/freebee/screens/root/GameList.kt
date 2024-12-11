@@ -35,7 +35,8 @@ private val TableHorizontalPadding = 16.dp
       
       Scaffold(topBar = {
          TopAppBar(
-            title = { Text("Games") },
+            { Text("Games") },
+            AppBarDefaults.topAppBarWindowInsets,
             actions = {
                iOSStyleIconButton( { navigator?.showStatistics() }) {
                   AccentIcon(contentDescription = "Statistics", painter = painter)

@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
 import com.letstwinkle.freebee.database.*
+import com.letstwinkle.freebee.screens.BackNavigator
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
 import kotlinx.coroutines.launch
@@ -57,6 +58,7 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       Scaffold(topBar = {
          TopAppBar(
             title = { Text(dateString)},
+            AppBarDefaults.topAppBarWindowInsets,
             actions = {
                iOSStyleIconButton( { coroutineScope.launch { rulesState.show() } }) {
                   val rulesPaint = painterProvider.provide(PainterProvider.Resource.Rules)

@@ -1,4 +1,4 @@
-package com.letstwinkle.freebee.statistics
+package com.letstwinkle.freebee.model
 
 import com.letstwinkle.freebee.SettingKeys
 import com.letstwinkle.freebee.database.*

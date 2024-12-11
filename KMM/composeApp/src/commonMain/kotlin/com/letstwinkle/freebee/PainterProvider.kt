@@ -18,6 +18,7 @@ interface PainterProvider {
       XCircleFill(Res.drawable.x_circle_fill),
       Enter(Res.drawable.enter),
       Rules(Res.drawable.questionmark_circle),
+      ChevronBack(Res.drawable.chevron_back),
       ;
    }
 }

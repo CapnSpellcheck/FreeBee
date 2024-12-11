@@ -3,8 +3,12 @@ package com.letstwinkle.freebee
 import android.content.Context
 import android.os.Build
 import android.os.Parcel
-import androidx.compose.ui.text.font.*
-import com.letstwinkle.freebee.database.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.runtime.Composable
+import com.letstwinkle.freebee.database.FreeBeeRepository
 import com.letstwinkle.freebee.database.android.RoomDatabase
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
@@ -43,4 +47,10 @@ private lateinit var applicationContext: Context
 
 fun setApplicationContext(context: Context) {
    applicationContext = context
+}
+
+actual fun backNavigationButton(onClick: () -> Unit): @Composable () -> Unit = {
+   IconButton(onClick) {
+      Icon(Icons.AutoMirrored.Filled.ArrowBack, "back")
+   }
 }

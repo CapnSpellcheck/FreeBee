@@ -29,7 +29,7 @@ final class Router {
    
    private init() {
       currentActivity = NSUserActivity(activityType: SceneActivity.gameIndex.activityType)
-      // That method creates a wek ref to Router.shared, so async it
+      // That method creates a weak ref to Router.shared, so async it
       DispatchQueue.main.async {
          self.installRootController()
       }
@@ -86,7 +86,7 @@ final class Router {
 //   }
    
    func showStatistics() {
-      let viewController = ViewControllersKt.StatisticsViewController()
+      let viewController = ViewControllersKt.StatisticsViewController(navigator: weakNavigator)
       navController.pushViewController(viewController, animated: true)
    }
    

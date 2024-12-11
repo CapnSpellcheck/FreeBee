@@ -1,7 +1,6 @@
 package com.letstwinkle.freebee
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -9,13 +8,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.letstwinkle.freebee.compose.LetterHexagon
-import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.database.Game
 import com.letstwinkle.freebee.screens.Statistics
 import com.letstwinkle.freebee.screens.game.*
 import com.letstwinkle.freebee.screens.root.*
-import com.letstwinkle.freebee.statistics.StatisticsModel
+import com.letstwinkle.freebee.model.StatisticsModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
