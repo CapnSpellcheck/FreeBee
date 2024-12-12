@@ -19,6 +19,7 @@ interface PainterProvider {
       Enter(Res.drawable.enter),
       Rules(Res.drawable.questionmark_circle),
       ChevronBack(Res.drawable.chevron_back),
+      Brain(Res.drawable.brain),
       ;
    }
 }

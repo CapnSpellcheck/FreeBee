@@ -101,7 +101,7 @@ class PreviewRepository : FreeBeeRepository {
          ),
          centerLetterCode = 'c'.code,
          otherLetters = "mihatr",
-         geniusScore = 186,
+         geniusScore = 9,
          maximumScore = 266,
       )
    )

@@ -17,6 +17,7 @@ class PreviewPainterProvider : PainterProvider {
          PainterProvider.Resource.Enter -> R.drawable.enter
          PainterProvider.Resource.Rules -> R.drawable.questionmark_circle
          PainterProvider.Resource.ChevronBack -> R.drawable.chevron_back
+         PainterProvider.Resource.Brain -> R.drawable.brain
       }
       return painterResource(id)
    }

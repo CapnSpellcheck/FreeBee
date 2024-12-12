@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -15,9 +16,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.window.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
@@ -37,8 +39,17 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    game: Game,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
-   ) {
+) {
    GameScreen(game.uniqueID, game.date, backNavigator, painterProvider)
+}
+
+private val positionProvider = object : PopupPositionProvider {
+   override fun calculatePosition(
+      anchorBounds: IntRect,
+      windowSize: IntSize,
+      layoutDirection: LayoutDirection,
+      popupContentSize: IntSize
+   ) = anchorBounds.bottomCenter - IntOffset(popupContentSize.width/2, 0)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -57,14 +68,42 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
       
       Scaffold(topBar = {
          TopAppBar(
-            title = { Text(dateString)},
+            title = { Text(dateString) },
             AppBarDefaults.topAppBarWindowInsets,
             actions = {
-               iOSStyleIconButton( { coroutineScope.launch { rulesState.show() } }) {
+               if (gameViewModel.gameWithWords.value?.game?.isGenius == true) {
+                  val geniusPopupOpen = rememberSaveable { mutableStateOf(false) }
+                  
+                  Box {
+                     iOSStyleIconButton({ geniusPopupOpen.value = true }) {
+                        val brainPaint = painterProvider.provide(PainterProvider.Resource.Brain)
+                        PressIcon(brainPaint, "you earned Genius", brainColor)
+                     }
+                     if (geniusPopupOpen.value) {
+                        val props = PopupProperties(dismissOnBackPress = false)
+                        Popup(positionProvider, { geniusPopupOpen.value = false }, properties = props) {
+                           val geniusStr = "You reached genius level. Smarty!"
+                           val popupShape = RoundedCornerShape(8.dp)
+                           // TODO: find constant for elevation
+                           Surface(Modifier.widthIn(max = 120.dp), elevation = 3.dp, shape = popupShape) {
+                              Text(
+                                 geniusStr,
+                                 Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                 textAlign = TextAlign.Center,
+                                 style = footnoteStyle
+                              )
+                           }
+                        }
+                     }
+                  }
+               }
+               iOSStyleIconButton({ coroutineScope.launch { rulesState.show() } }) {
                   val rulesPaint = painterProvider.provide(PainterProvider.Resource.Rules)
                   AccentIcon(rulesPaint, "rules")
                }
-            })
+            },
+            navigationIcon = backNavigationButton(backNavigator::goBack),
+         )
       }) {
          GameWithSheets(gameViewModel, rulesState, painterProvider = painterProvider)
       }

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -101,7 +102,7 @@ enum class IconButtonPlacement(val pressOpacity: Float) {
    PressIcon(painter, contentDescription, yellowAccentColor, modifier)
 }
 
-@Composable private inline fun PressIcon(
+@Composable inline fun PressIcon(
    painter: Painter,
    contentDescription: String?,
    baseColor: Color,
@@ -110,10 +111,11 @@ enum class IconButtonPlacement(val pressOpacity: Float) {
    Icon(painter, contentDescription, modifier, baseColor.copy(alpha = LocalContentAlpha.current))
 }
 
-@Composable inline fun gameLettersFontFamily() = FontFamily(
-   Font(Res.font.Lexend, weight = FontWeight.Medium),
-   Font(Res.font.Lexend, weight = FontWeight.SemiBold),
-)
+@Composable inline fun gameLettersFontFamily() =
+   if (LocalInspectionMode.current) FontFamily.Default else FontFamily(
+      Font(Res.font.Lexend, weight = FontWeight.Medium),
+      Font(Res.font.Lexend, weight = FontWeight.SemiBold),
+   )
 
 inline fun Modifier.polarOffset(r: Dp, theta: Float): Modifier =
    this.absoluteOffset(r * cos(theta), -r * sin(theta))
