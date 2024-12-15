@@ -6,6 +6,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -28,13 +30,13 @@ import com.letstwinkle.freebee.screens.BackNavigator
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import org.lighthousegames.logging.logging
 
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable inline fun GameScreen(
    game: Game,
    backNavigator: BackNavigator,
@@ -52,10 +54,11 @@ private val positionProvider = object : PopupPositionProvider {
    ) = anchorBounds.bottomCenter - IntOffset(popupContentSize.width/2, 0)
 }
 
+@ExperimentalMaterial3Api
 @OptIn(ExperimentalMaterialApi::class)
 @Composable fun GameScreen(
    gameID: EntityIdentifier,
-   gameDate: Instant,
+   gameDate: LocalDate,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
@@ -67,9 +70,9 @@ private val positionProvider = object : PopupPositionProvider {
       val coroutineScope = rememberCoroutineScope()
       
       Scaffold(topBar = {
-         TopAppBar(
+         CenterAlignedTopAppBar(
             title = { Text(dateString) },
-            AppBarDefaults.topAppBarWindowInsets,
+            windowInsets = AppBarDefaults.topAppBarWindowInsets,
             actions = {
                if (gameViewModel.gameWithWords.value?.game?.isGenius == true) {
                   val geniusPopupOpen = rememberSaveable { mutableStateOf(false) }
@@ -105,7 +108,7 @@ private val positionProvider = object : PopupPositionProvider {
             navigationIcon = backNavigationButton(backNavigator::goBack),
          )
       }) {
-         GameWithSheets(gameViewModel, rulesState, painterProvider = painterProvider)
+         GameWithSheets(gameViewModel, rulesState, Modifier.padding(it), painterProvider)
       }
    }
 }

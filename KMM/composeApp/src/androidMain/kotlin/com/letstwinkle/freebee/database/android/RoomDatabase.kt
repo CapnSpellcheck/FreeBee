@@ -9,20 +9,21 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
-@Database(entities = [Game::class, EnteredWord::class], version = 5)
+@Database(entities = [Game::class, EnteredWord::class], version = 6)
 @TypeConverters(RoomConverters::class)
 abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
    abstract fun gameDAO(): GameDAO
    abstract fun enteredWordDAO(): EnteredWordDAO
    
    override suspend fun createGame(
-      date: Instant,
+      date: LocalDate,
       allowedWords: Set<String>,
       centerLetterCode: Int,
       otherLetters: String,
       geniusScore: Short,
-      maximumScore: Short,
+      maximumScore: Short
    ) {
       gameDAO().createGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore)
    }
@@ -57,6 +58,8 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
       game.game.score = score
    }
    
+   override fun hasGameForDate(date: LocalDate): Boolean = gameDAO().hasDate(date)
+   
    // TODO: to match iOS, model revert should be implemented on failure, somehow…
    override suspend fun
       executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
@@ -77,6 +80,8 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
       fun getDatabase(context: Context): RoomDatabase {
          return instance ?: synchronized(this) {
             instance = Room.databaseBuilder(context, RoomDatabase::class.java, "game.db")
+               // allowed for GamePickerViewModel#selectableDates ONLY!
+               .allowMainThreadQueries()
                .apply {
                   if (BuildConfig.DEBUG) {
                      fallbackToDestructiveMigration()
@@ -97,7 +102,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
                   return@launch
                var game = Game(
                   id = 1,
-                  date = Instant.fromEpochSeconds(1725840000),
+                  date = LocalDate(2010, 1, 1),
                   allowedWords = setOf(
                      "accept",
                      "acetate",
@@ -121,7 +126,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
                
                game = Game(
                   id = 2,
-                  date = Instant.fromEpochSeconds(1540166400),
+                  date = LocalDate(2011, 1, 1),
                   allowedWords = setOf(
                      "accrual",
                      "accuracy",
@@ -157,7 +162,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
                
                game = Game(
                   id = 3,
-                  date = Instant.fromEpochSeconds(1614902400),
+                  date = LocalDate(2012, 1, 1),
                   allowedWords = setOf(
                      "acacia",
                      "arch",

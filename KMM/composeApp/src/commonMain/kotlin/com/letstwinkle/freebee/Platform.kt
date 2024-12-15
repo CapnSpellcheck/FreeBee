@@ -1,9 +1,8 @@
 package com.letstwinkle.freebee
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontFamily
-import com.letstwinkle.freebee.database.*
-import kotlinx.datetime.Instant
+import com.letstwinkle.freebee.database.FreeBeeRepository
+import kotlinx.datetime.LocalDate
 
 interface Platform {
    val name: String
@@ -11,7 +10,7 @@ interface Platform {
 
 expect fun getPlatform(): Platform
 
-expect fun formatGameDateToDisplay(date: Instant): String
+expect fun formatGameDateToDisplay(date: LocalDate): String
 
 expect fun repository(): FreeBeeRepository
 

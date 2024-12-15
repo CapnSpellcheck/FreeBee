@@ -6,11 +6,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.*
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toNSDate
+import kotlinx.datetime.*
 import platform.CoreData.*
 import platform.Foundation.*
 import platform.darwin.NSObject
+import platform.darwin.NSUInteger
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalForeignApi::class)
@@ -60,7 +60,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
    }
    
    override suspend fun createGame(
-      date: Instant,
+      date: LocalDate,
       allowedWords: Set<String>,
       centerLetterCode: Int,
       otherLetters: String,
@@ -68,7 +68,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
       maximumScore: Short,
    ) {
       val gameManagedObject = CDGame(container.viewContext)
-      gameManagedObject.setDate(date.toNSDate())
+      gameManagedObject.setDate(date.atStartOfDayIn(TimeZone.UTC).toNSDate())
       gameManagedObject.setAllowedWords(allowedWords)
       gameManagedObject.setCenterLetterCode(centerLetterCode)
       gameManagedObject.setOtherLetters(otherLetters)
@@ -142,6 +142,12 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
       game.game.score = score
    }
    
+   override fun hasGameForDate(date: LocalDate): Boolean {
+      val request = CDGame.fetchRequest()
+      request.predicate = NSPredicate.predicateWithFormat("date = %@", date.atStartOfDayIn(TimeZone.UTC).toNSDate())
+      return container.viewContext.countForFetchRequest(request, null) > 0UL
+   }
+   
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
       val enteredWord = CDEnteredWord(container.viewContext, word)
       enteredWord.setValue(word)
@@ -172,7 +178,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
             if (count.convert<Long>() > 0)
                return@launch
             createGame(
-               date = Instant.fromEpochSeconds(1725840000),
+               date = LocalDate(2010, 1, 1),
                allowedWords = setOf(
                   "accept",
                   "acetate",
@@ -193,7 +199,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
             )
             
             createGame(
-               date = Instant.fromEpochSeconds(1540166400),
+               date = LocalDate(2011, 1, 1),
                allowedWords = setOf(
                   "accrual",
                   "accuracy",
@@ -226,7 +232,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
             )
             
             createGame(
-               date = Instant.fromEpochSeconds(1614902400),
+               date = LocalDate(2012, 1, 1),
                allowedWords = setOf(
                   "acacia",
                   "arch",

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +28,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 private val TableHorizontalPadding = 16.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable fun GameListScreen(
    navigator: GameListNavigator?,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -34,9 +37,9 @@ private val TableHorizontalPadding = 16.dp
       val painter = painterProvider.provide(PainterProvider.Resource.ChartBarXaxis)
       
       Scaffold(topBar = {
-         TopAppBar(
+         CenterAlignedTopAppBar(
             { Text("Games") },
-            AppBarDefaults.topAppBarWindowInsets,
+            windowInsets = AppBarDefaults.topAppBarWindowInsets,
             actions = {
                iOSStyleIconButton( { navigator?.showStatistics() }) {
                   AccentIcon(contentDescription = "Statistics", painter = painter)
@@ -83,11 +86,22 @@ private val TableHorizontalPadding = 16.dp
                fullBleedDivider()
             }
          }
-         item(key = "new") {
+         item(key = "newheader") {
             Header("Start a new game")
          }
+         item(key = "newrow") {
+            val rowModifier = rowBaseModifier.clickable(onClickLabel = "Open a new game") {
+               navigator?.openGamePicker()
+            }
+            Row(rowModifier, verticalAlignment = Alignment.CenterVertically) {
+               Text("Choose a new game", style = bodyStyle)
+            }
+         }
       }
-      Column(Modifier.clip(RoundedCornerShape(6.dp)).background(Color.White), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+      Column(
+         Modifier.clip(RoundedCornerShape(6.dp)).background(Color.White),
+         verticalArrangement = Arrangement.spacedBy(12.dp)
+      ) {
          Text("Sponsor me")
          Text("I appreciate tips! The only social payment platform I'm on is PayPal. Feel free to send me a gift.")
          TextButton({ }) {
@@ -97,7 +111,7 @@ private val TableHorizontalPadding = 16.dp
    }
 }
 
-@Composable fun Header(label: String) {
+@Composable private fun Header(label: String) {
    Text(
       label.uppercase(),
       Modifier.heightIn(28.dp).padding(TableHorizontalPadding, 17.dp, TableHorizontalPadding, 6.dp),
@@ -107,18 +121,15 @@ private val TableHorizontalPadding = 16.dp
    )
 }
 
-@Composable fun GameRow(
+@Composable private fun GameRow(
    game: Game,
    onClick: (Game) -> Unit,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider,
 ) {
    Row(
-      modifier.fillMaxWidth()
-         .heightIn(44.dp)
-         .background(Color.White)
-         .clickable(onClickLabel = "Open this game") { onClick(game) }
-         .padding(TableHorizontalPadding, 0.dp),
+      modifier.then(rowBaseModifier)
+         .clickable(onClickLabel = "Open this game") { onClick(game) },
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically
    ) {
@@ -166,6 +177,11 @@ private val TableHorizontalPadding = 16.dp
       }
    }
 }
+
+private val rowBaseModifier = Modifier.fillMaxWidth()
+   .heightIn(44.dp)
+   .background(Color.White)
+   .padding(TableHorizontalPadding, 0.dp)
 
 @Composable fun fullBleedDivider() {
    Divider(color = rowDividerColor)

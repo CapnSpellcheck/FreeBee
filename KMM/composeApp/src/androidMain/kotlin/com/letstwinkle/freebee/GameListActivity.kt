@@ -29,5 +29,7 @@ class GameListActivity : ComponentActivity(), GameListNavigator {
     }
     
     override fun openGamePicker() {
+       val intent = Intent(this, GamePickerActivity::class.java)
+       startActivity(intent)
     }
 }

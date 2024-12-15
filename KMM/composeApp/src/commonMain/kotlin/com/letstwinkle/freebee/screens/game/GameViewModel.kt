@@ -81,7 +81,7 @@ class GameViewModel(
             repository.updateGameScore(gameWithWords, updatedScore)
             repository.addEnteredWord(gameWithWords, enteredWord)
          }
-         errored = committed.not()
+         errored = !committed
       } else {
          entryNotAcceptedEvents.send(
             if (wordIsEntered) "Word is already entered"

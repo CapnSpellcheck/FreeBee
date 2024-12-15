@@ -45,6 +45,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.ktx)
+            implementation(libs.ktor.client.android)
         }
 
         @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
@@ -52,17 +53,22 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.multiplatform.settings)
-            
+            implementation(libs.ktor.client.core)
+           
             api(libs.moko.mvvm.flow)
             api(libs.multiplatform.logging)
             api(libs.kotlinx.datetime) // api for exporting
         }
-        
+       
+       iosMain.dependencies {
+          implementation(libs.ktor.client.darwin)
+       }
     }
 }
 

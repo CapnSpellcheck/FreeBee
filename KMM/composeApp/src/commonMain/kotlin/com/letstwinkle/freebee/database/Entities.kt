@@ -1,11 +1,11 @@
 package com.letstwinkle.freebee.database
 
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 expect class EntityIdentifier
 
 expect class Game {
-   val date: Instant
+   val date: LocalDate
    val allowedWords: Set<String>
    val centerLetterCode: Int
    val otherLetters: String

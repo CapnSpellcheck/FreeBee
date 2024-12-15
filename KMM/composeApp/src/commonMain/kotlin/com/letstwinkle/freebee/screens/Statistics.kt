@@ -2,6 +2,8 @@ package com.letstwinkle.freebee.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -10,9 +12,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.letstwinkle.freebee.backNavigationButton
 import com.letstwinkle.freebee.bodyStyle
-import com.letstwinkle.freebee.compose.*
+import com.letstwinkle.freebee.compose.MyAppTheme
+import com.letstwinkle.freebee.compose.indentedDivider
 import com.letstwinkle.freebee.model.StatisticsModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable fun StatisticsScreen(backNavigator: BackNavigator) {
    MyAppTheme {
       val statisticsModel = rememberSaveable { mutableStateOf<StatisticsModel?>(null) }
@@ -20,9 +24,9 @@ import com.letstwinkle.freebee.model.StatisticsModel
          statisticsModel.value = StatisticsModel()
       }
       Scaffold(topBar = {
-         TopAppBar(
+         CenterAlignedTopAppBar(
             { Text("Statistics") },
-            AppBarDefaults.topAppBarWindowInsets,
+            windowInsets = AppBarDefaults.topAppBarWindowInsets,
             navigationIcon = backNavigationButton(backNavigator::goBack),
          )
       }) {

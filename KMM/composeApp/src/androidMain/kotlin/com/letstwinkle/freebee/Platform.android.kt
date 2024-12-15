@@ -10,8 +10,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import com.letstwinkle.freebee.database.FreeBeeRepository
 import com.letstwinkle.freebee.database.android.RoomDatabase
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.*
 import kotlinx.parcelize.Parceler
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -24,13 +23,11 @@ class AndroidPlatform : Platform {
 
 actual fun getPlatform(): Platform = AndroidPlatform()
 
-actual fun formatGameDateToDisplay(date: Instant): String = gameDateDisplayFormatter.format(date.toJavaInstant())
+actual fun formatGameDateToDisplay(date: LocalDate): String = gameDateDisplayFormatter.format(date.toJavaLocalDate())
 
 val gameDateDisplayFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(
    FormatStyle.MEDIUM
-).withLocale(Locale("en", "US", "POSIX"))
-   .withZone(ZoneId.of("Z"))
-
+)
 actual fun repository(): FreeBeeRepository {
    return RoomDatabase.getDatabase(applicationContext)
 }
@@ -40,6 +37,13 @@ object InstantClassParceler : Parceler<Instant?> {
    
    override fun Instant?.write(parcel: Parcel, flags: Int) {
       parcel.writeString(this?.toString())
+   }
+}
+
+object LocalDateClassParceler : Parceler<LocalDate> {
+   override fun create(parcel: Parcel): LocalDate = LocalDate.fromEpochDays(parcel.readInt())
+   override fun LocalDate.write(parcel: Parcel, flags: Int) {
+      parcel.writeInt(this.toEpochDays())
    }
 }
 

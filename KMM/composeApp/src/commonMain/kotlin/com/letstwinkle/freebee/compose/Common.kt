@@ -45,7 +45,9 @@ private val log = logging()
 
 enum class IconButtonPlacement(val pressOpacity: Float) {
    Toolbar(0.2f),
-   Content(0.75f),
+   // Inspection suggested that iOS uses 0.75 for buttons in main content. That doesn't seem like
+   // enough press indication for me, so I'm trying a little stronger.
+   Content(0.6f),
    ;
 }
 

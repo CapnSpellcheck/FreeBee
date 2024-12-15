@@ -1,11 +1,11 @@
 package com.letstwinkle.freebee
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.material.*
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -15,10 +15,11 @@ import com.letstwinkle.freebee.database.CoreDataDatabase
 import com.letstwinkle.freebee.database.FreeBeeRepository
 import freebee.composeapp.generated.resources.Res
 import freebee.composeapp.generated.resources.chevron_back
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toNSDate
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toNSDateComponents
 import org.jetbrains.compose.resources.vectorResource
 import platform.Foundation.*
+import platform.Foundation.NSCalendar.Companion.currentCalendar
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {
@@ -27,13 +28,16 @@ class IOSPlatform: Platform {
 
 actual fun getPlatform(): Platform = IOSPlatform()
 
-actual fun formatGameDateToDisplay(date: Instant): String =
-   gameDateDisplayFormatter.stringFromDate(date.toNSDate())
+actual fun formatGameDateToDisplay(date: LocalDate): String {
+   val dateComponents = date.toNSDateComponents()
+   dateComponents.calendar = currentCalendar
+   return dateComponents.date?.let {
+      gameDateDisplayFormatter.stringFromDate(it)
+   } ?: "Error"
+}
 
 val gameDateDisplayFormatter: NSDateFormatter = run {
    val df = NSDateFormatter()
-   df.locale = NSLocale("en_US_POSIX")
-   df.timeZone = NSTimeZone.timeZoneWithAbbreviation("UTC")!!
    df.timeStyle = NSDateFormatterNoStyle
    df.dateStyle = NSDateFormatterMediumStyle
    df

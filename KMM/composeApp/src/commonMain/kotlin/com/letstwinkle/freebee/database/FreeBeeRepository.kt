@@ -1,11 +1,11 @@
 package com.letstwinkle.freebee.database
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 interface FreeBeeRepository {
    suspend fun createGame(
-      date: Instant,
+      date: LocalDate,
       allowedWords: Set<String>,
       centerLetterCode: Int,
       otherLetters: String,
@@ -26,6 +26,9 @@ interface FreeBeeRepository {
    suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean
    
    suspend fun updateGameScore(game: GameWithWords, score: Short)
+   
+   // Not 'suspend' so can be used for synchronous SelectedDates
+   fun hasGameForDate(date: LocalDate): Boolean
    
    suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
 }

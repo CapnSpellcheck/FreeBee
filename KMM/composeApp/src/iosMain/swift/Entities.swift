@@ -1,6 +1,14 @@
 import Foundation
 import CoreData
 
+/**
+ * I chose to make this compatible with the database of the pure iOS app, hence 'date' is a Date.
+ * In the KMM code I chose to use LocalDate to represent the 'date' since the moment of time is
+ * not important. The game is represented precisely by the (calendar) date. Because of this, you
+ * see some hoops are gone through to convert the Date 'date' here to LocalDate. If I were making
+ * the app fresh with no compatibility concern, I'd just store "epoch days" for date like I do on
+ * Android. 
+ */
 @objc public class CDGame : NSManagedObject, Identifiable {
    public class func fetchRequest() -> NSFetchRequest<CDGame> {
         return NSFetchRequest<CDGame>(entityName: "Game")

@@ -37,7 +37,12 @@ final class Router {
    
    func restore(activity: NSUserActivity) -> Bool {
       var viewControllersToPush: Array<UIViewController> = []
-      let gameDate: Date? = activity.userInfo?[SceneActivityKeys.gameDate] as? Date
+      let gameDate: LocalDate? = (activity.userInfo?[SceneActivityKeys.gameDate] as? Date)
+         .map {
+            ConvertersKt.toKotlinInstant($0)
+               .toLocalDateTime(timeZone: ComposeApp.TimeZone.companion.UTC)
+               .date
+         }
       
       switch activity.activityType {
       case SceneActivity.gamePicker.activityType:
@@ -63,8 +68,7 @@ final class Router {
             (CoreDataDatabase.companion.shared.container.viewContext
                .object(with: gameObjectID) as? CDGameProgress)?.currentWord = enteredLetters
          }
-         let gameInstant = gameDate.toInstant()
-         viewControllersToPush.append(gameViewController(gameID: gameObjectID, gameInstant: gameInstant))
+         viewControllersToPush.append(gameViewController(gameID: gameObjectID, gameDate: gameDate))
       default:
          return false
       }
@@ -72,11 +76,11 @@ final class Router {
       return true
    }
 
-//   func showGamePicker() {
-//      let viewController = createHostingController(view: GamePicker())
-//      navController.pushViewController(viewController, animated: true)
-//      currentActivity = NSUserActivity(activityType: SceneActivity.gamePicker.activityType)
-//   }
+   func showGamePicker() {
+      let viewController = ViewControllersKt.GamePickerViewController(navigator: weakNavigator)
+      navController.pushViewController(viewController, animated: true)
+      currentActivity = NSUserActivity(activityType: SceneActivity.gamePicker.activityType)
+   }
    
 //   func showGameLoader(date: Date) {
 //      let viewController = createHostingController(view: GameLoaderView(gameDate: date))
@@ -97,14 +101,14 @@ final class Router {
    func openGame(game: Game, replacingTopmost: Bool = false) {
       (CoreDataDatabase.companion.shared.container.viewContext
          .object(with: game.uniqueID) as? CDGameProgress)?.addToEnteredWords(CDEnteredWord(context: CoreDataDatabase.companion.shared.container.viewContext, string: "word"))
-      let viewController = gameViewController(gameID: game.uniqueID, gameInstant: game.date)
+      let viewController = gameViewController(gameID: game.uniqueID, gameDate: game.date)
       if replacingTopmost {
          navController.replaceTopmost(with: viewController, animated: false)
       } else {
          navController.pushViewController(viewController, animated: true)
       }
       
-      let gameDate = game.date.toNSDate()
+      let gameDate = game.date.atStartOfDayIn(timeZone: ComposeApp.TimeZone.companion.UTC).toNSDate()
       currentActivity = NSUserActivity(activityType: SceneActivity.game.activityType)
       currentActivity.userInfo = [SceneActivityKeys.gameDate: gameDate]
    }
@@ -114,18 +118,22 @@ final class Router {
       navController.viewControllers = [rootVC]
    }
    
-   private func gameViewController(gameID: NSManagedObjectID, gameInstant: Instant) -> UIViewController {
-      ViewControllersKt.GameViewController(gameID: gameID, gameDate: gameInstant, navigator: weakNavigator)
+   private func gameViewController(gameID: NSManagedObjectID, gameDate: LocalDate) -> UIViewController {
+      ViewControllersKt.GameViewController(gameID: gameID, gameDate: gameDate, navigator: weakNavigator)
    }
 
 }
 
-class WeakNavigator: GameListNavigator, BackNavigator {
+class WeakNavigator: GameListNavigator, BackNavigator, GamePickerNavigator_iOS {
+   func openGameLoader(gameDate: LocalDate) {
+      
+   }
+   
    weak var router = Router.shared
    
    func showStatistics() { router?.showStatistics() }
    func openGame(game: Game) { router?.openGame(game: game) }
-   func openGamePicker() { }
+   func openGamePicker() { router?.showGamePicker() }
    func goBack() { router?.goBack() }
 }
 

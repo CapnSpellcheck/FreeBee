@@ -3,7 +3,7 @@ package com.letstwinkle.freebee.database.android
 import androidx.room.*
 import com.letstwinkle.freebee.database.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 @Dao
 interface GameDAO {
@@ -11,7 +11,7 @@ interface GameDAO {
    suspend fun createGame(game: Game)
    
    suspend fun createGame(
-      date: Instant,
+      date: LocalDate,
       allowedWords: Set<String>,
       centerLetterCode: Int,
       otherLetters: String,
@@ -42,6 +42,9 @@ interface GameDAO {
    @Query("SELECT COUNT(*) FROM Game WHERE score >= geniusScore")
    suspend fun getGeniusCount(): Int
 
+   @Query("SELECT EXISTS(SELECT * FROM Game WHERE date = :date)")
+   fun hasDate(date: LocalDate): Boolean
+   
    @Update(entity = Game::class)
    suspend fun saveGameScore(gameScore: GameScore)
 }

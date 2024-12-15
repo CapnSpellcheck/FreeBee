@@ -2,16 +2,16 @@ package com.letstwinkle.freebee.database
 
 import android.os.Parcelable
 import androidx.room.*
-import com.letstwinkle.freebee.InstantClassParceler
-import kotlinx.datetime.Instant
+import com.letstwinkle.freebee.LocalDateClassParceler
+import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.*
 
 @Entity(indices = [Index("date", unique=true, orders=[Index.Order.DESC])])
 @Parcelize
-@TypeParceler<Instant, InstantClassParceler>
+@TypeParceler<LocalDate, LocalDateClassParceler>
 actual data class Game(
    @PrimaryKey(autoGenerate = true) val id: EntityIdentifier,
-   actual val date: Instant,
+   actual val date: LocalDate,
    actual val allowedWords: Set<String>,
    actual val centerLetterCode: Int,
    actual val otherLetters: String,

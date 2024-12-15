@@ -5,16 +5,17 @@ package com.letstwinkle.freebee.database
 import com.letstwinkle.freebee.database.swift.CDEnteredWord
 import com.letstwinkle.freebee.database.swift.CDGame
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
+import kotlinx.datetime.*
 import platform.CoreData.NSManagedObjectID
 import platform.Foundation.*
 
 actual typealias EntityIdentifier = NSManagedObjectID
 
 actual class Game(val cdGame: CDGame) {
-   actual val date: Instant
+   actual val date: LocalDate
       get() = cdGame.date()!!.toKotlinInstant()
+         .toLocalDateTime(TimeZone.UTC)
+         .date
    actual val allowedWords: Set<String>
       get() = cdGame.allowedWords() as Set<String>
    actual val centerLetterCode: Int

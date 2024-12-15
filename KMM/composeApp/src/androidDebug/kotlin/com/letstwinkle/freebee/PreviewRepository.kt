@@ -5,12 +5,13 @@ import com.letstwinkle.freebee.database.android.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 class PreviewRepository : FreeBeeRepository {
    private var games = mutableListOf(
       Game(
          id = 1,
-         date = Instant.fromEpochSeconds(1725840000),
+         date = LocalDate(2010, 1, 1),
          allowedWords = setOf(
             "accept",
             "acetate",
@@ -32,7 +33,7 @@ class PreviewRepository : FreeBeeRepository {
       ),
       Game(
          id = 2,
-         date = Instant.fromEpochSeconds(1540166400),
+         date = LocalDate(2011, 1, 1),
          allowedWords = setOf(
             "accrual",
             "accuracy",
@@ -66,7 +67,7 @@ class PreviewRepository : FreeBeeRepository {
       ),
       Game(
          id = 3,
-         date = Instant.fromEpochSeconds(1614902400),
+         date = LocalDate(2012, 1, 1),
          allowedWords = setOf(
             "acacia",
             "arch",
@@ -113,7 +114,7 @@ class PreviewRepository : FreeBeeRepository {
    )
    
    override suspend fun createGame(
-      date: Instant,
+      date: LocalDate,
       allowedWords: Set<String>,
       centerLetterCode: Int,
       otherLetters: String,
@@ -122,14 +123,14 @@ class PreviewRepository : FreeBeeRepository {
    ) {
       games.add(
          Game(
-         id = games.size + 1,
-         date = date,
-         allowedWords = allowedWords,
-         centerLetterCode = centerLetterCode,
-         otherLetters = otherLetters,
-         geniusScore = geniusScore,
-         maximumScore = maximumScore,
-      )
+            id = games.size + 1,
+            date = date,
+            allowedWords = allowedWords,
+            centerLetterCode = centerLetterCode,
+            otherLetters = otherLetters,
+            geniusScore = geniusScore,
+            maximumScore = maximumScore,
+         )
       )
    }
    
@@ -154,6 +155,8 @@ class PreviewRepository : FreeBeeRepository {
    override suspend fun updateGameScore(game: GameWithWords, score: Short) {
       game.game.score = score
    }
+   
+   override fun hasGameForDate(date: LocalDate): Boolean = games.find { it.date == date } != null
    
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
       gameWithWords.enteredWordsHash.add(EnteredWord(gameId = gameWithWords.game.id, value = word))

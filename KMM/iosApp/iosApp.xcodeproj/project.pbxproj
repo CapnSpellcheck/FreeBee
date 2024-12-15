@@ -13,7 +13,6 @@
 		068A3C482D07DE4900AEB7FA /* FreeBeeData in Frameworks */ = {isa = PBXBuildFile; productRef = 068A3C472D07DE4900AEB7FA /* FreeBeeData */; };
 		068A3C492D07DF5000AEB7FA /* Lexend-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 069D3FFC2D0263D9005F8274 /* Lexend-VariableFont_wght.ttf */; };
 		068A3C4B2D08044000AEB7FA /* Free-Bee-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 068A3C4A2D08044000AEB7FA /* Free-Bee-Info.plist */; };
-		068A3C4D2D08086400AEB7FA /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068A3C4C2D08086400AEB7FA /* DateExtension.swift */; };
 		069D40002D0535AC005F8274 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D3FFF2D0535AB005F8274 /* Router.swift */; };
 		069D40042D05386B005F8274 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D40012D05386B005F8274 /* SceneDelegate.swift */; };
 		069D40052D05386B005F8274 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D40022D05386B005F8274 /* AppDelegate.swift */; };
@@ -28,7 +27,6 @@
 		0657D6772CD721A200510DF7 /* Free_Bee.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Free_Bee.xcdatamodel; sourceTree = "<group>"; };
 		0657D6792CD7369000510DF7 /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
 		068A3C4A2D08044000AEB7FA /* Free-Bee-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Free-Bee-Info.plist"; path = "../../../iOS shared/Free-Bee-Info.plist"; sourceTree = "<group>"; };
-		068A3C4C2D08086400AEB7FA /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		069D3FFC2D0263D9005F8274 /* Lexend-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lexend-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		069D3FFF2D0535AB005F8274 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		069D40012D05386B005F8274 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "../../../iOS shared/SceneDelegate.swift"; sourceTree = "<group>"; };
@@ -100,7 +98,6 @@
 				069D3FFF2D0535AB005F8274 /* Router.swift */,
 				069D40092D055A01005F8274 /* NavigationController.swift */,
 				068A3C4A2D08044000AEB7FA /* Free-Bee-Info.plist */,
-				068A3C4C2D08086400AEB7FA /* DateExtension.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -216,7 +213,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				069D40002D0535AC005F8274 /* Router.swift in Sources */,
-				068A3C4D2D08086400AEB7FA /* DateExtension.swift in Sources */,
 				0657D6782CD721A200510DF7 /* Free_Bee.xcdatamodeld in Sources */,
 				069D40052D05386B005F8274 /* AppDelegate.swift in Sources */,
 				069D40042D05386B005F8274 /* SceneDelegate.swift in Sources */,
