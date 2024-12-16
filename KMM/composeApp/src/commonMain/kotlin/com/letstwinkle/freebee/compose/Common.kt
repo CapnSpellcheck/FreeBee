@@ -3,9 +3,9 @@ package com.letstwinkle.freebee.compose
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.ripple.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +18,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.letstwinkle.freebee.*
 import freebee.composeapp.generated.resources.Lexend
 import freebee.composeapp.generated.resources.Res
@@ -72,7 +73,7 @@ enum class IconButtonPlacement(val pressOpacity: Float) {
             indication = null
          )
          .pointerInput(Unit) {
-            awaitEachGesture { 
+            awaitEachGesture {
                log.d { "awaitEachGesture" }
                awaitFirstDown(true)
                log.d { "awaitFirstDown" }
@@ -86,6 +87,26 @@ enum class IconButtonPlacement(val pressOpacity: Float) {
       val contentAlpha = if (enabled) currentAlpha else ContentAlpha.disabled
       CompositionLocalProvider(LocalContentAlpha provides contentAlpha, content = content)
    }
+}
+
+@Composable fun iOSStyleFilledButton(
+   onClick: () -> Unit,
+   modifier: Modifier = Modifier,
+   enabled: Boolean = true,
+   contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+   prominent: Boolean = false,
+   content: @Composable RowScope.() -> Unit,
+) {
+      val backgroundColor = if (prominent) yellowAccentColor else secondaryFilledButtonColor
+      Button(
+         onClick,
+         modifier,
+         enabled,
+         colors = ButtonDefaults.buttonColors(backgroundColor),
+         contentPadding = contentPadding,
+         elevation = flattenedButtonElevation(),
+         content = content
+      )
 }
 
 @Composable fun BlueIcon(
@@ -149,3 +170,6 @@ object RipplelessPressIndication : Indication {
       }
    }
 }
+
+@Composable inline fun flattenedButtonElevation(): ButtonElevation =
+   ButtonDefaults.elevation(pressedElevation = 2.dp, focusedElevation = 2.dp, hoveredElevation = 2.dp)

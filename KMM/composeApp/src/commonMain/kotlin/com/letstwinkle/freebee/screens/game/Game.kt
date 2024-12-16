@@ -270,7 +270,8 @@ private val positionProvider = object : PopupPositionProvider {
          iOSStyleIconButton(
             {},
             Modifier.size(48.dp, 48.dp).autorepeatingClickable(
-               remember { MutableInteractionSource() }, fireAction = { viewModel.backspace() }
+               remember { MutableInteractionSource() },
+               fireAction = { viewModel.backspace() }
             ),
             placement = IconButtonPlacement.Content
          ) {

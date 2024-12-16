@@ -13,6 +13,8 @@ import com.letstwinkle.freebee.screens.Statistics
 import com.letstwinkle.freebee.screens.game.*
 import com.letstwinkle.freebee.screens.root.*
 import com.letstwinkle.freebee.model.StatisticsModel
+import com.letstwinkle.freebee.screens.picker.GamePickerScreen
+import com.letstwinkle.freebee.screens.picker.*
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -107,4 +109,15 @@ fun RulesPreview() {
 @Preview
 fun HoneycombPreview() {
    LetterHoneycomb(centerLetter = 'e', otherLetters = "yatpcf".toList(), onLetterTap = {}, modifier = Modifier.padding(16.dp))
+}
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+@Preview(
+   apiLevel = 34,
+   device = "id:pixel_6"
+)
+fun GamePickerPreview() {
+   val viewModel = GamePickerViewModel(PreviewRepository())
+   GamePicker(viewModel = viewModel)
 }

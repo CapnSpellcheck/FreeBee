@@ -60,6 +60,8 @@ final class Router: ObservableObject {
             gameView.viewModel.game.progress?.currentWord = enteredLetters
          }
          viewControllersToPush.append(createHostingController(view: gameView, orientations: [.portrait]))
+      case SceneActivity.gameIndex.rawValue:
+         return true
       default:
          return false
       }

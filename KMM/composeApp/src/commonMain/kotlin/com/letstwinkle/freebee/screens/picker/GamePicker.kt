@@ -3,6 +3,7 @@ package com.letstwinkle.freebee.screens.picker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -12,10 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.MyAppTheme
+import com.letstwinkle.freebee.compose.iOSStyleFilledButton
 import com.letstwinkle.freebee.screens.BackNavigator
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -31,49 +34,58 @@ import kotlinx.datetime.atStartOfDayIn
             navigationIcon = backNavigationButton(backNavigator::goBack),
             )
       }) {
-         GamePicker(Modifier.padding(it), pickerNavigator)
+         GamePicker(Modifier.padding(it), pickerNavigator = pickerNavigator)
       }
    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun GamePicker(modifier: Modifier = Modifier, pickerNavigator: GamePickerNavigator?) {
-   val pickerViewModel = viewModel { GamePickerViewModel(repository()) }
+@Composable fun GamePicker(
+   modifier: Modifier = Modifier,
+   viewModel: GamePickerViewModel = viewModel { GamePickerViewModel(repository()) },
+   pickerNavigator: GamePickerNavigator? = null,
+) {
    val isDatePickerOpen = rememberSaveable { mutableStateOf(false) }
    
-   Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+   Column(
+      Modifier.fillMaxSize().padding(horizontal = 12.dp),
+      verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+   ) {
       Text("Games are created by the New York Times. Choose a date to open the game from that date.", style = bodyStyle)
-      Row(Modifier.align(Alignment.CenterHorizontally)) { 
-         Button({ isDatePickerOpen.value = true }) {
-            Text(formatGameDateToDisplay(pickerViewModel.selectedDate.value))
+      Row(
+         Modifier.align(Alignment.CenterHorizontally),
+         horizontalArrangement = Arrangement.spacedBy(16.dp)
+      ) { 
+         iOSStyleFilledButton({ isDatePickerOpen.value = true }) {
+            Text(formatGameDateToDisplay(viewModel.selectedDate.value), style = bodyStyle)
          }
-         Button({ }, enabled = !pickerViewModel.isChoosingRandomDate.value) {
-            Text("Go!")
+         iOSStyleFilledButton({ }, enabled = !viewModel.isChoosingRandomDate.value, prominent = true) {
+            Text("Go!", style = bodyStyle)
          }
       }
-      Text("At this time, we can't preview the game for you before you open it. Maybe in the future!", style = footnoteStyle)
+      Text("At this time, we can't preview the game for you before you open it. Maybe in the future!", Modifier.padding(top = 8.dp, bottom = 40.dp), style = footnoteStyle)
       Text("Or…", Modifier.align(Alignment.CenterHorizontally), style = headlineStyle)
-      Button({ 
-         pickerViewModel.viewModelScope.launch { 
-            pickerViewModel.chooseRandomDate() 
-            pickerNavigator?.openGameLoader(pickerViewModel.selectedDate.value)
+      iOSStyleFilledButton({ 
+         viewModel.viewModelScope.launch { 
+            viewModel.chooseRandomDate() 
+            pickerNavigator?.openGameLoader(viewModel.selectedDate.value)
          } },
          Modifier.align(Alignment.CenterHorizontally),
-         enabled = !pickerViewModel.isChoosingRandomDate.value
+         enabled = !viewModel.isChoosingRandomDate.value, 
       ) {
-         Text("Open a random date")
+         Text("Open a random date", style = bodyStyle)
       }
    }
    
    if (isDatePickerOpen.value) {
       val datePickerState = rememberDatePickerState(
-         initialSelectedDateMillis = pickerViewModel.selectedDate.value
+         initialSelectedDateMillis = viewModel.selectedDate.value
             .atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds(),
-         selectableDates = pickerViewModel.selectableDates
+         selectableDates = viewModel.selectableDates
       )
       val closeDatePicker = { 
          isDatePickerOpen.value = false
-         pickerViewModel.updateSelectedDate(datePickerState.selectedDateMillis)
+         viewModel.updateSelectedDate(datePickerState.selectedDateMillis)
       }
       
       DatePickerDialog(
