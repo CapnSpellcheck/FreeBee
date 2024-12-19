@@ -64,14 +64,13 @@ private val positionProvider = object : PopupPositionProvider {
 ) {
    MyAppTheme {
       val gameViewModel = viewModel { GameViewModel(repository(), gameID) }
-      val dateString = formatGameDateToDisplay(gameDate)
       val rulesState =
          rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
       val coroutineScope = rememberCoroutineScope()
       
       Scaffold(topBar = {
          CenterAlignedTopAppBar(
-            title = { Text(dateString) },
+            title = { Text(formatGameDateToDisplay(gameDate)) },
             windowInsets = AppBarDefaults.topAppBarWindowInsets,
             actions = {
                if (gameViewModel.gameWithWords.value?.game?.isGenius == true) {

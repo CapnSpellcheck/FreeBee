@@ -21,6 +21,7 @@ moko-mvvm = "0.16.1"
 multiplatform-settings = "1.1.1"
 multiplatform-logging = "1.4.2"
 ktor = "2.3.13"
+androidx-work = "2.9.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -43,8 +44,9 @@ multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg
 multiplatform-logging = { module = "org.lighthousegames:logging", version.ref = "multiplatform-logging"}
 moko-mvvm-flow = { module = "dev.icerock.moko:mvvm-flow-compose", version.ref = "moko-mvvm"}
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

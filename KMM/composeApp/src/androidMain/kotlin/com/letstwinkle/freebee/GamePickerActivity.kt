@@ -1,5 +1,6 @@
 package com.letstwinkle.freebee
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,5 +18,9 @@ class GamePickerActivity : ComponentActivity(), GamePickerNavigator {
    }
    
    override fun openGameLoader(gameDate: LocalDate) {
+      val intent = Intent(this, GameLoaderActivity::class.java)
+      intent.putGameDateExtra(gameDate)
+      startActivity(intent)
+      finish()
    }
 }

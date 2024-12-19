@@ -45,7 +45,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.ktx)
-            implementation(libs.ktor.client.android)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.androidx.work)
+            implementation("org.jsoup:jsoup:1.18.3")
         }
 
         @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)

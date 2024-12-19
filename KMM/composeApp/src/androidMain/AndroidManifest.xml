@@ -27,6 +27,8 @@
         </activity>
         <activity android:name=".GamePickerActivity">
         </activity>
+        <activity android:name=".GameLoaderActivity">
+        </activity>
     </application>
 
 </manifest>

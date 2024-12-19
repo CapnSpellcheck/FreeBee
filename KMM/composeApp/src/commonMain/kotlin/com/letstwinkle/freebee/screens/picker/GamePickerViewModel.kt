@@ -6,9 +6,10 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letstwinkle.freebee.database.FreeBeeRepository
+import com.letstwinkle.freebee.gameURL
 import io.ktor.client.HttpClient
-import io.ktor.client.request.head
-import io.ktor.http.*
+import io.ktor.client.request.get
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import org.lighthousegames.logging.logging
@@ -80,16 +81,17 @@ class GamePickerViewModel(
    private suspend fun determineLatestAvailableDate() {
       var checkDate = latestAvailableDate
       val httpClient = HttpClient()
-      val gameURLBuilder = URLBuilder(host = "nytbee.com", protocol = URLProtocol.HTTPS)
       
       while (checkDate >= earliestGameDate) {
          log.d { "determineLatestAvailableDate(): checking date $checkDate"}
          // if the game is saved locally, skip it
          if (!isGameLoaded(checkDate)) {
             // check whether the website responds with 404 for the date.
-            gameURLBuilder.set(path = "Bee_${checkDate.format(LocalDate.Formats.ISO_BASIC)}.html")
             try {
-               val response = httpClient.head(gameURLBuilder.build())
+               val gameURL = gameURL(checkDate)
+               // NOTE: this should call HEAD, but the service seems to be misconfigured/flawed:
+               // it returns a nonempty body. ktor can't be configured to ignore it
+               val response = httpClient.get(gameURL)
                if (response.status.isSuccess()) {
                   log.d { "determineLatestAvailableDate(): HEAD success" }
                   latestAvailableDate = checkDate
@@ -104,6 +106,7 @@ class GamePickerViewModel(
          
          checkDate = checkDate.minus(1, DateTimeUnit.DAY)
       }
+      httpClient.close()
    }
    
    private fun isGameLoaded(date: LocalDate): Boolean {

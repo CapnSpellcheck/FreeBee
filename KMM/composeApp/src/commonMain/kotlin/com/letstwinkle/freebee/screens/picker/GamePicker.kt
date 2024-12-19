@@ -2,8 +2,6 @@ package com.letstwinkle.freebee.screens.picker
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -48,7 +46,7 @@ import kotlinx.datetime.atStartOfDayIn
    val isDatePickerOpen = rememberSaveable { mutableStateOf(false) }
    
    Column(
-      Modifier.fillMaxSize().padding(horizontal = 12.dp),
+      modifier.fillMaxSize().padding(horizontal = 12.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
    ) {
       Text("Games are created by the New York Times. Choose a date to open the game from that date.", style = bodyStyle)
@@ -59,7 +57,11 @@ import kotlinx.datetime.atStartOfDayIn
          iOSStyleFilledButton({ isDatePickerOpen.value = true }) {
             Text(formatGameDateToDisplay(viewModel.selectedDate.value), style = bodyStyle)
          }
-         iOSStyleFilledButton({ }, enabled = !viewModel.isChoosingRandomDate.value, prominent = true) {
+         iOSStyleFilledButton(
+            { pickerNavigator?.openGameLoader(viewModel.selectedDate.value) },
+            enabled = !viewModel.isChoosingRandomDate.value,
+            prominent = true
+         ) {
             Text("Go!", style = bodyStyle)
          }
       }

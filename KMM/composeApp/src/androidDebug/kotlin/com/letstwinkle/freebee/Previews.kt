@@ -13,9 +13,13 @@ import com.letstwinkle.freebee.screens.Statistics
 import com.letstwinkle.freebee.screens.game.*
 import com.letstwinkle.freebee.screens.root.*
 import com.letstwinkle.freebee.model.StatisticsModel
+import com.letstwinkle.freebee.screens.loader.GameLoader
+import com.letstwinkle.freebee.screens.loader.GameLoaderViewModel
 import com.letstwinkle.freebee.screens.picker.GamePickerScreen
 import com.letstwinkle.freebee.screens.picker.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.toKotlinLocalDate
+import java.time.LocalDate
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -120,4 +124,16 @@ fun HoneycombPreview() {
 fun GamePickerPreview() {
    val viewModel = GamePickerViewModel(PreviewRepository())
    GamePicker(viewModel = viewModel)
+}
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+@Preview(
+   apiLevel = 34,
+   device = "id:pixel_6"
+)
+fun GameLoaderPreview() {
+   val gameDate = LocalDate.now().toKotlinLocalDate()
+   val viewModel = GameLoaderViewModel(gameDate, PreviewRepository())
+   GameLoader(gameDate, viewModel)
 }
