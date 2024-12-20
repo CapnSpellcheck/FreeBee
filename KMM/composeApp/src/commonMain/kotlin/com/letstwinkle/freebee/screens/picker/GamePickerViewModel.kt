@@ -90,7 +90,7 @@ class GamePickerViewModel(
             try {
                val gameURL = gameURL(checkDate)
                // NOTE: this should call HEAD, but the service seems to be misconfigured/flawed:
-               // it returns a nonempty body. ktor can't be configured to ignore it
+               // it returns a nonempty body. Okhttp can't be configured to ignore it
                val response = httpClient.get(gameURL)
                if (response.status.isSuccess()) {
                   log.d { "determineLatestAvailableDate(): HEAD success" }

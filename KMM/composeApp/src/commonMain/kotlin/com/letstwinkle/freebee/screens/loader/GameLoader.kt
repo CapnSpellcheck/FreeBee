@@ -14,10 +14,13 @@ import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.screens.BackNavigator
 import kotlinx.datetime.LocalDate
-import org.lighthousegames.logging.logging
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun GameLoaderScreen(gameDate: LocalDate, backNavigator: BackNavigator) {
+@Composable fun GameLoaderScreen(
+   gameDate: LocalDate,
+   backNavigator: BackNavigator,
+   loaderNavigator: GameLoaderNavigator,
+) {
    MyAppTheme {
       Scaffold(topBar = {
          CenterAlignedTopAppBar(
@@ -26,7 +29,7 @@ import org.lighthousegames.logging.logging
             navigationIcon = backNavigationButton(backNavigator::goBack),
          )
       }) {
-         GameLoader(gameDate, modifier = Modifier.padding(it))
+         GameLoader(gameDate, navigator = loaderNavigator, modifier = Modifier.padding(it))
       }
    }
 }
@@ -34,16 +37,17 @@ import org.lighthousegames.logging.logging
 @Composable fun GameLoader(
    gameDate: LocalDate,
    viewModel: GameLoaderViewModel = viewModel { GameLoaderViewModel(gameDate, repository()) },
+   navigator: GameLoaderNavigator?,
    modifier: Modifier = Modifier,
 ) {
    LaunchedEffect(Unit) {
       viewModel.load()
    }
-//   LaunchedEffect(viewModel.status) {
-      if (viewModel.status.value is LoadingStatus.Finished) {
-         logging().d { "Finished" }
+   LaunchedEffect(viewModel.status.value) {
+      (viewModel.status.value as? LoadingStatus.Finished)?.let { finished ->
+         navigator?.openGame(gameDate, finished.gameID)
       }
-//   }
+   }
    Column(modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) { 
       Text(viewModel.status.value.statusText, Modifier.padding(bottom = 8.dp), style = bodyStyle)
       if (viewModel.status.value.showProgress) {

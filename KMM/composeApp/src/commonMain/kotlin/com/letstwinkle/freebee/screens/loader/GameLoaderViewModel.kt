@@ -3,6 +3,7 @@ package com.letstwinkle.freebee.screens.loader
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.letstwinkle.freebee.database.EntityIdentifier
 import com.letstwinkle.freebee.database.FreeBeeRepository
 import com.letstwinkle.freebee.gameURL
 import io.ktor.client.HttpClient
@@ -33,7 +34,7 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
             val html = response.bodyAsText()
             // TODO: not unique handler
             val gameData = parse(html, { _: List<Char> -> ' ' } )
-            repository.createGame(
+            val gameID = repository.createGame(
                gameData.date,
                gameData.allowedWords,
                gameData.centerLetterCode,
@@ -41,7 +42,7 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
                gameData.geniusScore,
                gameData.maximumScore
             )
-            statusMutable.value = LoadingStatus.Finished
+            statusMutable.value = LoadingStatus.Finished(gameID)
          }
       } catch(error: Throwable) {
          statusMutable.value = LoadingStatus.Error(error)
@@ -131,7 +132,7 @@ sealed class LoadingStatus(val statusText: String) {
    
    data object Loading : LoadingStatus("Downloading…")
    data object Parsing : LoadingStatus("Processing…")
-   data object Finished : LoadingStatus("")
+   data class Finished(val gameID: EntityIdentifier) : LoadingStatus("")
    data class Error(val error: Throwable) : LoadingStatus("Failed")
 }
 

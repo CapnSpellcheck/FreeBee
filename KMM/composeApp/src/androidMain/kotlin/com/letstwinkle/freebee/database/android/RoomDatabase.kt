@@ -24,9 +24,9 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short
-   ) {
+   ): EntityIdentifier =
       gameDAO().createGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore)
-   }
+   
    
    override fun fetchGamesLive(): Flow<List<Game>> {
       return gameDAO().fetchGamesLive()

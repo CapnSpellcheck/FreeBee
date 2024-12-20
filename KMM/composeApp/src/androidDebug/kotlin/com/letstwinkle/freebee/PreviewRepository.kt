@@ -108,9 +108,9 @@ class PreviewRepository : FreeBeeRepository {
    )
    
    private var enteredWordsMap = mapOf(
-      1 to listOf("cafe", "facet", "face").map { EnteredWord(0, 1, it) }.toTypedArray(),
-      2 to listOf("taut", "curt", "rural").map { EnteredWord(0, 2, it) }.toTypedArray(),
-      3 to listOf("charm", "attach", "itch", "match", "cram").map { EnteredWord(0, 3, it) }.toTypedArray(),
+      1L to listOf("cafe", "facet", "face").map { EnteredWord(0, 1, it) }.toTypedArray(),
+      2L to listOf("taut", "curt", "rural").map { EnteredWord(0, 2, it) }.toTypedArray(),
+      3L to listOf("charm", "attach", "itch", "match", "cram").map { EnteredWord(0, 3, it) }.toTypedArray(),
    )
    
    override suspend fun createGame(
@@ -120,10 +120,10 @@ class PreviewRepository : FreeBeeRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ) {
+   ): EntityIdentifier {
       games.add(
          Game(
-            id = games.size + 1,
+            id = games.size + 1L,
             date = date,
             allowedWords = allowedWords,
             centerLetterCode = centerLetterCode,
@@ -132,21 +132,22 @@ class PreviewRepository : FreeBeeRepository {
             maximumScore = maximumScore,
          )
       )
+      return games.size + 0L
    }
    
    override fun fetchGamesLive(): Flow<List<Game>> {
       return flowOf(games.sortedByDescending { it.date })
    }
    
-   override suspend fun fetchGameWithWords(gameID: Int): GameWithWords {
+   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
       val game = games.first { it.id == gameID }
       return GameWithWords(game, linkedSetOf(*(enteredWordsMap[gameID] ?: arrayOf())))
    }
    
    override suspend fun getStartedGameCount(): Int = 255
    override suspend fun getGeniusGameCount(): Int = 188
-   
    override suspend fun getEnteredWordCount(): Int = 999
+   
    override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean {
       transaction(this)
       return true

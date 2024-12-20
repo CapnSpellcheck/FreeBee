@@ -66,7 +66,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ) {
+   ): EntityIdentifier {
       val gameManagedObject = CDGame(container.viewContext)
       gameManagedObject.setDate(date.atStartOfDayIn(TimeZone.UTC).toNSDate())
       gameManagedObject.setAllowedWords(allowedWords)
@@ -82,6 +82,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
             NSLog("[CoreDataDatabase] Couldn't save game: %@", error.value)
          }
       }
+      return gameManagedObject.objectID
    }
    
    override fun fetchGamesLive(): Flow<List<Game>> = callbackFlow {

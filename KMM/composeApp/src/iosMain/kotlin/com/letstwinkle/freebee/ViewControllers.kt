@@ -6,6 +6,8 @@ import com.letstwinkle.freebee.database.EntityIdentifier
 import com.letstwinkle.freebee.screens.BackNavigator
 import com.letstwinkle.freebee.screens.StatisticsScreen
 import com.letstwinkle.freebee.screens.game.GameScreen
+import com.letstwinkle.freebee.screens.loader.GameLoaderNavigator
+import com.letstwinkle.freebee.screens.loader.GameLoaderScreen
 import com.letstwinkle.freebee.screens.picker.GamePickerNavigator
 import com.letstwinkle.freebee.screens.picker.GamePickerScreen
 import com.letstwinkle.freebee.screens.root.GameListNavigator
@@ -21,4 +23,11 @@ fun GameViewController(gameID: EntityIdentifier, gameDate: LocalDate, navigator:
 fun StatisticsViewController(navigator: BackNavigator) = ComposeUIViewController { StatisticsScreen(navigator) }
 
 interface GamePickerNavigator_iOS: GamePickerNavigator, BackNavigator
-fun GamePickerViewController(navigator: GamePickerNavigator_iOS) = ComposeUIViewController { GamePickerScreen(navigator, navigator) }
+fun GamePickerViewController(navigator: GamePickerNavigator_iOS) = ComposeUIViewController { 
+   GamePickerScreen(navigator, navigator)
+}
+
+interface GameLoaderNavigator_iOS: GameLoaderNavigator, BackNavigator
+fun GameLoaderViewController(gameDate: LocalDate, navigator: GameLoaderNavigator_iOS) = ComposeUIViewController { 
+   GameLoaderScreen(gameDate, navigator, navigator)
+}

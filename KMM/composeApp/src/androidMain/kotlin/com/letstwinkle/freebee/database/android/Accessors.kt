@@ -8,7 +8,7 @@ import kotlinx.datetime.LocalDate
 @Dao
 interface GameDAO {
    @Insert
-   suspend fun createGame(game: Game)
+   suspend fun createGame(game: Game): Long
    
    suspend fun createGame(
       date: LocalDate,
@@ -17,7 +17,7 @@ interface GameDAO {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ) {
+   ): EntityIdentifier {
       val game = Game(
          0,
          date,
@@ -27,7 +27,7 @@ interface GameDAO {
          geniusScore,
          maximumScore,
       )
-      createGame(game)
+      return createGame(game)
    }
    
    @Query("SELECT * FROM Game ORDER BY date DESC")
@@ -55,7 +55,7 @@ interface EnteredWordDAO {
    suspend fun getTotalCount(): Int
    
    @Query("SELECT * FROM EnteredWord WHERE gameId = :gameId ORDER BY id")
-   suspend fun getGameWords(gameId: Int): List<EnteredWord>
+   suspend fun getGameWords(gameId: EntityIdentifier): List<EnteredWord>
    
    @Insert
    suspend fun addEnteredWord(word: EnteredWord)

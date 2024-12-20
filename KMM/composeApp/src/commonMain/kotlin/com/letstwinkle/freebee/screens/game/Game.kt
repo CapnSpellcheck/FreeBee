@@ -36,7 +36,6 @@ import org.lighthousegames.logging.logging
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable inline fun GameScreen(
    game: Game,
    backNavigator: BackNavigator,
@@ -54,8 +53,7 @@ private val positionProvider = object : PopupPositionProvider {
    ) = anchorBounds.bottomCenter - IntOffset(popupContentSize.width/2, 0)
 }
 
-@ExperimentalMaterial3Api
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable fun GameScreen(
    gameID: EntityIdentifier,
    gameDate: LocalDate,

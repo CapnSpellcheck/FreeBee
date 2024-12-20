@@ -46,14 +46,15 @@ final class Router {
       
       switch activity.activityType {
       case SceneActivity.gamePicker.activityType:
-         break
-//         viewControllersToPush.append(createHostingController(view: GamePicker()))
+         let viewController = ViewControllersKt.GamePickerViewController(navigator: weakNavigator)
+         viewControllersToPush.append(viewController)
       case SceneActivity.gameLoader.activityType:
          guard let gameDate else {
             assertionFailure("State restoration: couldn't find game date in activity's userInfo")
             return false
          }
-//         viewControllersToPush.append(createHostingController(view: GameLoaderView(gameDate: gameDate)))
+         let viewController = ViewControllersKt.GameLoaderViewController(gameDate: gameDate, navigator: weakNavigator)
+         viewControllersToPush.append(viewController)
       case SceneActivity.game.activityType:
          let enteredLetters = activity.userInfo?[SceneActivityKeys.gameEnteredLetters] as? String
          let gameObjectURL: URL? = activity.userInfo?[SceneActivityKeys.gameURL] as? URL
@@ -75,19 +76,21 @@ final class Router {
       navController.viewControllers = navController.viewControllers + viewControllersToPush
       return true
    }
-
+   
    func showGamePicker() {
       let viewController = ViewControllersKt.GamePickerViewController(navigator: weakNavigator)
       navController.pushViewController(viewController, animated: true)
       currentActivity = NSUserActivity(activityType: SceneActivity.gamePicker.activityType)
    }
    
-//   func showGameLoader(date: Date) {
-//      let viewController = createHostingController(view: GameLoaderView(gameDate: date))
-//      navController.replaceTopmost(with: viewController)
-//      currentActivity = NSUserActivity(activityType: SceneActivity.gameLoader.activityType)
-//      currentActivity.userInfo = [SceneActivityKeys.gameDate: date as NSDate]
-//   }
+   func showGameLoader(gameDate: LocalDate) {
+      let viewController = ViewControllersKt.GameLoaderViewController(gameDate: gameDate, navigator: weakNavigator)
+      navController.replaceTopmost(with: viewController)
+      currentActivity = NSUserActivity(activityType: SceneActivity.gameLoader.activityType)
+      currentActivity.userInfo = [
+         SceneActivityKeys.gameDate: gameDate.atStartOfDayIn(timeZone: ComposeApp.TimeZone.companion.UTC).toNSDate()
+      ]
+   }
    
    func showStatistics() {
       let viewController = ViewControllersKt.StatisticsViewController(navigator: weakNavigator)
@@ -98,19 +101,22 @@ final class Router {
       navController.popViewController(animated: true)
    }
    
-   func openGame(game: Game, replacingTopmost: Bool = false) {
-      (CoreDataDatabase.companion.shared.container.viewContext
-         .object(with: game.uniqueID) as? CDGameProgress)?.addToEnteredWords(CDEnteredWord(context: CoreDataDatabase.companion.shared.container.viewContext, string: "word"))
-      let viewController = gameViewController(gameID: game.uniqueID, gameDate: game.date)
+   
+   func openGame(game: Game) {
+      openGame(gameDate: game.date, gameID: game.uniqueID)
+   }
+   
+   func openGame(gameDate: LocalDate, gameID: NSManagedObjectID, replacingTopmost: Bool = false) {
+      let viewController = gameViewController(gameID: gameID, gameDate: gameDate)
       if replacingTopmost {
          navController.replaceTopmost(with: viewController, animated: false)
       } else {
          navController.pushViewController(viewController, animated: true)
       }
       
-      let gameDate = game.date.atStartOfDayIn(timeZone: ComposeApp.TimeZone.companion.UTC).toNSDate()
+      let gameDate = gameDate.atStartOfDayIn(timeZone: ComposeApp.TimeZone.companion.UTC)
       currentActivity = NSUserActivity(activityType: SceneActivity.game.activityType)
-      currentActivity.userInfo = [SceneActivityKeys.gameDate: gameDate]
+      currentActivity.userInfo = [SceneActivityKeys.gameDate: gameDate.toNSDate()]
    }
    
    private func installRootController() {
@@ -121,19 +127,20 @@ final class Router {
    private func gameViewController(gameID: NSManagedObjectID, gameDate: LocalDate) -> UIViewController {
       ViewControllersKt.GameViewController(gameID: gameID, gameDate: gameDate, navigator: weakNavigator)
    }
-
+   
 }
 
-class WeakNavigator: GameListNavigator, BackNavigator, GamePickerNavigator_iOS {
-   func openGameLoader(gameDate: LocalDate) {
-      
-   }
-   
+class WeakNavigator: GameListNavigator, BackNavigator, GamePickerNavigator_iOS,
+                        GameLoaderNavigator_iOS {
    weak var router = Router.shared
    
    func showStatistics() { router?.showStatistics() }
    func openGame(game: Game) { router?.openGame(game: game) }
+   func openGame(gameDate: LocalDate, gameID: NSManagedObjectID) {
+      router?.openGame(gameDate: gameDate, gameID: gameID, replacingTopmost: true)
+   }
    func openGamePicker() { router?.showGamePicker() }
+   func openGameLoader(gameDate: LocalDate) { router?.showGameLoader(gameDate: gameDate) }
    func goBack() { router?.goBack() }
 }
 

@@ -11,7 +11,7 @@ interface FreeBeeRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   )
+   ): EntityIdentifier
    
    fun fetchGamesLive(): Flow<List<Game>>
    

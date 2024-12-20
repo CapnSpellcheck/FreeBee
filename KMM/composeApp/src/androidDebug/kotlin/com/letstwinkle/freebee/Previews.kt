@@ -82,7 +82,7 @@ fun StatisticsPreview() {
    device = "id:pixel_6"
 )
 fun GamePreview() {
-   val gameViewModel = GameViewModel(PreviewRepository(), 3)
+   val gameViewModel = GameViewModel(PreviewRepository(), 3L)
    val rulesState =
       rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
    val coroutineScope = rememberCoroutineScope()
@@ -135,5 +135,5 @@ fun GamePickerPreview() {
 fun GameLoaderPreview() {
    val gameDate = LocalDate.now().toKotlinLocalDate()
    val viewModel = GameLoaderViewModel(gameDate, PreviewRepository())
-   GameLoader(gameDate, viewModel)
+   GameLoader(gameDate, viewModel, null)
 }
