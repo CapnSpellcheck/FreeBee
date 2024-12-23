@@ -20,20 +20,21 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
    : ViewModel()
 {
    private var statusMutable = mutableStateOf<LoadingStatus>(LoadingStatus.Loading)
+   private var onCenterLetterNotUnique: (suspend (List<Char>) -> Char)? = null
    
    val status: State<LoadingStatus>
       get() = statusMutable
    
-   suspend fun load() {
+   suspend fun load(onCenterLetterNotUnique: suspend (List<Char>) -> Char) {
       log.d { "load: game date=$gameDate" }
+      this.onCenterLetterNotUnique = onCenterLetterNotUnique
       val gameURL = gameURL(gameDate)
       try {
          val httpClient = HttpClient()
          httpClient.use { 
             val response = it.get(gameURL)
             val html = response.bodyAsText()
-            // TODO: not unique handler
-            val gameData = parse(html, { _: List<Char> -> ' ' } )
+            val gameData = parse(html)
             val gameID = repository.createGame(
                gameData.date,
                gameData.allowedWords,
@@ -49,7 +50,7 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
       }
    }
    
-   suspend fun parse(html: String, onCenterLetterNotUnique: suspend (List<Char>) -> Char): GameData {
+   suspend fun parse(html: String): GameData {
       statusMutable.value = LoadingStatus.Parsing
       val document = createHTMLDocument(html)
       val root = document.rootElement
@@ -68,7 +69,7 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
       
       var lettersResult = determineLetters(allowedWords)
       if (lettersResult is DetermineLettersResult.NotUnique) {
-         val centerLetter = onCenterLetterNotUnique(lettersResult.centerLetterPossibilities)
+         val centerLetter = onCenterLetterNotUnique?.invoke(lettersResult.centerLetterPossibilities)
          lettersResult = determineLetters(allowedWords, centerLetter)
       }
       if (lettersResult is DetermineLettersResult.Irreconcilable) {
@@ -90,7 +91,12 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
       DetermineLettersResult 
    {
       val foundLetters = HashSet<Char>(7)
-      val centerCandidates = HashSet<Char>(7).apply { addAll(words.first().asIterable()) }
+      val centerCandidates = HashSet<Char>(7).apply {
+         if (centerLetter != null)
+            add(centerLetter)
+         else
+            addAll(words.first().asIterable())
+      }
       
       for (word in words) {
          foundLetters.addAll(word.asIterable())

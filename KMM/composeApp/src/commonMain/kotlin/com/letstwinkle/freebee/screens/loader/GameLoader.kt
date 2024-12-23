@@ -52,7 +52,11 @@ import kotlinx.datetime.LocalDate
    backNavigator: BackNavigator,
    modifier: Modifier = Modifier,
 ) {
+   val centerLetterResultChannel = remember { Channel<Char>() }
+   val centerLetterCandidates = rememberSaveable { mutableStateOf(emptyList<Char>())}
    val status = viewModel.status.value
+   val scope = rememberCoroutineScope()
+   
    LaunchedEffect(Unit) {
       viewModel.load(onCenterLetterNotUnique = { candidates ->
          centerLetterCandidates.value = candidates
@@ -86,5 +90,22 @@ import kotlinx.datetime.LocalDate
          text = { Text(error) },
          properties = DialogProperties(dismissOnClickOutside = false)
       )
+   }
+   if (centerLetterCandidates.value.isNotEmpty()) {
+      AlertDialog({}, { 
+         Column { 
+            for (candidate in centerLetterCandidates.value) {
+               Button(
+                  { scope.launch { centerLetterResultChannel.send(candidate) } }
+               ) { Text("\"${candidate.uppercase()}\"", fontWeight = FontWeight.Bold) }
+            }
+         }
+      }, text = {
+         KamelImage(
+            asyncPainterResource(gameImageURL(gameDate)),
+            "game image",
+            Modifier.requiredSize(330.dp, 330.dp).padding(horizontal = 12.dp),
+         )
+      }, title = { Text("Which letter is at the center of the image?") })
    }
 }

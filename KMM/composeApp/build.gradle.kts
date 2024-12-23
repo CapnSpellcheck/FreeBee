@@ -62,7 +62,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.multiplatform.settings)
             implementation(libs.ktor.client.core)
-           
+            implementation(libs.kamel.image)
             api(libs.moko.mvvm.flow)
             api(libs.multiplatform.logging)
             api(libs.kotlinx.datetime) // api for exporting

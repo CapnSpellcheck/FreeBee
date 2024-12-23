@@ -10,3 +10,8 @@ fun gameURL(gameDate: LocalDate): Url {
    gameURLBuilder.set(path = "Bee_${gameDate.format(LocalDate.Formats.ISO_BASIC)}.html")
    return gameURLBuilder.build()
 }
+
+fun gameImageURL(gameDate: LocalDate): Url {
+   gameURLBuilder.set(path = "/pics/${gameDate.format(LocalDate.Formats.ISO_BASIC)}.png")
+   return gameURLBuilder.build()
+}
