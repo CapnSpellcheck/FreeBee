@@ -65,7 +65,6 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
          ?: throw ParseError("Couldn't extract 'Maximum Puzzle Score' (text content was: ${maximumPuzzleScore.textContent()})")
       val geniusScore = endingNumberRegex.find(neededForGenius.textContent())?.value?.toShort()
          ?: throw ParseError("Couldn't extract 'Needed for Genius' (text content was: ${neededForGenius.textContent()})")
-      log.d { "Partial parse: allowedWords=$allowedWords maximumScore=$maximumScore geniusScore=$geniusScore" }
       
       var lettersResult = determineLetters(allowedWords)
       if (lettersResult is DetermineLettersResult.NotUnique) {

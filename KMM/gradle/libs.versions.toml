@@ -15,6 +15,7 @@ androidx-room = "2.6.1"
 compose-multiplatform = "1.6.11"
 compose-compiler = "1.5.14"
 junit = "4.13.2"
+kamelImage = "0.9.5"
 kotlin = "2.0.20"
 kotlinx-datetime = "0.6.0"
 moko-mvvm = "0.16.1"
@@ -24,6 +25,8 @@ ktor = "2.3.13"
 androidx-work = "2.9.0"
 
 [libraries]
+kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
+kamel-decoder-image-bitmap = { module = "media.kamel:kamel-decoder-image-bitmap", version.ref = "kamelImage" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

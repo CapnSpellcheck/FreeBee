@@ -13,6 +13,7 @@ import com.letstwinkle.freebee.screens.Statistics
 import com.letstwinkle.freebee.screens.game.*
 import com.letstwinkle.freebee.screens.root.*
 import com.letstwinkle.freebee.model.StatisticsModel
+import com.letstwinkle.freebee.screens.BackNavigator
 import com.letstwinkle.freebee.screens.loader.GameLoader
 import com.letstwinkle.freebee.screens.loader.GameLoaderViewModel
 import com.letstwinkle.freebee.screens.picker.GamePickerScreen
@@ -135,5 +136,8 @@ fun GamePickerPreview() {
 fun GameLoaderPreview() {
    val gameDate = LocalDate.now().toKotlinLocalDate()
    val viewModel = GameLoaderViewModel(gameDate, PreviewRepository())
-   GameLoader(gameDate, viewModel, null)
+   GameLoader(gameDate, viewModel, null, object : BackNavigator {
+      override fun goBack() {
+      }
+   })
 }
