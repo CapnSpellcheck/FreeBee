@@ -10,11 +10,13 @@ import kotlinx.datetime.*
 import platform.CoreData.*
 import platform.Foundation.*
 import platform.darwin.NSObject
-import platform.darwin.NSUInteger
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalForeignApi::class)
-class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePrivate") val container: NSPersistentContainer) : FreeBeeRepository {
+class CoreDataDatabase private constructor(
+   @Suppress("MemberVisibilityCanBePrivate") val container: NSPersistentContainer
+) : FreeBeeRepository
+{
    
    companion object {
       val shared = create()
@@ -85,38 +87,52 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
       return gameManagedObject.objectID
    }
    
-   override fun fetchGamesLive(): Flow<List<Game>> = callbackFlow {
+   // TODO: improve this
+   // The fetched results controller doesn't continue running if constructed inside the callbackFlow.
+   private var gameListFetchResultsController: NSFetchedResultsController? = null
+   private class FetchedResultsControllerDelegate : NSObject(), NSFetchedResultsControllerDelegateProtocol {
+      var onSendResults: (List<Game>) -> Unit = {}
+      override fun controllerDidChangeContent(controller: NSFetchedResultsController) {
+         NSLog("[CoreDataDatabase] NSFetchedResultsControllerDelegate received controllerDidChangeContent")
+         val wrappedGames = (controller.fetchedObjects ?: emptyList<NSManagedObject>())
+            .map { gameManagedObject -> Game(gameManagedObject as CDGame) }
+         onSendResults(wrappedGames)
+      }
+   }
+   
+   override fun fetchGamesLive(): Flow<List<Game>> {
+      if (gameListFetchResultsController != null)
+         return emptyFlow()
+      
       val fetchRequest = CDGame.fetchRequest()
       fetchRequest.sortDescriptors = listOf(NSSortDescriptor(key = "date", ascending = false))
-      val fetchResultsController = NSFetchedResultsController(
+      gameListFetchResultsController = NSFetchedResultsController(
          fetchRequest = fetchRequest,
          managedObjectContext = container.viewContext,
          sectionNameKeyPath = null,
          cacheName = null
       )
-      fun sendResults() {
-         val wrappedGames = (fetchResultsController.fetchedObjects ?: emptyList<NSManagedObject>())
-            .map { gameManagedObject -> Game(gameManagedObject as CDGame) }
-         trySendBlocking(wrappedGames)
-      }
-      val delegate = object : NSObject(), NSFetchedResultsControllerDelegateProtocol {
-         override fun controllerDidChangeContent(controller: NSFetchedResultsController) {
-            NSLog("[CoreDataDatabase] NSFetchedResultsControllerDelegate received controllerDidChangeContent")
-            sendResults()
-         }
-      }
-      fetchResultsController.delegate = delegate
-
-      val succeeded = fetchResultsController.performFetch(null)
-      if (!succeeded) {
-         NSLog("[CoreDataDatabase] Couldn't fetch games")
-      }
-      sendResults()
+      val localFetchResultsController = gameListFetchResultsController!!
+      val delegate = FetchedResultsControllerDelegate()
+      localFetchResultsController.delegate = delegate
       
-      awaitClose { 
-         fetchResultsController.delegate = null
-      }
-   }.buffer(2)
+      return callbackFlow {
+         delegate.onSendResults = { wrappedGames ->
+            channel.trySendBlocking(wrappedGames)
+         }
+         
+         val succeeded = localFetchResultsController.performFetch(null)
+         if (!succeeded) {
+            NSLog("[CoreDataDatabase] Couldn't fetch games")
+         }
+         delegate.controllerDidChangeContent(localFetchResultsController)
+         
+         awaitClose {
+            localFetchResultsController.delegate = null
+            gameListFetchResultsController = null
+         }
+      }.buffer(2)
+   }
    
    override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
       return Game(container.viewContext.objectWithID(gameID) as CDGame).withWords()
@@ -141,6 +157,7 @@ class CoreDataDatabase private constructor(@Suppress("MemberVisibilityCanBePriva
    
    override suspend fun updateGameScore(game: GameWithWords, score: Short) {
       game.game.score = score
+      game.game.cdGame.setDirtyTrigger(0) // needed to refresh this game in the app root
    }
    
    override fun hasGameForDate(date: LocalDate): Boolean {

@@ -16,7 +16,7 @@ compose-multiplatform = "1.6.11"
 compose-compiler = "1.5.14"
 junit = "4.13.2"
 kamelImage = "0.9.5"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 kotlinx-datetime = "0.6.0"
 moko-mvvm = "0.16.1"
 multiplatform-settings = "1.1.1"
@@ -57,5 +57,5 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-swiftklib = { id = "io.github.ttypic.swiftklib", version = "0.6.2" }
+swiftklib = { id = "io.github.ttypic.swiftklib", version = "0.7.0-CAPNSPELLCHECK" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

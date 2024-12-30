@@ -1,3 +1,5 @@
+import io.github.ttypic.swiftklib.gradle.api.ExperimentalSwiftklibApi
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
@@ -21,7 +23,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-       iosSimulatorArm64()
+//       iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -33,6 +35,7 @@ kotlin {
           val main by getting {
              cinterops {
                 create("FreeBeeData")
+                create("KannaWrapper")
              }
           }
        }
@@ -119,7 +122,22 @@ compose.resources {
 
 swiftklib {
    create("FreeBeeData") {
-      path = file("src/iosMain/swift")
+      path = file("src/iosMain/swift/data")
       packageName("com.letstwinkle.freebee.database.swift")
+      minIos = "15.6"
+      toolsVersion = "5.9"
+   }
+   create("KannaWrapper") {
+      path = file("src/iosMain/swift/parsing")
+      packageName("com.letstwinkle.freebee.screens.loader")
+      minIos = "15.6"
+      toolsVersion = "5.9"
+      @OptIn(ExperimentalSwiftklibApi::class)
+      dependencies {
+         remote("Kanna") {
+            url("https://github.com/tid-kijyun/Kanna")
+            exactVersion("5.3.0")
+         }
+      }
    }
 }

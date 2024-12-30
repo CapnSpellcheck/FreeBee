@@ -17,6 +17,10 @@ import CoreData
    @NSManaged public var allowedWords: Set<String>
    @NSManaged public var centerLetterCode: Int32
    @NSManaged public var date: Date?
+   // dirtyTrigger needed because the score is updated via CDGameProgress, whereas the root screen uses
+   // a fetch request of this class. The fetch request doesn't note changes in its relationship's
+   // attributes (https://stackoverflow.com/questions/12370521/changing-a-managed-object-property-doesnt-trigger-nsfetchedresultscontroller-to).
+   // It's transient in xcdatamodel
    @NSManaged public var dirtyTrigger: Int16
    @NSManaged public var geniusScore: Int16
    @NSManaged public var maximumScore: Int16

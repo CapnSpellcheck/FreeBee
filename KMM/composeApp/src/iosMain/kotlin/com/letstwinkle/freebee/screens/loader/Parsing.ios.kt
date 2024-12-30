@@ -1,20 +1,35 @@
+@file:OptIn(ExperimentalForeignApi::class)
+
 package com.letstwinkle.freebee.screens.loader
 
-// TODO
-actual fun createHTMLDocument(html: String): HTMLDocument = object : HTMLDocument {
-   private val dummyNode = object : Node {
-      override fun xpathNodes(expr: String): NodeList = object : NodeList {
-         override val size = 0
-         
-         override fun item(i: Int) = throw UnsupportedOperationException()
-      }
-      
-      override fun xpathNode(expr: String): Node = this
-      
-      override fun xpathStr(expr: String): String = ""
-      override fun textContent(): String = ""
-      
-   }
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.convert
+
+actual fun createHTMLDocument(html: String): HTMLDocument {
+   val document = KannaDocumentObjc(html)
+   return KannaDocumentWrapper(document)
+}
+
+private class KannaDocumentWrapper(private val kannaObjc: KannaDocumentObjc) : HTMLDocument {
    override val rootElement: Node
-      get() = dummyNode
+      get() = SearchableNodeWrapper(kannaObjc.rootElement())
+}
+
+private class SearchableNodeWrapper(private val searchableNode: SearchableNodeObjc) : Node {
+   override fun xpathNodes(expr: String): NodeList = 
+      SearchableNodeListWrapper(searchableNode.xpathNodesWithExpr(expr))
+   
+   override fun xpathNode(expr: String): Node =
+      SearchableNodeWrapper(searchableNode.xpathNodeWithExpr(expr))
+   
+   override fun xpathStr(expr: String): String = searchableNode.xpathStrWithExpr(expr)
+   
+   override fun textContent(): String = searchableNode.textContent()
+}
+
+private class SearchableNodeListWrapper(private val nodeList: SearchableNodeListObjc) : NodeList {
+   override val size: Int
+      get() = nodeList.size().convert()
+   
+   override fun item(i: Int): Node = SearchableNodeWrapper(nodeList.itemWithI(i.convert()))
 }
