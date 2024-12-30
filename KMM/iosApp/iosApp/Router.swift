@@ -26,13 +26,11 @@ final class Router {
    
    let navController = ComposeNavigationController()
    var currentActivity: NSUserActivity
+   private lazy var weakNavigator: WeakNavigator = WeakNavigator(router: self)
    
    private init() {
       currentActivity = NSUserActivity(activityType: SceneActivity.gameIndex.activityType)
-      // That method creates a weak ref to Router.shared, so async it
-      DispatchQueue.main.async {
-         self.installRootController()
-      }
+      installRootController()
    }
    
    func restore(activity: NSUserActivity) -> Bool {
@@ -116,7 +114,10 @@ final class Router {
       
       let gameDate = gameDate.atStartOfDayIn(timeZone: ComposeApp.TimeZone.companion.UTC)
       currentActivity = NSUserActivity(activityType: SceneActivity.game.activityType)
-      currentActivity.userInfo = [SceneActivityKeys.gameDate: gameDate.toNSDate()]
+      currentActivity.userInfo = [
+         SceneActivityKeys.gameDate: gameDate.toNSDate(),
+         SceneActivityKeys.gameURL: gameID.uriRepresentation() as NSURL,
+      ]
    }
    
    private func installRootController() {
@@ -132,7 +133,11 @@ final class Router {
 
 class WeakNavigator: GameListNavigator, BackNavigator, GamePickerNavigator_iOS,
                         GameLoaderNavigator_iOS {
-   weak var router = Router.shared
+   weak var router: Router?
+   
+   init(router: Router) {
+      self.router = router
+   }
    
    func showStatistics() { router?.showStatistics() }
    func openGame(game: Game) { router?.openGame(game: game) }
@@ -143,5 +148,3 @@ class WeakNavigator: GameListNavigator, BackNavigator, GamePickerNavigator_iOS,
    func openGameLoader(gameDate: LocalDate) { router?.showGameLoader(gameDate: gameDate) }
    func goBack() { router?.goBack() }
 }
-
-let weakNavigator = WeakNavigator()
