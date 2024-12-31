@@ -75,7 +75,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		06468F2F2CC0BA3A00566AEF /* SceneActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneActivity.swift; path = "../../../iOS shared/SceneActivity.swift"; sourceTree = "<group>"; };
+		06468F2F2CC0BA3A00566AEF /* SceneActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneActivity.swift; path = ../SceneActivity.swift; sourceTree = "<group>"; };
 		0699B8E22C9101AF002011E3 /* Free Bee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Free Bee.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0699B8E72C9101AF002011E3 /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
 		0699B8E92C9101B0002011E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,11 +104,11 @@
 		06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePickerViewModel.swift; sourceTree = "<group>"; };
 		06B094172CA767CD00A6CF66 /* GameLoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoaderView.swift; sourceTree = "<group>"; };
 		06B094192CA78E0E00A6CF66 /* UINavigationControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationControllerExtension.swift; sourceTree = "<group>"; };
-		06B0943F2CA7958E00A6CF66 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "../../iOS shared/SceneDelegate.swift"; sourceTree = "<group>"; };
+		06B0943F2CA7958E00A6CF66 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		06B094412CA7993400A6CF66 /* EnvironmentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentValues.swift; sourceTree = "<group>"; };
 		06B094432CA79A4400A6CF66 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../iOS shared/AppDelegate.swift"; sourceTree = "<group>"; };
 		06B094462CA7A42E00A6CF66 /* ActionNavigationLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionNavigationLink.swift; sourceTree = "<group>"; };
-		06B094482CA7A7D900A6CF66 /* Free-Bee-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Free-Bee-Info.plist"; path = "../iOS shared/Free-Bee-Info.plist"; sourceTree = "<group>"; };
+		06B094482CA7A7D900A6CF66 /* Free-Bee-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Free-Bee-Info.plist"; sourceTree = "<group>"; };
 		06B0BE032CC1B0A800E23C7F /* EntityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTest.swift; sourceTree = "<group>"; };
 		06B0BE052CC1B9F700E23C7F /* GameViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModelTest.swift; sourceTree = "<group>"; };
 		06B3772B2CD0831F007423D9 /* Free Bee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Free Bee.entitlements"; sourceTree = "<group>"; };
@@ -641,7 +641,7 @@
 				DEVELOPMENT_TEAM = N2B7D3V574;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "../iOS shared/Free-Bee-Info.plist";
+				INFOPLIST_FILE = "Free-Bee-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Free Bee";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -678,7 +678,7 @@
 				DEVELOPMENT_TEAM = N2B7D3V574;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "../iOS shared/Free-Bee-Info.plist";
+				INFOPLIST_FILE = "Free-Bee-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Free Bee";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -5,7 +5,8 @@
 //
 
 import UIKit
-import SwiftUI
+// TODO: put this back into "iOS shared" directory, and add #ifdef for line below
+import ComposeApp
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
    var window: UIWindow?
@@ -24,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       
       /// 3. Create a view hierarchy programmatically
       let router = Router.shared
-      window.rootViewController = router.navController
+      window.rootViewController = router.navigationController
       
       if let userActivity = session.stateRestorationActivity {
          if router.restore(activity: userActivity) {
@@ -72,4 +73,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
    
    
 }
-
