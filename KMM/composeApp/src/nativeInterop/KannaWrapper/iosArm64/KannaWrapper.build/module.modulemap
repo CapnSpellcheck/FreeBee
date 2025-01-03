@@ -1,0 +1,4 @@
+module KannaWrapper {
+    header "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/KannaWrapper/iosArm64/swiftBuild/.build/arm64-apple-ios/release/KannaWrapper.build/KannaWrapper-Swift.h"
+    requires objc
+}

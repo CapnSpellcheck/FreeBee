@@ -1,0 +1,8 @@
+package = com.letstwinkle.freebee.database.swift
+language = Objective-C
+modules = FreeBeeData
+
+# md5 aca3a221ccf23bfbf60971816f52b311
+staticLibraries = libFreeBeeData.a
+
+linkerOpts = -L/usr/lib/swift -platform_version ios 15.6 15.6 -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos

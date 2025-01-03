@@ -1,0 +1,8 @@
+package = com.letstwinkle.freebee.screens.loader
+language = Objective-C
+modules = KannaWrapper
+
+# md5 4c4e0a3fd5ce0d1460af57739e2b2c74
+staticLibraries = libKannaWrapper.a
+
+linkerOpts = -L/usr/lib/swift -platform_version ios 15.6 15.6 -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos

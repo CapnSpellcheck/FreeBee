@@ -29,13 +29,22 @@ kotlin {
             baseName = "ComposeApp"
             binaryOption("bundleId", "FreeBeeKMM")
             isStatic = true
-            export(libs.kotlinx.datetime)
         }
        iosTarget.compilations {
           val main by getting {
              cinterops {
-                create("FreeBeeData")
-                create("KannaWrapper")
+                val FreeBeeData by creating {
+                   definitionFile.set(project.file("src/nativeInterop/FreeBeeData/${iosTarget.name}/FreeBeeData.def"))
+                   extraOpts("-libraryPath", "$projectDir/src/nativeInterop/FreeBeeData/${iosTarget.name}")
+                   compilerOpts("-fmodules", "-I$projectDir/src/nativeInterop/FreeBeeData/${iosTarget.name}/FreeBeeData.build")
+                }
+                val KannaWrapper by creating {
+                   definitionFile.set(project.file("src/nativeInterop/KannaWrapper/${iosTarget.name}/KannaWrapper.def"))
+                   extraOpts("-libraryPath", "$projectDir/src/nativeInterop/KannaWrapper/${iosTarget.name}")
+                   compilerOpts("-fmodules", "-I$projectDir/src/nativeInterop/KannaWrapper/${iosTarget.name}/KannaWrapper.build")
+                }
+//                create("FreeBeeData")
+//                create("KannaWrapper")
              }
           }
        }
@@ -121,16 +130,26 @@ compose.resources {
 }
 
 swiftklib {
+   /**
+    * NOTE: this is disabled because there is an issue with the unreleased version 0.7.0-SNAPSHOT
+    * which I depend on.... I manually changed the code, built the plugin and used that to build
+    * these libraries, then added the kotlin interop output to the repo
    create("FreeBeeData") {
       path = file("src/iosMain/swift/data")
       packageName("com.letstwinkle.freebee.database.swift")
       minIos = "15.6"
+      minMacos = ""
+      minWatchos = ""
+      minTvos = ""
       toolsVersion = "5.9"
    }
    create("KannaWrapper") {
       path = file("src/iosMain/swift/parsing")
       packageName("com.letstwinkle.freebee.screens.loader")
       minIos = "15.6"
+      minMacos = ""
+      minWatchos = ""
+      minTvos = ""
       toolsVersion = "5.9"
       @OptIn(ExperimentalSwiftklibApi::class)
       dependencies {
@@ -140,4 +159,5 @@ swiftklib {
          }
       }
    }
+   **/
 }

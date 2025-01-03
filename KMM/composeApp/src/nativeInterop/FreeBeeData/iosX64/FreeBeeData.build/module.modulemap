@@ -1,0 +1,4 @@
+module FreeBeeData {
+    header "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosX64/swiftBuild/.build/x86_64-apple-ios/release/FreeBeeData.build/FreeBeeData-Swift.h"
+    requires objc
+}

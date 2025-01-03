@@ -1,0 +1,3 @@
+These Swift files were compiled into static libraries with swift-klib-plugin. I was using a pre-release version
+for a new feature, so I inserted the output of that - Kotlin interop files - into this repo and
+turned off the plugin for now. So, editing the swift files here will not result in anything.

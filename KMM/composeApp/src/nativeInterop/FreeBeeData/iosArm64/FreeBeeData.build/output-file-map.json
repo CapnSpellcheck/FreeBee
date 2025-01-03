@@ -1,0 +1,12 @@
+{
+  "": {
+    "dependencies": "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/.build/arm64-apple-ios/release/FreeBeeData.build/FreeBeeData.d",
+    "object": "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/.build/arm64-apple-ios/release/FreeBeeData.build/FreeBeeData.o",
+    "swift-dependencies": "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/.build/arm64-apple-ios/release/FreeBeeData.build/master.swiftdeps"
+  },
+  "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/FreeBeeData/Entities.swift": {
+    "object": "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/.build/arm64-apple-ios/release/FreeBeeData.build/Entities.swift.o",
+    "swiftmodule": "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/.build/arm64-apple-ios/release/FreeBeeData.build/Entities~partial.swiftmodule",
+    "swift-dependencies": "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/.build/arm64-apple-ios/release/FreeBeeData.build/Entities.swiftdeps"
+  }
+}

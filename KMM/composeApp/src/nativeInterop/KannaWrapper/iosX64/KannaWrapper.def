@@ -1,0 +1,8 @@
+package = com.letstwinkle.freebee.screens.loader
+language = Objective-C
+modules = KannaWrapper
+
+# md5 8f4fcfc5156c19691a057c7f41dd9fe7
+staticLibraries = libKannaWrapper.a
+
+linkerOpts = -L/usr/lib/swift -platform_version ios-simulator 15.6 15.6 -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator
