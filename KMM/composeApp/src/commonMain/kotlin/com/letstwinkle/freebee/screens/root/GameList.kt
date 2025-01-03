@@ -65,7 +65,7 @@ private val TableHorizontalPadding = 16.dp
    val games = viewModel.gamesFlow.collectAsState().value
    Column(modifier.background(groupedTableHeaderBackgroundColor)) {
       LazyColumn(
-         Modifier.weight(1f)
+         Modifier.weight(1f).padding(bottom = 16.dp)
       ) {
          item(key = "inprogress") {
             Header("In progress")
