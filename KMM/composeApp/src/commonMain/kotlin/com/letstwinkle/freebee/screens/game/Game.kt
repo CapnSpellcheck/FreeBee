@@ -179,7 +179,11 @@ private val positionProvider = object : PopupPositionProvider {
             Modifier.padding(end = 8.dp),
             style = bodyStyle
          )
-         LinearProgressIndicator(viewModel.gameProgress, Modifier.height(2.dp).fillMaxWidth())
+         LinearProgressIndicator(
+            viewModel.gameProgress,
+            Modifier.height(2.dp).fillMaxWidth(),
+            color = MaterialTheme.colors.secondary
+         )
       }
       
       Row(
