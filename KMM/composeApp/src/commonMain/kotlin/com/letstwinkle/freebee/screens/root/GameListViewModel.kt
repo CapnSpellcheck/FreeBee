@@ -1,5 +1,8 @@
 package com.letstwinkle.freebee.screens.root
 
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.UriHandler
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letstwinkle.freebee.database.*
@@ -31,5 +34,10 @@ class GameListViewModel(private val repository: FreeBeeRepository) : ViewModel()
    override fun onCleared() {
       super.onCleared()
       viewModelScope.cancel()
+   }
+   
+   fun openPayPal(uriHandler: UriHandler, clipManager: ClipboardManager) {
+      clipManager.setText(AnnotatedString("jpellico@gmail.com"))
+      uriHandler.openUri("https://www.paypal.com/myaccount/transfer/homepage")
    }
 }

@@ -93,7 +93,7 @@ import kotlinx.datetime.atStartOfDayIn
       DatePickerDialog(
          closeDatePicker,
          {
-            TextButton(closeDatePicker) { Text("OK") }
+            Button(closeDatePicker) { Text("OK") }
          },
       ) {
          DatePicker(datePickerState)

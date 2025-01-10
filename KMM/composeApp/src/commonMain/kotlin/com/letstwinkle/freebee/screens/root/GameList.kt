@@ -14,6 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -98,16 +100,9 @@ private val TableHorizontalPadding = 16.dp
             }
          }
       }
-      Column(
-         Modifier.clip(RoundedCornerShape(6.dp)).background(Color.White),
-         verticalArrangement = Arrangement.spacedBy(12.dp)
-      ) {
-         Text("Sponsor me")
-         Text("I appreciate tips! The only social payment platform I'm on is PayPal. Feel free to send me a gift.")
-         TextButton({ }) {
-            Text("Open PayPal")
-         }
-      }
+      val uriHandler = LocalUriHandler.current
+      val clipManager = LocalClipboardManager.current
+      SponsorMe() { viewModel.openPayPal(uriHandler, clipManager) }
    }
 }
 
@@ -175,6 +170,32 @@ private val TableHorizontalPadding = 16.dp
             colorFilter = ColorFilter.tint(disclosureIndicatorColor)
          )
       }
+   }
+}
+
+@Composable private fun SponsorMe(openPayPal: () -> Unit) {
+   val showPaypalAlert = remember { mutableStateOf(false) }
+   Column(
+      Modifier.clip(RoundedCornerShape(6.dp)).background(Color.White).padding(12.dp),
+      verticalArrangement = Arrangement.spacedBy(12.dp)
+   ) {
+      Text("Sponsor me", style = headlineStyle)
+      Text("I appreciate tips! The only social payment platform I'm on is PayPal. Feel free to send me a gift.", style = com.letstwinkle.freebee.footnoteStyle)
+      TextButton(
+         { showPaypalAlert.value = true },
+         Modifier.align(Alignment.CenterHorizontally),
+         colors = ButtonDefaults.textButtonColors(contentColor = iOSInspiredBlueActionColor),
+      ) {
+         Text("Open PayPal")
+      }
+   }
+   val dismiss = { showPaypalAlert.value = false }
+   if (showPaypalAlert.value) {
+      AlertDialog(
+         dismiss,
+         confirmButton = { Button({ openPayPal(); dismiss() }) { Text("Continue")} },
+         text = { Text("Taking you to the PayPal send money page. It may open in a browser. My email address has been copied to the clipboard, please paste it into the recipient field.") },
+      )
    }
 }
 

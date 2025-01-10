@@ -85,7 +85,7 @@ import kotlinx.datetime.LocalDate
       val error = status.error.message ?: "Unable to load the game"
       AlertDialog(
          {},
-         { Button({ backNavigator.goBack() }) { Text("OK") } },
+         confirmButton = { Button({ backNavigator.goBack() }) { Text("OK") } },
          title = { Text("Error") },
          text = { Text(error) },
          properties = DialogProperties(dismissOnClickOutside = false)
