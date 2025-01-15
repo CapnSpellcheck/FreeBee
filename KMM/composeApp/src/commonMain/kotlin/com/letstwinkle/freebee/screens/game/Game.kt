@@ -124,6 +124,8 @@ private val positionProvider = object : PopupPositionProvider {
    
    ModalBottomSheetLayout(
       { RulesSheet() },
+      modifier, // NOTE: on iPhone this doesn't seem to inset for the bottom home gesture navigation
+                // Could be an issue with applying window insets to MBSL
       sheetState = rulesSheetState,
       sheetShape = RoundedCornerShape(8.dp),
    ) {
@@ -133,7 +135,7 @@ private val positionProvider = object : PopupPositionProvider {
          sheetShape = RoundedCornerShape(8.dp),
          scrimColor = Color.Transparent
       ) {
-         Game(viewModel, enteredWordsSheetState, modifier, painterProvider)
+         Game(viewModel, enteredWordsSheetState, painterProvider = painterProvider)
       }
    }
 }
@@ -167,7 +169,8 @@ private val positionProvider = object : PopupPositionProvider {
    }
    
    Column(
-      modifier.fillMaxSize().padding(vertical = 12.dp, horizontal = 16.dp),
+      modifier.fillMaxSize().padding(WindowInsets.safeContent.only(WindowInsetsSides.Bottom).asPaddingValues())
+         .padding(vertical = 12.dp, horizontal = 16.dp),
       horizontalAlignment = Alignment.CenterHorizontally
    ) {
       Row(
@@ -304,7 +307,10 @@ private val positionProvider = object : PopupPositionProvider {
 
 @Composable fun EnteredWordsSheet(words: List<EnteredWord>) {
    log.d { "Entered words: ${words.map { it.value }}" }
-   Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+   val modifier = Modifier.fillMaxWidth()
+      .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom).asPaddingValues())
+      .padding(horizontal = 16.dp, vertical = 12.dp)
+   Column(modifier) {
       Text("Entered words", style = headlineStyle, maxLines = 1)
       VerticalGrid(
          SimpleGridCells.Adaptive(100.dp),
@@ -312,7 +318,6 @@ private val positionProvider = object : PopupPositionProvider {
       ) {
          val sortedWords = words.sortedBy { it.value }
             .map { it.value.replaceFirstChar(Char::titlecaseChar) }
-         // convert from rows to columns
          for (word in sortedWords) {
             Text(word, Modifier.padding(bottom = 4.dp), style = bodyStyle)
          }
