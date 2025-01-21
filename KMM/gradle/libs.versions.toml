@@ -18,11 +18,13 @@ junit = "4.13.2"
 kamelImage = "0.9.5"
 kotlin = "2.0.21"
 kotlinx-datetime = "0.6.0"
+kotlinxCoroutinesTest = "1.10.1"
 moko-mvvm = "0.16.1"
 multiplatform-settings = "1.1.1"
 multiplatform-logging = "1.4.2"
 ktor = "2.3.13"
 androidx-work = "2.9.0"
+multiplatformSettingsTest = "1.2.0"
 
 [libraries]
 kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
@@ -42,6 +44,7 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime"}
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings"}
 multiplatform-logging = { module = "org.lighthousegames:logging", version.ref = "multiplatform-logging"}
@@ -50,6 +53,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
+multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-test", version.ref = "multiplatformSettingsTest" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

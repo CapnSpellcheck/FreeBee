@@ -83,6 +83,14 @@ kotlin {
        iosMain.dependencies {
           implementation(libs.ktor.client.darwin)
        }
+       
+       listOf(commonTest, androidUnitTest).forEach { 
+          it.dependencies {
+             implementation(libs.kotlin.test)
+             implementation(libs.kotlinx.coroutines.test)
+             implementation(libs.multiplatform.settings.test)
+          }
+       }
     }
 }
 
@@ -94,7 +102,7 @@ android {
         applicationId = "com.letstwinkle.freebee"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
     }
     packaging {
@@ -120,9 +128,9 @@ android {
     }
 }
 
-dependencies {
-    debugImplementation(compose.uiTooling)
-    "kapt"(libs.androidx.room.compiler)
+dependencies { 
+   debugImplementation(compose.uiTooling)
+   "kapt"(libs.androidx.room.compiler)
 }
 
 compose.resources {

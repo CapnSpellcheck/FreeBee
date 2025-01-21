@@ -20,6 +20,7 @@ private const val enteredWordSpacer = "\u2003"
 class GameViewModel(
    private val repository: FreeBeeRepository,
    private val gameID: EntityIdentifier,
+   private val multiplatformSettings: Settings = Settings(),
 ) : ViewModel()
 {
    private val gameWithWordsMutable = mutableStateOf<GameWithWords?>(null, policy = neverEqualPolicy())
@@ -95,8 +96,9 @@ class GameViewModel(
             recordPangram()
          }
          val enteredWordCapitalized = enteredWord.replaceFirstChar(Char::titlecaseChar)
-         joinedEnteredWords = 
-            enteredWordCapitalized + enteredWordSpacer + joinedEnteredWords
+         joinedEnteredWords = enteredWordCapitalized + 
+            if (joinedEnteredWords.isNotEmpty()) enteredWordSpacer + joinedEnteredWords
+            else ""
       }
       if (!errored) {
          gameWithWords.game.currentWord = ""
@@ -133,12 +135,10 @@ class GameViewModel(
    }
    
    private fun recordPangram() {
-      Settings().also {
-         it.putInt(
-            SettingKeys.PangramCount,
-            it.getInt(SettingKeys.PangramCount, 0) + 1
-         )
-         log.d { "Total pangrams: ${it.getInt(SettingKeys.PangramCount, 0)}" }
-      }
+      multiplatformSettings.putInt(
+         SettingKeys.PangramCount,
+         multiplatformSettings.getInt(SettingKeys.PangramCount, 0) + 1
+      )
+      log.d { "Total pangrams: ${multiplatformSettings.getInt(SettingKeys.PangramCount, 0)}" }
    }
 }

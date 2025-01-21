@@ -6,6 +6,8 @@ import com.letstwinkle.freebee.LocalDateClassParceler
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.*
 
+actual typealias EntityIdentifier = Long
+
 @Entity(indices = [Index("date", unique=true, orders=[Index.Order.DESC])])
 @Parcelize
 @TypeParceler<LocalDate, LocalDateClassParceler>
@@ -78,7 +80,7 @@ actual data class GameWithWords(
 @Entity(
    foreignKeys = [ForeignKey(Game::class, arrayOf("id"), arrayOf("gameId"), ForeignKey.RESTRICT)],
    indices = [Index("gameId", "value", unique=true)]
-   )
+)
 actual data class EnteredWord(
    @PrimaryKey(autoGenerate = true) val id: EntityIdentifier = 0,
    @ColumnInfo(index = true) val gameId: EntityIdentifier,
