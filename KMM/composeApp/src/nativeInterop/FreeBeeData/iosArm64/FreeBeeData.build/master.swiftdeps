@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)"
-options: "b8dd9cffd17e80a96b018b9ae22d2b0ac10f41a2e2cf124629a17d616c8c0523"
-build_start_time: [1735854612, 580218000]
-build_end_time: [1735854622, 897467000]
-inputs:
-  "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/FreeBeeData/iosArm64/swiftBuild/FreeBeeData/Entities.swift": [1735854606, 43172905]

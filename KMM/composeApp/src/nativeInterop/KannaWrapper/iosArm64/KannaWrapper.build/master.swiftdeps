@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)"
-options: "949ce4c3c533b598122504ca00260dd75e84d6d4047825b18109d0048cad39dd"
-build_start_time: [1735854710, 738751000]
-build_end_time: [1735854713, 23908000]
-inputs:
-  "/Users/g/FreeBee/KMM/composeApp/build/swiftklib/KannaWrapper/iosArm64/swiftBuild/KannaWrapper/KannaObjc.swift": [1735854683, 244285685]
