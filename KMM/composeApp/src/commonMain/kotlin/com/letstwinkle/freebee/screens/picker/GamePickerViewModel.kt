@@ -5,9 +5,8 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.database.FreeBeeRepository
-import com.letstwinkle.freebee.gameURL
-import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.launch
@@ -21,6 +20,7 @@ private val log = logging()
 
 class GamePickerViewModel(
    private val repository: FreeBeeRepository,
+   private val httpClientProvider: HttpClientProvider = DefaultHttpClientProvider,
 ) : ViewModel() {
    private val selectedDateMutable: MutableState<LocalDate>
    private val isChoosingRandomDateMutable = mutableStateOf(false)
@@ -80,7 +80,7 @@ class GamePickerViewModel(
    
    private suspend fun determineLatestAvailableDate() {
       var checkDate = latestAvailableDate
-      val httpClient = HttpClient()
+      val httpClient = httpClientProvider.provide()
       
       while (checkDate >= earliestGameDate) {
          log.d { "determineLatestAvailableDate(): checking date $checkDate"}
@@ -88,10 +88,13 @@ class GamePickerViewModel(
          if (!isGameLoaded(checkDate)) {
             // check whether the website responds with 404 for the date.
             try {
+               println("***** 1")
                val gameURL = gameURL(checkDate)
                // NOTE: this should call HEAD, but the service seems to be misconfigured/flawed:
                // it returns a nonempty body. Okhttp can't be configured to ignore it
+               println("***** 2")
                val response = httpClient.get(gameURL)
+               println("***** 3")
                if (response.status.isSuccess()) {
                   log.d { "determineLatestAvailableDate(): HEAD success" }
                   latestAvailableDate = checkDate
@@ -100,6 +103,8 @@ class GamePickerViewModel(
                   log.d { "determineLatestAvailableDate(): FAIL: $response" }
                }
             } catch (throwable: Throwable) {
+               println("***** throw")
+               throwable.printStackTrace()
                log.i { "httpClient threw: ${throwable.message}" }
             }
          }
