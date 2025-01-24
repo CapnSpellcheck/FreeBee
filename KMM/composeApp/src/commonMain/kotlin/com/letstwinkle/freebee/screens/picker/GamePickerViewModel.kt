@@ -84,6 +84,7 @@ class GamePickerViewModel(
       
       while (checkDate >= earliestGameDate) {
          log.d { "determineLatestAvailableDate(): checking date $checkDate"}
+         println( "determineLatestAvailableDate(): checking date $checkDate")
          // if the game is saved locally, skip it
          if (!isGameLoaded(checkDate)) {
             // check whether the website responds with 404 for the date.

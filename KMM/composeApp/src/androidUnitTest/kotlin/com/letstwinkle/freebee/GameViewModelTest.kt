@@ -5,7 +5,7 @@ import com.letstwinkle.freebee.screens.game.GameViewModel
 import com.russhwolf.settings.MapSettings
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.*
 import kotlinx.datetime.LocalDate
 import org.lighthousegames.logging.KmLogging
 import org.lighthousegames.logging.LogLevel
@@ -15,11 +15,14 @@ class GameViewModelTest {
    lateinit var viewModel: GameViewModel
    lateinit var repository: UnitTestRepository
    
+   private val testDispatcher: TestDispatcher = StandardTestDispatcher()
+   
    init {
       KmLogging.setLogLevel(LogLevel.Off)
    }
    
    @BeforeTest fun setUp() {
+      Dispatchers.setMain(testDispatcher)
       repository = UnitTestRepository()
       val gameID = runBlocking {
          repository.createGame(
@@ -32,6 +35,10 @@ class GameViewModelTest {
          )
       }
       viewModel = GameViewModel(repository, gameID, multiplatformSettings = MapSettings())
+   }
+   
+   @AfterTest fun tearDown() {
+      Dispatchers.resetMain()
    }
    
    val gameWithWords: GameWithWords
