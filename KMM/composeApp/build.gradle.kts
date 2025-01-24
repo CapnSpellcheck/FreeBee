@@ -75,6 +75,7 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.ktor.client.core)
             implementation(libs.kamel.image)
+            implementation(libs.kotlinx.coroutines.core)
             api(libs.moko.mvvm.flow)
             api(libs.multiplatform.logging)
             api(libs.kotlinx.datetime) // api for exporting
