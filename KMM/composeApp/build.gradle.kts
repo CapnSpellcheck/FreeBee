@@ -85,7 +85,7 @@ kotlin {
           implementation(libs.ktor.client.darwin)
        }
        
-       listOf(commonTest, androidUnitTest).forEach { 
+       listOf(commonTest, androidUnitTest, iosTest).forEach { 
           it.dependencies {
              implementation(libs.kotlin.test)
              implementation(libs.kotlinx.coroutines.test)
@@ -104,7 +104,7 @@ android {
         applicationId = "com.letstwinkle.freebee"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
+        versionCode = 3
         versionName = "1.0"
     }
     packaging {

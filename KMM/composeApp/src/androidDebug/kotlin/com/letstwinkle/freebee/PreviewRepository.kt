@@ -104,6 +104,17 @@ class PreviewRepository : FreeBeeRepository {
          otherLetters = "mihatr",
          geniusScore = 9,
          maximumScore = 266,
+      ),
+      Game(
+         id = 4,
+         date = LocalDate(2024, 1, 1),
+         allowedWords = setOf(
+         ),
+         centerLetterCode = 'c'.code,
+         otherLetters = "mihatr",
+         geniusScore = 1,
+         maximumScore = 1,
+         score = 1,
       )
    )
    

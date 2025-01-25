@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -64,7 +65,12 @@ private val TableHorizontalPadding = 16.dp
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
-   val games = viewModel.gamesFlow.collectAsState().value
+   val gamesGroupedByComplete = viewModel.gamesFlow.collectAsState().value
+      .groupBy { it.isComplete }.withDefault { emptyList() }
+   val chevron = painterProvider.provide(PainterProvider.Resource.Chevron)
+   val onGameClick = fun(game: Game) {
+      navigator?.openGame(game)
+   }
    Column(modifier.background(groupedTableHeaderBackgroundColor)) {
       LazyColumn(
          Modifier.weight(1f).padding(bottom = 16.dp)
@@ -72,21 +78,12 @@ private val TableHorizontalPadding = 16.dp
          item(key = "inprogress") {
             Header("In progress")
          }
-         if (games.isNotEmpty()) {
-            item {
-               fullBleedDivider()
+         GameGroup(gamesGroupedByComplete.getValue(false), onGameClick, chevron)
+         if (gamesGroupedByComplete.containsKey(true)) {
+            item(key = "completed") {
+               Header("100% complete")
             }
-         }
-         itemsIndexed(games, { _, game -> game.uniqueID }) { index, game ->
-            GameRow(game, { navigator?.openGame(game) }, painterProvider = painterProvider)
-            if (index < games.size - 1) {
-               indentedDivider(TableHorizontalPadding)
-            }
-         }
-         if (games.isNotEmpty()) {
-            item {
-               fullBleedDivider()
-            }
+            GameGroup(gamesGroupedByComplete.getValue(true), onGameClick, chevron)
          }
          item(key = "newheader") {
             Header("Start a new game")
@@ -116,11 +113,30 @@ private val TableHorizontalPadding = 16.dp
    )
 }
 
+private fun LazyListScope.GameGroup(games: List<Game>, onClick: (Game) -> Unit, chevron: Painter) {
+   if (games.isNotEmpty()) {
+      item {
+         fullBleedDivider()
+      }
+   }
+   itemsIndexed(games, { _, game -> game.uniqueID }) { index, game ->
+      GameRow(game, onClick, chevron = chevron)
+      if (index < games.size - 1) {
+         indentedDivider(TableHorizontalPadding)
+      }
+   }
+   if (games.isNotEmpty()) {
+      item {
+         fullBleedDivider()
+      }
+   }
+}
+
 @Composable private fun GameRow(
    game: Game,
    onClick: (Game) -> Unit,
    modifier: Modifier = Modifier,
-   painterProvider: PainterProvider,
+   chevron: Painter,
 ) {
    Row(
       modifier.then(rowBaseModifier)
@@ -162,10 +178,9 @@ private val TableHorizontalPadding = 16.dp
       ) {
          Text(if (game.isComplete) "💯" else "Score: ${game.score}", style = bodyStyle)
          Image(
-            painterProvider.provide(PainterProvider.Resource.Chevron),
+            chevron,
             null,
-            modifier = Modifier
-               .padding(start = 10.dp)
+            modifier = Modifier.padding(start = 10.dp)
                .width(with(LocalDensity.current) { 10.sp.toDp() }),
             colorFilter = ColorFilter.tint(disclosureIndicatorColor)
          )
