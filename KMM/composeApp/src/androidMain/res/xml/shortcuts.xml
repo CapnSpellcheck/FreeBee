@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="Today"
+        android:enabled="true"
+        android:icon="@drawable/today_24dp_5f6368"
+        android:shortcutShortLabel="@string/todaysGame"
+        android:shortcutLongLabel="@string/openTodaysGame"
+        android:shortcutDisabledMessage="@string/emptyString">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.letstwinkle.freebee"
+            android:targetClass="com.letstwinkle.freebee.GameListActivity"
+            />
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.letstwinkle.freebee"
+            android:targetClass="com.letstwinkle.freebee.GameLoaderActivity">
+            <extra
+                android:name="TODAY"
+                android:value=""
+                />
+        </intent>
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+    </shortcut>
+</shortcuts>

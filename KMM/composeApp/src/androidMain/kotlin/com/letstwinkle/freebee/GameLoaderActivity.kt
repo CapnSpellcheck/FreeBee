@@ -7,13 +7,16 @@ import androidx.activity.compose.setContent
 import com.letstwinkle.freebee.database.EntityIdentifier
 import com.letstwinkle.freebee.screens.loader.GameLoaderNavigator
 import com.letstwinkle.freebee.screens.loader.GameLoaderScreen
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.*
 
 class GameLoaderActivity : ComponentActivity(), GameLoaderNavigator {
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
-      
-      val gameDate = intent.getGameDateExtra()
+      val gameDate: LocalDate = if (intent.hasExtra("TODAY")) {
+         Clock.System.todayIn(TimeZone.currentSystemDefault())
+      } else {
+         intent.getGameDateExtra()
+      }
       setContent { GameLoaderScreen(gameDate, this.backNavigator(), this) }
    }
    
