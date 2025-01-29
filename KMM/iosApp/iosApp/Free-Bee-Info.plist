@@ -19,5 +19,16 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeDate</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Today's Game</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>Today</string>
+		</dict>
+	</array>
 </dict>
 </plist>

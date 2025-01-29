@@ -16,7 +16,9 @@ interface Routing : BackNavigator, GameLoaderNavigator, GameListNavigator, GameP
 
 @Suppress("unused")
 object Router : Routing {
+   @Suppress("MemberVisibilityCanBePrivate")
    val navigationController = FreeBeeNavigationController()
+   @Suppress("MemberVisibilityCanBePrivate")
    var currentActivity: NSUserActivity; private set
    
    init {
@@ -104,21 +106,33 @@ object Router : Routing {
    }
    
    override fun openGameLoader(gameDate: LocalDate) {
-      val viewController = GameLoaderViewController(gameDate, this)
-      navigationController.replaceTopmost(viewController)
-      currentActivity = NSUserActivity(UserActivity.Loader.activityType)
-      currentActivity.userInfo = mapOf(
-         UserActivityKeys.gameDate to gameDate.atStartOfDayIn(TimeZone.UTC).toNSDate()
-      )
+      openGameLoader(gameDate) { navigationController.replaceTopmost(it) }
    }
    
    override fun goBack() {
       navigationController.popViewControllerAnimated(true)
    }
    
+   fun openToday() {
+      val todaysDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+      openGameLoader(todaysDate) {
+         navigationController.popToRootViewControllerAnimated(false)
+         navigationController.pushViewController(it, true)
+      }
+   }
+   
    private fun installRootController() {
       val rootVC = GameListViewController(this)
       navigationController.setViewControllers(listOf(rootVC))
+   }
+   
+   private fun openGameLoader(gameDate: LocalDate, navigationHandler: (UIViewController) -> Unit) {
+      val viewController = GameLoaderViewController(gameDate, this)
+      navigationHandler(viewController)
+      currentActivity = NSUserActivity(UserActivity.Loader.activityType)
+      currentActivity.userInfo = mapOf(
+         UserActivityKeys.gameDate to gameDate.atStartOfDayIn(TimeZone.UTC).toNSDate()
+      )
    }
    
    private fun gameViewController(gameID: EntityIdentifier, gameDate: LocalDate): UIViewController =

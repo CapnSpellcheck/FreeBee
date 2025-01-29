@@ -150,6 +150,10 @@ class PreviewRepository : FreeBeeRepository {
       return flowOf(games.sortedByDescending { it.date })
    }
    
+   override suspend fun fetchGame(date: LocalDate): Game {
+      return games.first { it.date == date }
+   }
+   
    override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
       val game = games.first { it.id == gameID }
       return GameWithWords(game, linkedSetOf(*(enteredWordsMap[gameID] ?: arrayOf())))

@@ -32,6 +32,8 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
       return gameDAO().fetchGamesLive()
    }
    
+   override suspend fun fetchGame(date: LocalDate): Game? = gameDAO().fetchGame(date)
+   
    override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
       return withTransaction {
          val game = gameDAO().fetchGame(gameID)
@@ -61,9 +63,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
    override fun hasGameForDate(date: LocalDate): Boolean = gameDAO().hasDate(date)
    
    // TODO: to match iOS, model revert should be implemented on failure, somehow…
-   override suspend fun
-      executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
-   {
+   override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean {
       try {
          withTransaction {
             transaction(this)

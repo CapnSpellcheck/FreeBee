@@ -25,6 +25,10 @@ class UnitTestRepository : FreeBeeRepository {
    override fun fetchGamesLive(): Flow<List<Game>> =
       flowOf(games.values.map { it.game }.sortedByDescending { it.date })
    
+   override suspend fun fetchGame(date: LocalDate): Game {
+      return games.values.first { it.game.date == date }.game
+   }
+   
    override suspend fun getStartedGameCount(): Int = games.values.count { it.game.score > 0 }
    
    override suspend fun getGeniusGameCount(): Int = 

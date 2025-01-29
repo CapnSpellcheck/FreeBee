@@ -14,6 +14,7 @@ interface FreeBeeRepository {
    ): EntityIdentifier
    
    fun fetchGamesLive(): Flow<List<Game>>
+   suspend fun fetchGame(date: LocalDate): Game?
    
    suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords
    

@@ -134,6 +134,14 @@ class CoreDataDatabase private constructor(
       }.buffer(2)
    }
    
+   override suspend fun fetchGame(date: LocalDate): Game? {
+      val request = CDGame.fetchRequest()
+      request.predicate = NSPredicate.predicateWithFormat("date = %@", date.atStartOfDayIn(TimeZone.UTC).toNSDate())
+      return container.viewContext.executeFetchRequest(request, null)
+         ?.firstOrNull()
+         ?.let { Game(it as CDGame) }
+   }
+   
    override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
       return Game(container.viewContext.objectWithID(gameID) as CDGame).withWords()
    }

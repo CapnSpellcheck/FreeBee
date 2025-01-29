@@ -28,6 +28,13 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
    suspend fun load(onCenterLetterNotUnique: suspend (List<Char>) -> Char) {
       log.d { "load: game date=$gameDate" }
       this.onCenterLetterNotUnique = onCenterLetterNotUnique
+      
+      // for Today quick action
+      repository.fetchGame(gameDate)?.let { game ->
+         statusMutable.value = LoadingStatus.Finished(game.uniqueID)
+         return
+      }
+      
       val gameURL = gameURL(gameDate)
       try {
          val httpClient = HttpClient()
