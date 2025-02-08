@@ -256,7 +256,7 @@ private val positionProvider = object : PopupPositionProvider {
                gameWithWords.game.centerLetterCharacter,
                gameWithWords.game.otherLetters.toList(),
                viewModel::append,
-               Modifier.fillMaxWidth().padding(vertical = 16.dp)
+               Modifier.padding(vertical = 16.dp)
                   .alpha(if (gameIsCompleteOrNull) 0.4f else 1f)
             )
          }

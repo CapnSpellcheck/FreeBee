@@ -18,6 +18,7 @@ import com.letstwinkle.freebee.screens.loader.GameLoader
 import com.letstwinkle.freebee.screens.loader.GameLoaderViewModel
 import com.letstwinkle.freebee.screens.picker.GamePickerScreen
 import com.letstwinkle.freebee.screens.picker.*
+import com.russhwolf.settings.SharedPreferencesSettings
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinLocalDate
 import java.time.LocalDate
@@ -83,7 +84,7 @@ fun StatisticsPreview() {
    device = "id:pixel_6"
 )
 fun GamePreview() {
-   val gameViewModel = GameViewModel(PreviewRepository(), 3L)
+   val gameViewModel = GameViewModel(PreviewRepository(), 3L, PreviewSettings())
    val rulesState =
       rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
    val coroutineScope = rememberCoroutineScope()
