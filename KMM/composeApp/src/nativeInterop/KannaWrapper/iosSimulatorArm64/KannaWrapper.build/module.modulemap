@@ -1,0 +1,4 @@
+module KannaWrapper {
+    header "./KannaWrapper-Swift.h"
+    requires objc
+}

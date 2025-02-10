@@ -12,7 +12,3 @@ This is a Kotlin Multiplatform project targeting Android, iOS.
 
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
-
-__Note about building iOS__
-
-Because of an issue with the tool used to integrate a non-Objc-compatible Swift library i.e. **swift-klib-plugin** (https://github.com/ttypic/swift-klib-plugin) - *the iOS app will not currently build for an ARM simulator*. If you're on an ARM Mac, please deploy to an iPhone (for now).

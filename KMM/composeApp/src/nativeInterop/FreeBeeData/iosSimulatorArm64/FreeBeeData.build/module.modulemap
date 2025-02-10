@@ -1,0 +1,4 @@
+module FreeBeeData {
+    header "./FreeBeeData-Swift.h"
+    requires objc
+}

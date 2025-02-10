@@ -1,11 +1,11 @@
-import io.github.ttypic.swiftklib.gradle.api.ExperimentalSwiftklibApi
+//import io.github.ttypic.swiftklib.gradle.api.ExperimentalSwiftklibApi
 
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kapt)
-    alias(libs.plugins.swiftklib)
+//    alias(libs.plugins.swiftklib)
     alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
 }
@@ -23,7 +23,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-//       iosSimulatorArm64()
+       iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -139,12 +139,13 @@ compose.resources {
    publicResClass = true
 }
 
+/**
+ * NOTE: this is disabled because there is an issue with the unreleased version 0.7.0-SNAPSHOT
+ * which need an unreleased feature (remote package dep)
+ * I manually changed the code, built the plugin and used that to build
+ * these libraries, then added the kotlin interop output to the repo
 swiftklib {
-   /**
-    * NOTE: this is disabled because there is an issue with the unreleased version 0.7.0-SNAPSHOT
-    * which I depend on.... I manually changed the code, built the plugin and used that to build
-    * these libraries, then added the kotlin interop output to the repo
-   create("FreeBeeData") {
+    create("FreeBeeData") {
       path = file("src/iosMain/swift/data")
       packageName("com.letstwinkle.freebee.database.swift")
       minIos = "15.6"
@@ -169,5 +170,5 @@ swiftklib {
          }
       }
    }
-   **/
 }
+ **/
