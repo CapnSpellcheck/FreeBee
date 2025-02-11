@@ -76,9 +76,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.kamel.image)
             implementation(libs.kotlinx.coroutines.core)
-            api(libs.moko.mvvm.flow)
             api(libs.multiplatform.logging)
-            api(libs.kotlinx.datetime) // api for exporting
+            implementation(libs.kotlinx.datetime)
         }
        
        iosMain.dependencies {
@@ -104,7 +103,7 @@ android {
         applicationId = "com.letstwinkle.freebee"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
+        versionCode = 4
         versionName = "1.0"
     }
     packaging {

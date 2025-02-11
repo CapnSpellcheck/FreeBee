@@ -5,12 +5,10 @@ import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.letstwinkle.freebee.database.*
-import dev.icerock.moko.mvvm.flow.CStateFlow
-import dev.icerock.moko.mvvm.flow.cStateFlow
+import com.letstwinkle.freebee.database.FreeBeeRepository
+import com.letstwinkle.freebee.database.Game
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
@@ -18,7 +16,7 @@ private val log = logging()
 
 class GameListViewModel(private val repository: FreeBeeRepository) : ViewModel() {
    private val gamesFlowMutable: MutableStateFlow<List<Game>> = MutableStateFlow(emptyList())
-   val gamesFlow: CStateFlow<List<Game>> = gamesFlowMutable.asStateFlow().cStateFlow()
+   val gamesFlow: StateFlow<List<Game>> = gamesFlowMutable.asStateFlow()
    
    init {
       log.d { "init" }

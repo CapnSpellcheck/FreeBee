@@ -19,7 +19,6 @@ kamelImage = "0.9.5"
 kotlin = "2.0.21"
 kotlinx-datetime = "0.6.0"
 kotlinx-coroutines = "1.9.0"
-moko-mvvm = "0.16.1"
 multiplatform-settings = "1.1.1"
 multiplatform-logging = "1.4.2"
 ktor = "2.3.13"
@@ -49,7 +48,6 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime"}
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings"}
 multiplatform-logging = { module = "org.lighthousegames:logging", version.ref = "multiplatform-logging"}
-moko-mvvm-flow = { module = "dev.icerock.moko:mvvm-flow-compose", version.ref = "moko-mvvm"}
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
