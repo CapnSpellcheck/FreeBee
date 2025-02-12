@@ -6,7 +6,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letstwinkle.freebee.database.FreeBeeRepository
-import com.letstwinkle.freebee.database.Game
+import com.letstwinkle.freebee.database.IGame
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -14,7 +14,10 @@ import org.lighthousegames.logging.logging
 
 private val log = logging()
 
-class GameListViewModel(private val repository: FreeBeeRepository) : ViewModel() {
+class GameListViewModel<Id, Game: IGame<Id>>(
+   private val repository: FreeBeeRepository<Id, Game, *>
+) : ViewModel()
+{
    private val gamesFlowMutable: MutableStateFlow<List<Game>> = MutableStateFlow(emptyList())
    val gamesFlow: StateFlow<List<Game>> = gamesFlowMutable.asStateFlow()
    

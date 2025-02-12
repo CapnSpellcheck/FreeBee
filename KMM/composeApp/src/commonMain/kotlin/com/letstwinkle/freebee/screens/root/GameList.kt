@@ -25,15 +25,15 @@ import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
-import com.letstwinkle.freebee.database.Game
-import com.letstwinkle.freebee.database.isComplete
+import com.letstwinkle.freebee.database.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 private val TableHorizontalPadding = 16.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun GameListScreen(
-   navigator: GameListNavigator?,
+@Composable fun <Id, Game: IGame<Id>> GameListScreen(
+   repository: FreeBeeRepository<Id, Game, *>,
+   navigator: GameListNavigator<Game>?,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
    MyAppTheme {
@@ -50,6 +50,7 @@ private val TableHorizontalPadding = 16.dp
             })
       }) {
          GameList(
+            repository,
             navigator = navigator,
             modifier = Modifier.padding(it),
             painterProvider = painterProvider
@@ -59,9 +60,10 @@ private val TableHorizontalPadding = 16.dp
 }
 
 @OptIn(ExperimentalResourceApi::class)
-@Composable fun GameList(
-   viewModel: GameListViewModel = viewModel { GameListViewModel(repository()) },
-   navigator: GameListNavigator?,
+@Composable fun <Id, Game: IGame<Id>> GameList(
+   repository: FreeBeeRepository<Id, Game, *>,
+   viewModel: GameListViewModel<Id, Game> = viewModel { GameListViewModel(repository) },
+   navigator: GameListNavigator<Game>?,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
@@ -113,13 +115,13 @@ private val TableHorizontalPadding = 16.dp
    )
 }
 
-private fun LazyListScope.GameGroup(games: List<Game>, onClick: (Game) -> Unit, chevron: Painter) {
+private fun <Game : IGame<*>> LazyListScope.GameGroup(games: List<Game>, onClick: (Game) -> Unit, chevron: Painter) {
    if (games.isNotEmpty()) {
       item {
          fullBleedDivider()
       }
    }
-   itemsIndexed(games, { _, game -> game.uniqueID }) { index, game ->
+   itemsIndexed(games, { _, game -> game.uniqueID as Any }) { index, game ->
       GameRow(game, onClick, chevron = chevron)
       if (index < games.size - 1) {
          indentedDivider(TableHorizontalPadding)
@@ -132,7 +134,7 @@ private fun LazyListScope.GameGroup(games: List<Game>, onClick: (Game) -> Unit, 
    }
 }
 
-@Composable private fun GameRow(
+@Composable private fun <Game: IGame<*>> GameRow(
    game: Game,
    onClick: (Game) -> Unit,
    modifier: Modifier = Modifier,

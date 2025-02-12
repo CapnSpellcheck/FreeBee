@@ -1,6 +1,7 @@
 package com.letstwinkle.freebee.database
 
 import com.letstwinkle.freebee.database.swift.*
+import com.letstwinkle.freebee.iOSRepository
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
@@ -15,9 +16,8 @@ import kotlin.experimental.ExperimentalNativeApi
 @OptIn(ExperimentalForeignApi::class)
 class CoreDataDatabase private constructor(
    @Suppress("MemberVisibilityCanBePrivate") val container: NSPersistentContainer
-) : FreeBeeRepository
+) : iOSRepository
 {
-   
    companion object {
       val shared = create()
       private const val groupID = "group.com.letstwinkle"
@@ -68,7 +68,7 @@ class CoreDataDatabase private constructor(
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ): EntityIdentifier {
+   ): NSManagedObjectID {
       val gameManagedObject = CDGame(container.viewContext)
       gameManagedObject.setDate(date.atStartOfDayIn(TimeZone.UTC).toNSDate())
       gameManagedObject.setAllowedWords(allowedWords)
@@ -142,7 +142,7 @@ class CoreDataDatabase private constructor(
          ?.let { Game(it as CDGame) }
    }
    
-   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
+   override suspend fun fetchGameWithWords(gameID: NSManagedObjectID): GameWithWords {
       return Game(container.viewContext.objectWithID(gameID) as CDGame).withWords()
    }
    
@@ -176,14 +176,11 @@ class CoreDataDatabase private constructor(
    
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
       val enteredWord = CDEnteredWord(container.viewContext, word)
-      enteredWord.setValue(word)
-      gameWithWords.game.cdGame.progress().addEnteredWordsObject(enteredWord)
+      gameWithWords.add(EnteredWord(enteredWord))
       return container.viewContext.save(null)
    }
    
-   override suspend fun
-      executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
-   {
+   override suspend fun executeAndSave(transaction: suspend (iOSRepository) -> Unit): Boolean {
       val success: Boolean
       withContext(Dispatchers.Main) {
          val viewContext = container.viewContext

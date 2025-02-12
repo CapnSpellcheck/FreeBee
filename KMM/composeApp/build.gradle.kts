@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
 //    alias(libs.plugins.swiftklib)
     alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
@@ -92,6 +92,11 @@ kotlin {
              implementation(libs.ktor.client.mock)
           }
        }
+       
+       commonTest.dependencies {
+          @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+          implementation(compose.uiTest)
+       }
     }
 }
 
@@ -131,13 +136,16 @@ android {
 
 dependencies { 
    debugImplementation(compose.uiTooling)
-   "kapt"(libs.androidx.room.compiler)
+   add("kspAndroid", libs.androidx.room.compiler)
 }
 
 compose.resources {
    publicResClass = true
 }
 
+ksp {
+   arg("room.generateKotlin", "true")
+}
 /**
  * NOTE: this is disabled because there is an issue with the unreleased version 0.7.0-SNAPSHOT
  * which need an unreleased feature (remote package dep)

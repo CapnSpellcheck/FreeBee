@@ -6,29 +6,27 @@ import com.letstwinkle.freebee.LocalDateClassParceler
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.*
 
-actual typealias EntityIdentifier = Long
-
 @Entity(indices = [Index("date", unique=true, orders=[Index.Order.DESC])])
 @Parcelize
 @TypeParceler<LocalDate, LocalDateClassParceler>
-actual data class Game(
-   @PrimaryKey(autoGenerate = true) val id: EntityIdentifier,
-   actual val date: LocalDate,
-   actual val allowedWords: Set<String>,
-   actual val centerLetterCode: Int,
-   actual val otherLetters: String,
-   actual val geniusScore: Short,
-   actual val maximumScore: Short,
-   actual var score: Short = 0,
-) : Parcelable {
+data class Game(
+   @PrimaryKey(autoGenerate = true) val id: Long,
+   override val date: LocalDate,
+   override val allowedWords: Set<String>,
+   override val centerLetterCode: Int,
+   override val otherLetters: String,
+   override val geniusScore: Short,
+   override val maximumScore: Short,
+   override var score: Short = 0,
+) : IGame<Long>, Parcelable {
    @Ignore @IgnoredOnParcel
-   actual var currentWord: String = currentWordStore.getOrDefault(id, "")
+   override var currentWord: String = currentWordStore.getOrDefault(id, "")
       set(value) {
          field = value
          currentWordStore[id] = value
       }
    
-   actual val uniqueID: EntityIdentifier
+   override val uniqueID: Long
       get() = id
    
    override fun equals(other: Any?): Boolean {
@@ -65,29 +63,37 @@ actual data class Game(
        * queries). In order to persist the current word across leaving a game and returning (within
        * the same app execution only), it's stored outside the entity Room returns.
        */
-      val currentWordStore = mutableMapOf<EntityIdentifier, String>()
+      val currentWordStore = mutableMapOf<Long, String>()
    }
 }
 
-actual data class GameWithWords(
-   actual val game: Game,
-   val enteredWordsHash: LinkedHashSet<EnteredWord>
-) {
-   actual val enteredWords: Set<EnteredWord>
+data class GameWithWords(
+   override val game: Game,
+   private val enteredWordsHash: LinkedHashSet<EnteredWord>
+) : IGameWithWords<Long> {
+   override val enteredWords: Set<EnteredWord>
       get() = enteredWordsHash
+   
+   override fun add(word: IEnteredWord) {
+      add(word as EnteredWord)
+   }
+   
+   fun add(word: EnteredWord) {
+      enteredWordsHash.add(word)
+   }
 }
 
 @Entity(
    foreignKeys = [ForeignKey(Game::class, arrayOf("id"), arrayOf("gameId"), ForeignKey.RESTRICT)],
    indices = [Index("gameId", "value", unique=true)]
 )
-actual data class EnteredWord(
-   @PrimaryKey(autoGenerate = true) val id: EntityIdentifier = 0,
-   @ColumnInfo(index = true) val gameId: EntityIdentifier,
-   actual val value: String,
-)
+data class EnteredWord(
+   @PrimaryKey(autoGenerate = true) val id: Long = 0,
+   @ColumnInfo(index = true) val gameId: Long,
+   override val value: String,
+) : IEnteredWord
 
 data class GameScore(
-   @ColumnInfo("id") val gameId: EntityIdentifier,
+   @ColumnInfo("id") val gameId: Long,
    val score: Short
 )

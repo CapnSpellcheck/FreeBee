@@ -4,10 +4,9 @@ import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.database.android.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
-class PreviewRepository : FreeBeeRepository {
+class PreviewRepository : AndroidRepository {
    private var games = mutableListOf(
       Game(
          id = 1,
@@ -131,7 +130,7 @@ class PreviewRepository : FreeBeeRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ): EntityIdentifier {
+   ): Long {
       games.add(
          Game(
             id = games.size + 1L,
@@ -154,7 +153,7 @@ class PreviewRepository : FreeBeeRepository {
       return games.first { it.date == date }
    }
    
-   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
+   override suspend fun fetchGameWithWords(gameID: Long): GameWithWords {
       val game = games.first { it.id == gameID }
       return GameWithWords(game, linkedSetOf(*(enteredWordsMap[gameID] ?: arrayOf())))
    }
@@ -163,7 +162,7 @@ class PreviewRepository : FreeBeeRepository {
    override suspend fun getGeniusGameCount(): Int = 188
    override suspend fun getEnteredWordCount(): Int = 999
    
-   override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean {
+   override suspend fun executeAndSave(transaction: suspend (AndroidRepository) -> Unit): Boolean {
       transaction(this)
       return true
    }
@@ -175,7 +174,7 @@ class PreviewRepository : FreeBeeRepository {
    override fun hasGameForDate(date: LocalDate): Boolean = games.find { it.date == date } != null
    
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
-      gameWithWords.enteredWordsHash.add(EnteredWord(gameId = gameWithWords.game.id, value = word))
+      gameWithWords.add(EnteredWord(gameId = gameWithWords.game.uniqueID, value = word))
       return true
    }
    

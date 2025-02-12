@@ -4,7 +4,6 @@ package com.letstwinkle.freebee
 
 import android.content.Intent
 import androidx.core.content.IntentCompat
-import com.letstwinkle.freebee.database.EntityIdentifier
 import com.letstwinkle.freebee.database.Game
 import kotlinx.datetime.LocalDate
 
@@ -25,10 +24,10 @@ fun Intent.getGameDateExtra(): LocalDate = LocalDate.fromEpochDays(getIntExtra("
 
 inline fun Intent.hasGameDate(): Boolean = hasExtra("gamedate")
 
-inline fun Intent.putGameIdentifierExtra(gameID: EntityIdentifier) {
+inline fun Intent.putGameIdentifierExtra(gameID: Long) {
    putExtra("gameid", gameID)
 }
 
-inline fun Intent.getGameIdentifierExtra(): EntityIdentifier = getLongExtra("gameid", -1)
+inline fun Intent.getGameIdentifierExtra(): Long = getLongExtra("gameid", -1)
 
 inline fun Intent.hasGameIdentifier(): Boolean = hasExtra("gameid")

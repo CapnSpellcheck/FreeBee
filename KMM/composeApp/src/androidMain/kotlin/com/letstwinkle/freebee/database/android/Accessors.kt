@@ -17,7 +17,7 @@ interface GameDAO {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ): EntityIdentifier {
+   ): Long {
       val game = Game(
          0,
          date,
@@ -34,7 +34,7 @@ interface GameDAO {
    fun fetchGamesLive(): Flow<List<Game>>
    
    @Query("SELECT * FROM Game WHERE id = :gameID")
-   suspend fun fetchGame(gameID: EntityIdentifier): Game
+   suspend fun fetchGame(gameID: Long): Game
    
    @Query("SELECT * FROM Game WHERE date = :date")
    suspend fun fetchGame(date: LocalDate): Game
@@ -58,7 +58,7 @@ interface EnteredWordDAO {
    suspend fun getTotalCount(): Int
    
    @Query("SELECT * FROM EnteredWord WHERE gameId = :gameId ORDER BY id")
-   suspend fun getGameWords(gameId: EntityIdentifier): List<EnteredWord>
+   suspend fun getGameWords(gameId: Long): List<EnteredWord>
    
    @Insert
    suspend fun addEnteredWord(word: EnteredWord)

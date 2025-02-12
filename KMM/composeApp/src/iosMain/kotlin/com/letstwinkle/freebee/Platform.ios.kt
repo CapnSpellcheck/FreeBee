@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.*
-import com.letstwinkle.freebee.database.CoreDataDatabase
-import com.letstwinkle.freebee.database.FreeBeeRepository
+import com.letstwinkle.freebee.database.*
 import freebee.composeapp.generated.resources.Res
 import freebee.composeapp.generated.resources.chevron_back
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toNSDateComponents
 import org.jetbrains.compose.resources.vectorResource
+import platform.CoreData.NSManagedObjectID
 import platform.Foundation.*
 import platform.Foundation.NSCalendar.Companion.currentCalendar
 import platform.UIKit.UIDevice
@@ -25,6 +25,8 @@ import platform.UIKit.UIDevice
 class IOSPlatform: Platform {
    override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
 }
+
+typealias iOSRepository = FreeBeeRepository<NSManagedObjectID, Game, GameWithWords>
 
 actual fun getPlatform(): Platform = IOSPlatform()
 
@@ -43,7 +45,7 @@ val gameDateDisplayFormatter: NSDateFormatter = run {
    df
 }
 
-actual fun repository(): FreeBeeRepository {
+fun repository(): iOSRepository {
    return CoreDataDatabase.shared
 }
 

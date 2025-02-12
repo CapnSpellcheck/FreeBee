@@ -2,7 +2,6 @@ package com.letstwinkle.freebee.model
 
 import com.letstwinkle.freebee.SettingKeys
 import com.letstwinkle.freebee.database.*
-import com.letstwinkle.freebee.repository
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 
@@ -14,7 +13,7 @@ data class StatisticsModel(
 )
 
 suspend fun StatisticsModel(
-   database: FreeBeeRepository = repository(),
+   database: AnyFreeBeeRepository,
    settings: Settings = Settings()
 ): StatisticsModel = 
    StatisticsModel(

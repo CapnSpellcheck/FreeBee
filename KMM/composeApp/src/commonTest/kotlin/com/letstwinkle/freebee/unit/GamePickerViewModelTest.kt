@@ -1,8 +1,12 @@
 @file:OptIn(ExperimentalCoroutinesApi::class)
+@file:Suppress("MemberVisibilityCanBePrivate")
 
-package com.letstwinkle.freebee
+package com.letstwinkle.freebee.unit
 
+import com.letstwinkle.freebee.HttpClientProvider
 import com.letstwinkle.freebee.screens.picker.GamePickerViewModel
+import com.letstwinkle.freebee.util.BetterMockEngine
+import com.letstwinkle.freebee.util.TestRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.*
 import io.ktor.http.HttpStatusCode
@@ -20,7 +24,7 @@ class GamePickerViewModelTest {
    val mockClientProvider: HttpClientProvider
    
    lateinit var viewModel: GamePickerViewModel
-   lateinit var repository: UnitTestRepository
+   lateinit var repository: TestRepository
    var latestAvailableDate: LocalDate = todaysDate
    
    private val testDispatcher: TestDispatcher = StandardTestDispatcher()
@@ -29,7 +33,7 @@ class GamePickerViewModelTest {
       KmLogging.setLogLevel(LogLevel.Off)
       val mockEngineConfig = MockEngineConfig()
       mockEngineConfig.addHandler { request ->
-         println("< MOCK START: Thread=${Thread.currentThread().name}")
+         println("< MOCK START")
          val requestDate = LocalDate.parse(
             request.url.fullPath.removeSuffix(".html").removePrefix("/Bee_"),
             LocalDate.Formats.ISO_BASIC
@@ -66,7 +70,7 @@ class GamePickerViewModelTest {
    
    @BeforeTest fun setUp() {
       Dispatchers.setMain(testDispatcher)
-      repository = UnitTestRepository()
+      repository = TestRepository()
    }
    
    

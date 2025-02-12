@@ -1,25 +1,26 @@
-package com.letstwinkle.freebee
+package com.letstwinkle.freebee.unit
 
 import com.letstwinkle.freebee.database.*
+import com.letstwinkle.freebee.util.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import kotlin.test.*
 
 class EntitiesTest {
-   lateinit var game: Game
-   lateinit var gameWithWords: GameWithWords
+   lateinit var game: IGame<*>
+   lateinit var gameWithWords: IGameWithWords<*>
    
    @BeforeTest fun setUp() {
-      game = Game(
-         0,
+      game = MockGame(
          LocalDate.fromEpochDays(0),
          setOf("abc", "abcd"),
          'a'.code,
          "bcdefg",
          1,
-         1
+         1,
+         linkedSetOf(MockWord(value = "foo"), MockWord(value = "bar")),
       )
-      gameWithWords = GameWithWords(game, linkedSetOf(EnteredWord(gameId = 0, value = "foo"), EnteredWord(gameId = 0, value = "bar")))
+      gameWithWords = game as MockGame
    }
    
    @Test fun testGame_currentWordDisplay() = runTest {

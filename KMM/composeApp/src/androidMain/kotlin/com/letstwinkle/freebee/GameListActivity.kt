@@ -8,12 +8,12 @@ import com.letstwinkle.freebee.database.Game
 import com.letstwinkle.freebee.screens.root.GameListNavigator
 import com.letstwinkle.freebee.screens.root.GameListScreen
 
-class GameListActivity : ComponentActivity(), GameListNavigator {
+class GameListActivity : ComponentActivity(), GameListNavigator<Game> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            GameListScreen(navigator = this)
+            GameListScreen(repository(), this)
         }
     }
     

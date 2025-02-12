@@ -14,14 +14,15 @@ import com.letstwinkle.freebee.backNavigationButton
 import com.letstwinkle.freebee.bodyStyle
 import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.compose.indentedDivider
+import com.letstwinkle.freebee.database.AnyFreeBeeRepository
 import com.letstwinkle.freebee.model.StatisticsModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun StatisticsScreen(backNavigator: BackNavigator) {
+@Composable fun StatisticsScreen(repository: AnyFreeBeeRepository, backNavigator: BackNavigator) {
    MyAppTheme {
       val statisticsModel = rememberSaveable { mutableStateOf<StatisticsModel?>(null) }
       LaunchedEffect(Unit) {
-         statisticsModel.value = StatisticsModel()
+         statisticsModel.value = StatisticsModel(repository)
       }
       Scaffold(topBar = {
          CenterAlignedTopAppBar(

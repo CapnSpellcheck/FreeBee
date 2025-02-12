@@ -9,41 +9,39 @@ import kotlinx.datetime.*
 import platform.CoreData.NSManagedObjectID
 import platform.Foundation.*
 
-actual typealias EntityIdentifier = NSManagedObjectID
-
-actual class Game(val cdGame: CDGame) {
-   actual val date: LocalDate
+class Game(val cdGame: CDGame) : IGame<NSManagedObjectID> {
+   override val date: LocalDate
       get() = cdGame.date()!!.toKotlinInstant()
          .toLocalDateTime(TimeZone.UTC)
          .date
-   actual val allowedWords: Set<String>
+   override val allowedWords: Set<String>
       get() = cdGame.allowedWords() as Set<String>
-   actual val centerLetterCode: Int
+   override val centerLetterCode: Int
       get() = cdGame.centerLetterCode()
-   actual val otherLetters: String
+   override val otherLetters: String
       get() = cdGame.otherLetters()
-   actual val geniusScore: Short
+   override val geniusScore: Short
       get() = cdGame.geniusScore()
-   actual val maximumScore: Short
+   override val maximumScore: Short
       get() = cdGame.maximumScore()
-   actual var currentWord: String
+   override var currentWord: String
       get() = cdGame.progress().currentWord()
       set(value) {
          cdGame.progress().setCurrentWord(value)
       }
-   actual var score: Short
+   override var score: Short
       get() = cdGame.progress().score()
       set(value) {
          cdGame.progress().setScore(value)
       }
-   actual val uniqueID: EntityIdentifier
+   override val uniqueID: NSManagedObjectID
       get() = cdGame.objectID()
    
    fun withWords(): GameWithWords = GameWithWords(this)
 }
 
-actual class GameWithWords(actual val game: Game) {
-   actual val enteredWords: Set<EnteredWord>
+class GameWithWords(override val game: Game) : IGameWithWords<NSManagedObjectID> {
+   override val enteredWords: Set<EnteredWord>
       get() {
          val nsOrderedSet = game.cdGame.progress().mutableOrderedSetValueForKey("enteredWords")
          val linkedSet = LinkedHashSet<EnteredWord>(initialCapacity = nsOrderedSet.count.toInt())
@@ -52,9 +50,17 @@ actual class GameWithWords(actual val game: Game) {
          }
          return linkedSet
       }
+   
+   override fun add(word: IEnteredWord) {
+      add(word as EnteredWord)
+   }
+   
+   fun add(word: EnteredWord) {
+      game.cdGame.progress().addEnteredWordsObject(word.cdWord)
+   }
 }
 
-actual class EnteredWord(private val cdWord: CDEnteredWord) {
-   actual val value: String
+class EnteredWord(val cdWord: CDEnteredWord) : IEnteredWord {
+   override val value: String
       get() = cdWord.value()
 }

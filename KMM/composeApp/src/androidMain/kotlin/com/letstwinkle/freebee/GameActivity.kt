@@ -20,11 +20,11 @@ class GameActivity : ComponentActivity() {
    private fun openIntent(intent: Intent) {
       if (intent.hasGame()) {
          setContent {
-            GameScreen(intent.getGameExtra()!!, this.backNavigator())
+            GameScreen(repository(), intent.getGameExtra()!!, this.backNavigator())
          }
       } else if (intent.hasGameDate() && intent.hasGameIdentifier()) {
          setContent {
-            GameScreen(intent.getGameIdentifierExtra(), intent.getGameDateExtra(), this.backNavigator())
+            GameScreen(repository(), intent.getGameIdentifierExtra(), intent.getGameDateExtra(), this.backNavigator())
          }
       } else {
          finish()

@@ -1,7 +1,10 @@
-package com.letstwinkle.freebee
+@file:Suppress("MemberVisibilityCanBePrivate")
 
-import com.letstwinkle.freebee.database.GameWithWords
+package com.letstwinkle.freebee.unit
+
 import com.letstwinkle.freebee.screens.game.GameViewModel
+import com.letstwinkle.freebee.util.MockGame
+import com.letstwinkle.freebee.util.TestRepository
 import com.russhwolf.settings.MapSettings
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
@@ -11,11 +14,14 @@ import org.lighthousegames.logging.KmLogging
 import org.lighthousegames.logging.LogLevel
 import kotlin.test.*
 
+private typealias TestGameViewModel = GameViewModel<Unit, MockGame, MockGame>
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class GameViewModelTest {
-   lateinit var viewModel: GameViewModel
-   lateinit var repository: UnitTestRepository
+   lateinit var viewModel: TestGameViewModel
+   lateinit var repository: TestRepository
    
-   private val testDispatcher: TestDispatcher = StandardTestDispatcher()
+   val testDispatcher: TestDispatcher = StandardTestDispatcher()
    
    init {
       KmLogging.setLogLevel(LogLevel.Off)
@@ -23,7 +29,7 @@ class GameViewModelTest {
    
    @BeforeTest fun setUp() {
       Dispatchers.setMain(testDispatcher)
-      repository = UnitTestRepository()
+      repository = TestRepository()
       val gameID = runBlocking {
          repository.createGame(
             date = LocalDate.fromEpochDays(0),
@@ -41,7 +47,7 @@ class GameViewModelTest {
       Dispatchers.resetMain()
    }
    
-   val gameWithWords: GameWithWords
+   val gameWithWords: MockGame
       get() = viewModel.gameWithWords.value!!
    
    @Test fun testEnteredWordSummary() = runTest {

@@ -1,4 +1,4 @@
-package com.letstwinkle.freebee
+package com.letstwinkle.freebee.util
 
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineConfig

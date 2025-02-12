@@ -2,9 +2,7 @@ package com.letstwinkle.freebee.database
 
 import kotlinx.datetime.LocalDate
 
-expect class EntityIdentifier
-
-expect class Game {
+interface IGame<Identifier> {
    val date: LocalDate
    val allowedWords: Set<String>
    val centerLetterCode: Int
@@ -14,31 +12,33 @@ expect class Game {
    var currentWord: String
    var score: Short
    
-   val uniqueID: EntityIdentifier
+   val uniqueID: Identifier
 }
 
-expect class GameWithWords {
-   val game: Game
-   val enteredWords: Set<EnteredWord>
+interface IGameWithWords<GameIdentifier> {
+   val game: IGame<GameIdentifier>
+   val enteredWords: Set<IEnteredWord>
+   
+   fun add(word: IEnteredWord)
 }
 
-expect class EnteredWord {
+interface IEnteredWord {
    val value: String
 }
 
-inline val Game.currentWordDisplay: String
+inline val IGame<*>.currentWordDisplay: String
    get() = currentWord.uppercase() + "_"
 
-inline val Game.centerLetterCharacter: Char
+inline val IGame<*>.centerLetterCharacter: Char
    get() = Char(centerLetterCode)
 
-inline val Game.isComplete: Boolean
+inline val IGame<*>.isComplete: Boolean
    get() = score >= maximumScore
 
-inline val Game.isGenius: Boolean
+inline val IGame<*>.isGenius: Boolean
    get() = score >= geniusScore
 
-fun Game.isPangram(word: String): Boolean {
+fun IGame<*>.isPangram(word: String): Boolean {
    if (word.length < 7) 
       return false
    val letters = word.toHashSet()
@@ -46,8 +46,8 @@ fun Game.isPangram(word: String): Boolean {
    return letters.contains(centerChar) && letters.containsAll(otherLetters.toList())
 }
 
-inline fun GameWithWords.hasEntered(word: String): Boolean =
+inline fun IGameWithWords<*>.hasEntered(word: String): Boolean =
    enteredWords.any { it.value == word }
 
-inline fun GameWithWords.isAllowed(word: String): Boolean =
+inline fun IGameWithWords<*>.isAllowed(word: String): Boolean =
    game.allowedWords.contains(word)

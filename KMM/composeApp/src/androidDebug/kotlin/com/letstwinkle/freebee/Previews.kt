@@ -9,16 +9,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letstwinkle.freebee.database.Game
-import com.letstwinkle.freebee.screens.Statistics
-import com.letstwinkle.freebee.screens.game.*
-import com.letstwinkle.freebee.screens.root.*
+import com.letstwinkle.freebee.database.IGame
 import com.letstwinkle.freebee.model.StatisticsModel
 import com.letstwinkle.freebee.screens.BackNavigator
+import com.letstwinkle.freebee.screens.Statistics
+import com.letstwinkle.freebee.screens.game.*
 import com.letstwinkle.freebee.screens.loader.GameLoader
-import com.letstwinkle.freebee.screens.loader.GameLoaderViewModel
-import com.letstwinkle.freebee.screens.picker.GamePickerScreen
-import com.letstwinkle.freebee.screens.picker.*
-import com.russhwolf.settings.SharedPreferencesSettings
+import com.letstwinkle.freebee.screens.picker.GamePicker
+import com.letstwinkle.freebee.screens.root.GameList
+import com.letstwinkle.freebee.screens.root.GameListNavigator
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinLocalDate
 import java.time.LocalDate
@@ -30,21 +29,18 @@ import java.time.LocalDate
    device = "id:pixel_8"
 )
 fun GameListPreview() {
-   val gameListViewModel = GameListViewModel(PreviewRepository())
    Scaffold(topBar = {
       TopAppBar(
          title = { Text("Games") },
       )}) {
       GameList(
-         gameListViewModel,
+         PreviewRepository(),
          painterProvider = PreviewPainterProvider(),
-         navigator = object : GameListNavigator {
+         navigator = object : GameListNavigator<Game> {
             override fun showStatistics() {
             }
-            
             override fun openGame(game: Game) {
             }
-            
             override fun openGamePicker() {
             }
          })
@@ -124,8 +120,7 @@ fun HoneycombPreview() {
    device = "id:pixel_6"
 )
 fun GamePickerPreview() {
-   val viewModel = GamePickerViewModel(PreviewRepository())
-   GamePicker(viewModel = viewModel)
+   GamePicker(PreviewRepository())
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -136,9 +131,7 @@ fun GamePickerPreview() {
 )
 fun GameLoaderPreview() {
    val gameDate = LocalDate.now().toKotlinLocalDate()
-   val viewModel = GameLoaderViewModel(gameDate, PreviewRepository())
-   GameLoader(gameDate, viewModel, null, object : BackNavigator {
-      override fun goBack() {
-      }
+   GameLoader(PreviewRepository(), gameDate, navigator = null, backNavigator = object : BackNavigator {
+      override fun goBack() {}
    })
 }

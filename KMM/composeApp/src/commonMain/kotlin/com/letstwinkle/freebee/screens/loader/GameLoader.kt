@@ -14,6 +14,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.MyAppTheme
+import com.letstwinkle.freebee.database.FreeBeeRepository
 import com.letstwinkle.freebee.screens.BackNavigator
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -22,10 +23,11 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun GameLoaderScreen(
+@Composable fun <Id> GameLoaderScreen(
+   repository: FreeBeeRepository<Id, *, *>,
    gameDate: LocalDate,
    backNavigator: BackNavigator,
-   loaderNavigator: GameLoaderNavigator,
+   loaderNavigator: GameLoaderNavigator<Id>,
 ) {
    MyAppTheme {
       Scaffold(topBar = {
@@ -36,6 +38,7 @@ import kotlinx.datetime.LocalDate
          )
       }) {
          GameLoader(
+            repository,
             gameDate,
             navigator = loaderNavigator,
             backNavigator = backNavigator,
@@ -45,10 +48,11 @@ import kotlinx.datetime.LocalDate
    }
 }
 
-@Composable fun GameLoader(
+@Composable fun <Id> GameLoader(
+   repository: FreeBeeRepository<Id, *, *>,
    gameDate: LocalDate,
-   viewModel: GameLoaderViewModel = viewModel { GameLoaderViewModel(gameDate, repository()) },
-   navigator: GameLoaderNavigator?,
+   viewModel: GameLoaderViewModel<Id> = viewModel { GameLoaderViewModel(gameDate, repository) },
+   navigator: GameLoaderNavigator<Id>?,
    backNavigator: BackNavigator,
    modifier: Modifier = Modifier,
 ) {
@@ -67,7 +71,7 @@ import kotlinx.datetime.LocalDate
    }
 
    LaunchedEffect(status) {
-      (status as? LoadingStatus.Finished)?.let { finished ->
+      (status as? LoadingStatus.Finished<Id>)?.let { finished ->
          navigator?.openGame(gameDate, finished.gameID)
       }
    }

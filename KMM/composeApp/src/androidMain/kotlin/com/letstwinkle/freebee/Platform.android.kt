@@ -8,18 +8,18 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import com.letstwinkle.freebee.database.FreeBeeRepository
+import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.database.android.RoomDatabase
 import kotlinx.datetime.*
 import kotlinx.parcelize.Parceler
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Locale
 
 class AndroidPlatform : Platform {
    override val name: String = "Android ${Build.VERSION.SDK_INT}"
 }
+
+typealias AndroidRepository = FreeBeeRepository<Long, Game, GameWithWords>
 
 actual fun getPlatform(): Platform = AndroidPlatform()
 
@@ -28,7 +28,7 @@ actual fun formatGameDateToDisplay(date: LocalDate): String = gameDateDisplayFor
 val gameDateDisplayFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(
    FormatStyle.MEDIUM
 )
-actual fun repository(): FreeBeeRepository {
+fun repository(): AndroidRepository {
    return RoomDatabase.getDatabase(applicationContext)
 }
 

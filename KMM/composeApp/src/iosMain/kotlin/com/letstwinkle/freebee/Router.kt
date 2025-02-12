@@ -6,11 +6,14 @@ import com.letstwinkle.freebee.screens.loader.GameLoaderNavigator
 import com.letstwinkle.freebee.screens.picker.GamePickerNavigator
 import com.letstwinkle.freebee.screens.root.GameListNavigator
 import kotlinx.datetime.*
+import platform.CoreData.NSManagedObjectID
 import platform.Foundation.*
 import platform.UIKit.UIViewController
 import kotlin.experimental.ExperimentalNativeApi
 
-interface Routing : BackNavigator, GameLoaderNavigator, GameListNavigator, GamePickerNavigator {
+interface Routing : BackNavigator, GameLoaderNavigator<NSManagedObjectID>, 
+   GameListNavigator<Game>, GamePickerNavigator
+{
    fun restore(activity: NSUserActivity): Boolean
 }
 
@@ -79,11 +82,11 @@ object Router : Routing {
       openGame(game.date, game.uniqueID, false)
    }
    
-   override fun openGame(gameDate: LocalDate, gameID: EntityIdentifier) {
+   override fun openGame(gameDate: LocalDate, gameID: NSManagedObjectID) {
       openGame(gameDate, gameID, true)
    }
    
-   private fun openGame(gameDate: LocalDate, gameID: EntityIdentifier, replacingTopmost: Boolean) {
+   private fun openGame(gameDate: LocalDate, gameID: NSManagedObjectID, replacingTopmost: Boolean) {
       val viewController = gameViewController(gameID, gameDate)
       if (replacingTopmost) {
          navigationController.replaceTopmost(viewController, false)
@@ -135,6 +138,6 @@ object Router : Routing {
       )
    }
    
-   private fun gameViewController(gameID: EntityIdentifier, gameDate: LocalDate): UIViewController =
+   private fun gameViewController(gameID: NSManagedObjectID, gameDate: LocalDate): UIViewController =
       GameViewController(gameID, gameDate, this)
 }

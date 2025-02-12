@@ -10,7 +10,7 @@ class StatisticsActivity : ComponentActivity() {
       super.onCreate(savedInstanceState)
       
       setContent {
-         StatisticsScreen(this.backNavigator())
+         StatisticsScreen(repository(), this.backNavigator())
       }
    }
 }

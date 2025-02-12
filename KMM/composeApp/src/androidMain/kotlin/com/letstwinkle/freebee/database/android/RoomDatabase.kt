@@ -2,18 +2,41 @@ package com.letstwinkle.freebee.database.android
 
 import android.content.Context
 import androidx.room.*
+import com.letstwinkle.freebee.AndroidRepository
 import com.letstwinkle.freebee.BuildConfig
 import com.letstwinkle.freebee.database.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+
+interface DefaultAndroidRepository : AndroidRepository {
+   override suspend fun createGame(
+      date: LocalDate,
+      allowedWords: Set<String>,
+      centerLetterCode: Int,
+      otherLetters: String,
+      geniusScore: Short,
+      maximumScore: Short,
+   ): Long { throw NotImplementedError() }
+   override fun fetchGamesLive(): Flow<List<Game>> { throw NotImplementedError() }
+   override suspend fun fetchGame(date: LocalDate): Game? { throw NotImplementedError() }
+   override suspend fun fetchGameWithWords(gameID: Long): GameWithWords { throw NotImplementedError() }
+   override suspend fun getStartedGameCount(): Int { throw NotImplementedError() }
+   override suspend fun getGeniusGameCount(): Int { throw NotImplementedError() }
+   override suspend fun getEnteredWordCount(): Int { throw NotImplementedError() }
+   override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean { throw NotImplementedError() }
+   override suspend fun updateGameScore(game: GameWithWords, score: Short) { throw NotImplementedError() }
+   override fun hasGameForDate(date: LocalDate): Boolean { throw NotImplementedError() }
+   override suspend fun executeAndSave(
+      transaction: suspend (FreeBeeRepository<Long, Game, GameWithWords>) -> Unit
+   ): Boolean { throw NotImplementedError() }
+}
 
 @Database(entities = [Game::class, EnteredWord::class], version = 6)
 @TypeConverters(RoomConverters::class)
-abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
+abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidRepository {
    abstract fun gameDAO(): GameDAO
    abstract fun enteredWordDAO(): EnteredWordDAO
    
@@ -24,7 +47,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short
-   ): EntityIdentifier =
+   ): Long =
       gameDAO().createGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore)
    
    
@@ -34,7 +57,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
    
    override suspend fun fetchGame(date: LocalDate): Game? = gameDAO().fetchGame(date)
    
-   override suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords {
+   override suspend fun fetchGameWithWords(gameID: Long): GameWithWords {
       return withTransaction {
          val game = gameDAO().fetchGame(gameID)
          val enteredWordsList = enteredWordDAO().getGameWords(game.id)
@@ -49,21 +72,22 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), FreeBeeRepository {
    override suspend fun getEnteredWordCount(): Int = enteredWordDAO().getTotalCount()
    
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
-      val enteredWord = EnteredWord(gameId = gameWithWords.game.id, value = word)
+      val enteredWord = EnteredWord(gameId = gameWithWords.game.uniqueID, value = word)
       enteredWordDAO().addEnteredWord(enteredWord)
-      gameWithWords.enteredWordsHash.add(enteredWord)
+      gameWithWords.enteredWords
       return true
    }
    
    override suspend fun updateGameScore(game: GameWithWords, score: Short) {
-      gameDAO().saveGameScore(GameScore(game.game.id, score))
+      gameDAO().saveGameScore(GameScore(game.game.uniqueID, score))
       game.game.score = score
    }
    
    override fun hasGameForDate(date: LocalDate): Boolean = gameDAO().hasDate(date)
    
    // TODO: to match iOS, model revert should be implemented on failure, somehow…
-   override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean {
+   override suspend fun executeAndSave(transaction: suspend (AndroidRepository) -> Unit): Boolean
+   {
       try {
          withTransaction {
             transaction(this)

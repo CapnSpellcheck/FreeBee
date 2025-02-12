@@ -3,7 +3,7 @@ package com.letstwinkle.freebee.database
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
-interface FreeBeeRepository {
+interface FreeBeeRepository<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>> {
    suspend fun createGame(
       date: LocalDate,
       allowedWords: Set<String>,
@@ -11,12 +11,12 @@ interface FreeBeeRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ): EntityIdentifier
+   ): Id
    
    fun fetchGamesLive(): Flow<List<Game>>
    suspend fun fetchGame(date: LocalDate): Game?
    
-   suspend fun fetchGameWithWords(gameID: EntityIdentifier): GameWithWords
+   suspend fun fetchGameWithWords(gameID: Id): GameWithWords
    
    suspend fun getStartedGameCount(): Int
    
@@ -31,5 +31,9 @@ interface FreeBeeRepository {
    // Not 'suspend' so can be used for synchronous SelectedDates
    fun hasGameForDate(date: LocalDate): Boolean
    
-   suspend fun executeAndSave(transaction: suspend (FreeBeeRepository) -> Unit): Boolean
+   suspend fun executeAndSave(
+      transaction: suspend (FreeBeeRepository<Id, Game, GameWithWords>) -> Unit
+   ): Boolean
 }
+
+typealias AnyFreeBeeRepository = FreeBeeRepository<*, *, *>

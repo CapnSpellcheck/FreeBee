@@ -3,20 +3,23 @@ package com.letstwinkle.freebee.screens.loader
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.letstwinkle.freebee.database.EntityIdentifier
-import com.letstwinkle.freebee.database.FreeBeeRepository
+import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.gameURL
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.utils.io.core.use
+import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDate
 import org.lighthousegames.logging.logging
 
 private val endingNumberRegex = Regex("\\d+$")
 private val log = logging()
 
-class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeBeeRepository) 
+class GameLoaderViewModel<Id>(
+   val gameDate: LocalDate,
+   private val repository: FreeBeeRepository<Id, *, *>,
+) 
    : ViewModel()
 {
    private var statusMutable = mutableStateOf<LoadingStatus>(LoadingStatus.Loading)
@@ -58,6 +61,7 @@ class GameLoaderViewModel(val gameDate: LocalDate, private val repository: FreeB
    }
    
    suspend fun parse(html: String): GameData {
+      delay(10000)
       statusMutable.value = LoadingStatus.Parsing
       val document = createHTMLDocument(html)
       val root = document.rootElement
@@ -144,7 +148,7 @@ sealed class LoadingStatus(val statusText: String) {
    
    data object Loading : LoadingStatus("Downloading…")
    data object Parsing : LoadingStatus("Processing…")
-   data class Finished(val gameID: EntityIdentifier) : LoadingStatus("")
+   data class Finished<Id>(val gameID: Id) : LoadingStatus("")
    data class Error(val error: Throwable) : LoadingStatus("Failed")
 }
 

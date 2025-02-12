@@ -36,12 +36,13 @@ import org.lighthousegames.logging.logging
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
-@Composable inline fun GameScreen(
-   game: Game,
+@Composable inline fun <Id> GameScreen(
+   repository: FreeBeeRepository<Id, *, *>,
+   game: IGame<Id>,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
-   GameScreen(game.uniqueID, game.date, backNavigator, painterProvider)
+   GameScreen(repository, game.uniqueID, game.date, backNavigator, painterProvider)
 }
 
 private val positionProvider = object : PopupPositionProvider {
@@ -54,14 +55,15 @@ private val positionProvider = object : PopupPositionProvider {
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
-@Composable fun GameScreen(
-   gameID: EntityIdentifier,
+@Composable fun <Id> GameScreen(
+   repository: FreeBeeRepository<Id, *, *>,
+   gameID: Id,
    gameDate: LocalDate,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
    MyAppTheme {
-      val gameViewModel = viewModel { GameViewModel(repository(), gameID) }
+      val viewModel = viewModel { GameViewModel(repository, gameID) }
       val rulesState =
          rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
       val coroutineScope = rememberCoroutineScope()
@@ -71,7 +73,7 @@ private val positionProvider = object : PopupPositionProvider {
             title = { Text(formatGameDateToDisplay(gameDate)) },
             windowInsets = AppBarDefaults.topAppBarWindowInsets,
             actions = {
-               if (gameViewModel.gameWithWords.value?.game?.isGenius == true) {
+               if (viewModel.gameWithWords.value?.game?.isGenius == true) {
                   val geniusPopupOpen = rememberSaveable { mutableStateOf(false) }
                   
                   Box {
@@ -105,14 +107,14 @@ private val positionProvider = object : PopupPositionProvider {
             navigationIcon = backNavigationButton(backNavigator::goBack),
          )
       }) {
-         GameWithSheets(gameViewModel, rulesState, Modifier.padding(it), painterProvider)
+         GameWithSheets(viewModel, rulesState, Modifier.padding(it), painterProvider)
       }
    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable fun GameWithSheets(
-   viewModel: GameViewModel,
+@Composable fun <Id, Game: IGame<Id>> GameWithSheets(
+   viewModel: GameViewModel<Id, Game, *>,
    rulesSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -141,8 +143,8 @@ private val positionProvider = object : PopupPositionProvider {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable private fun Game(
-   viewModel: GameViewModel,
+@Composable private fun <Id, Game: IGame<Id>> Game(
+   viewModel: GameViewModel<Id, Game, *>,
    enteredWordsSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -305,7 +307,7 @@ private val positionProvider = object : PopupPositionProvider {
    }
 }
 
-@Composable fun EnteredWordsSheet(words: List<EnteredWord>) {
+@Composable fun EnteredWordsSheet(words: List<IEnteredWord>) {
    log.d { "Entered words: ${words.map { it.value }}" }
    val modifier = Modifier.fillMaxWidth()
       .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom).asPaddingValues())

@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letstwinkle.freebee.*
+import com.letstwinkle.freebee.database.AnyFreeBeeRepository
 import com.letstwinkle.freebee.database.FreeBeeRepository
 import io.ktor.client.request.get
 import io.ktor.http.isSuccess
@@ -19,7 +20,7 @@ private val earliestGameDate = LocalDate(2018, 8, 1)
 private val log = logging()
 
 class GamePickerViewModel(
-   private val repository: FreeBeeRepository,
+   private val repository: AnyFreeBeeRepository,
    private val httpClientProvider: HttpClientProvider = DefaultHttpClientProvider,
 ) : ViewModel() {
    private val selectedDateMutable: MutableState<LocalDate>

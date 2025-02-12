@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -17,13 +16,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.compose.iOSStyleFilledButton
+import com.letstwinkle.freebee.database.AnyFreeBeeRepository
 import com.letstwinkle.freebee.screens.BackNavigator
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun GamePickerScreen(backNavigator: BackNavigator, pickerNavigator: GamePickerNavigator?) {
+@Composable fun GamePickerScreen(
+   repository: AnyFreeBeeRepository,
+   backNavigator: BackNavigator,
+   pickerNavigator: GamePickerNavigator?,
+) {
    MyAppTheme {
       Scaffold(topBar = {
          CenterAlignedTopAppBar(
@@ -32,15 +36,16 @@ import kotlinx.datetime.atStartOfDayIn
             navigationIcon = backNavigationButton(backNavigator::goBack),
             )
       }) {
-         GamePicker(Modifier.padding(it), pickerNavigator = pickerNavigator)
+         GamePicker(repository, Modifier.padding(it), pickerNavigator = pickerNavigator)
       }
    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun GamePicker(
+   repository: AnyFreeBeeRepository,
    modifier: Modifier = Modifier,
-   viewModel: GamePickerViewModel = viewModel { GamePickerViewModel(repository()) },
+   viewModel: GamePickerViewModel = viewModel { GamePickerViewModel(repository) },
    pickerNavigator: GamePickerNavigator? = null,
 ) {
    val isDatePickerOpen = rememberSaveable { mutableStateOf(false) }

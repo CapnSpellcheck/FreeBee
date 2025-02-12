@@ -13,7 +13,7 @@ class GamePickerActivity : ComponentActivity(), GamePickerNavigator {
       super.onCreate(savedInstanceState)
       
       setContent {
-         GamePickerScreen(this.backNavigator(), this)
+         GamePickerScreen(repository(), this.backNavigator(), this)
       }
    }
    
