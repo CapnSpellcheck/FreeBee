@@ -14,9 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -29,6 +27,13 @@ import com.letstwinkle.freebee.database.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 private val TableHorizontalPadding = 16.dp
+
+enum class GameListHeader(val label: String) {
+   InProgress("In progress"),
+   Completed("100% complete"),
+   New("Start a new game"),
+   ;
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun <Id, Game: IGame<Id>> GameListScreen(
@@ -78,17 +83,17 @@ private val TableHorizontalPadding = 16.dp
          Modifier.weight(1f).padding(bottom = 16.dp)
       ) {
          item(key = "inprogress") {
-            Header("In progress")
+            Header(GameListHeader.InProgress)
          }
          GameGroup(gamesGroupedByComplete.getValue(false), onGameClick, chevron)
          if (gamesGroupedByComplete.containsKey(true)) {
             item(key = "completed") {
-               Header("100% complete")
+               Header(GameListHeader.Completed)
             }
             GameGroup(gamesGroupedByComplete.getValue(true), onGameClick, chevron)
          }
          item(key = "newheader") {
-            Header("Start a new game")
+            Header(GameListHeader.New)
          }
          item(key = "newrow") {
             val rowModifier = rowBaseModifier.clickable(onClickLabel = "Open a new game") {
@@ -105,10 +110,11 @@ private val TableHorizontalPadding = 16.dp
    }
 }
 
-@Composable private fun Header(label: String) {
+@Composable private fun Header(header: GameListHeader) {
    Text(
-      label.uppercase(),
-      Modifier.heightIn(28.dp).padding(TableHorizontalPadding, 17.dp, TableHorizontalPadding, 6.dp),
+      header.label,
+      Modifier.heightIn(28.dp)
+         .padding(TableHorizontalPadding, 17.dp, TableHorizontalPadding, 6.dp),
       color = groupedTableHeaderTextColor,
       fontSize = 13.sp,
       letterSpacing = 0.5.sp
@@ -222,5 +228,5 @@ private val rowBaseModifier = Modifier.fillMaxWidth()
    .padding(TableHorizontalPadding, 0.dp)
 
 @Composable fun fullBleedDivider() {
-   Divider(color = rowDividerColor)
+   Divider(Modifier.testTag("divider"), color = rowDividerColor)
 }

@@ -14,7 +14,7 @@ import org.lighthousegames.logging.KmLogging
 import org.lighthousegames.logging.LogLevel
 import kotlin.test.*
 
-private typealias TestGameViewModel = GameViewModel<Unit, MockGame, MockGame>
+private typealias TestGameViewModel = GameViewModel<Int, MockGame, MockGame>
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameViewModelTest {

@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.LocalDate
 
-private typealias ITestRepository = FreeBeeRepository<Unit, MockGame, MockGame>
+private typealias ITestRepository = FreeBeeRepository<Int, MockGame, MockGame>
 
 class TestRepository : ITestRepository {
-   var games: MutableSet<MockGame> = mutableSetOf()
+   var games = arrayListOf<MockGame>()
    
    override suspend fun createGame(
       date: LocalDate,
@@ -17,8 +17,20 @@ class TestRepository : ITestRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-   ) {
-      val game = MockGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore, linkedSetOf())
+   ): Int = createGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore, 0)
+   
+   fun createGame(
+      date: LocalDate,
+      allowedWords: Set<String>,
+      centerLetterCode: Int,
+      otherLetters: String,
+      geniusScore: Short,
+      maximumScore: Short,
+      currentScore: Short
+   ): Int {
+      val game = MockGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore,
+         maximumScore, linkedSetOf(), games.size)
+      game.score = currentScore
       games.add(game)
       return game.uniqueID
    }
@@ -54,5 +66,5 @@ class TestRepository : ITestRepository {
       return true
    }
    
-   override suspend fun fetchGameWithWords(gameID: Unit): MockGame = games.random()
+   override suspend fun fetchGameWithWords(gameID: Int): MockGame = games[gameID]
 }

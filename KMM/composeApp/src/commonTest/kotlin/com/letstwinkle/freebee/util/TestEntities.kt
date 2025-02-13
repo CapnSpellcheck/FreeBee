@@ -11,10 +11,10 @@ data class MockGame(
    override val geniusScore: Short,
    override val maximumScore: Short,
    override val enteredWords: LinkedHashSet<MockWord>,
-) : IGame<Unit>, IGameWithWords<Unit> {
+   override val uniqueID: Int = 0,
+) : IGame<Int>, IGameWithWords<Int> {
    override var currentWord = ""
    override var score: Short = 0
-   override val uniqueID = Unit
    
    override val game: MockGame
       get() = this
