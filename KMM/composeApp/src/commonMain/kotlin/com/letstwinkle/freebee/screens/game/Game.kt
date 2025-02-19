@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +28,7 @@ import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
 import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.screens.BackNavigator
+import com.letstwinkle.freebee.screens.root.GameListViewModel
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
 import kotlinx.coroutines.launch
@@ -36,13 +38,23 @@ import org.lighthousegames.logging.logging
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
-@Composable inline fun <Id> GameScreen(
-   repository: FreeBeeRepository<Id, *, *>,
    game: IGame<Id>,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
-   GameScreen(repository, game.uniqueID, game.date, backNavigator, painterProvider)
+   val viewModel = viewModel { GameViewModel(repository, game.uniqueID) }
+   GameScreen(viewModel, game.date, backNavigator, painterProvider)
+}
+
+@Composable inline fun <Id, GameWithWords: IGameWithWords<Id>> GameScreen(
+   repository: FreeBeeRepository<Id, *, GameWithWords>,
+   gameID: Id,
+   gameDate: LocalDate,
+   backNavigator: BackNavigator,
+   painterProvider: PainterProvider = ResourcePainterProvider(),
+) {
+   val viewModel = viewModel { GameViewModel(repository, gameID) }
+   GameScreen(viewModel, gameDate, backNavigator, painterProvider)
 }
 
 private val positionProvider = object : PopupPositionProvider {
@@ -55,15 +67,13 @@ private val positionProvider = object : PopupPositionProvider {
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
-@Composable fun <Id> GameScreen(
-   repository: FreeBeeRepository<Id, *, *>,
-   gameID: Id,
+@Composable fun <GameWithWords: IGameWithWords<*>> GameScreen(
+   viewModel: IGameViewModel<GameWithWords>,
    gameDate: LocalDate,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
    MyAppTheme {
-      val viewModel = viewModel { GameViewModel(repository, gameID) }
       val rulesState =
          rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
       val coroutineScope = rememberCoroutineScope()
@@ -113,16 +123,14 @@ private val positionProvider = object : PopupPositionProvider {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable fun <Id, Game: IGame<Id>> GameWithSheets(
-   viewModel: GameViewModel<Id, Game, *>,
+@Composable fun <GameWithWords: IGameWithWords<*>> GameWithSheets(
+   viewModel: IGameViewModel<GameWithWords>,
    rulesSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
-   val enteredWordsSheetState = rememberModalBottomSheetState(
-      ModalBottomSheetValue.Hidden,
-      skipHalfExpanded = true,
-   )
+   val enteredWordsSheetState = 
+      rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
    
    ModalBottomSheetLayout(
       { RulesSheet() },
@@ -143,8 +151,8 @@ private val positionProvider = object : PopupPositionProvider {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable private fun <Id, Game: IGame<Id>> Game(
-   viewModel: GameViewModel<Id, Game, *>,
+@Composable private fun <GameWithWords: IGameWithWords<*>> Game(
+   viewModel: IGameViewModel<GameWithWords>,
    enteredWordsSheetState: ModalBottomSheetState,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -171,7 +179,8 @@ private val positionProvider = object : PopupPositionProvider {
    }
    
    Column(
-      modifier.fillMaxSize().padding(WindowInsets.safeContent.only(WindowInsetsSides.Bottom).asPaddingValues())
+      modifier.fillMaxSize()
+         .padding(WindowInsets.safeContent.only(WindowInsetsSides.Bottom).asPaddingValues())
          .padding(vertical = 12.dp, horizontal = 16.dp),
       horizontalAlignment = Alignment.CenterHorizontally
    ) {
@@ -193,7 +202,7 @@ private val positionProvider = object : PopupPositionProvider {
       
       Row(
          Modifier.fillMaxWidth()
-            .clickable(isEnteredWordOverflow.value) {
+            .clickable(isEnteredWordOverflow.value, "expand entered words") {
                coroutineScope.launch {
                   enteredWordsSheetState.show()
                }
@@ -243,6 +252,7 @@ private val positionProvider = object : PopupPositionProvider {
       
       AutoSizeText(
          viewModel.currentWordDisplay, 
+         Modifier.testTag("currentWord"),
          maxLines = 1,
          maxTextSize = 28.sp,
          fontWeight = FontWeight.SemiBold,

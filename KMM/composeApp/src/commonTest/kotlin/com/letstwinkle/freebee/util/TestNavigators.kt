@@ -2,6 +2,7 @@
 
 package com.letstwinkle.freebee.util
 
+import com.letstwinkle.freebee.screens.BackNavigator
 import com.letstwinkle.freebee.screens.root.GameListNavigator
 
 class MockGameListNavigator : GameListNavigator<MockGame> {
@@ -38,6 +39,15 @@ class MockGameListNavigator : GameListNavigator<MockGame> {
       lastGameOpened = game
       onOpenGame?.invoke(game)
       openGameCount++
+   }
+   
+}
+
+class MockBackNavigator : BackNavigator {
+   var goBackCount = 0; private set
+   
+   override fun goBack() {
+      goBackCount++
    }
    
 }

@@ -17,11 +17,11 @@ private const val minWordLength = 4
 private const val maxWordLength = 19
 private const val enteredWordSpacer = "\u2003"
 
-class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
-   private val repository: FreeBeeRepository<Id, Game, GameWithWords>,
+class GameViewModel<Id, GameWithWords: IGameWithWords<Id>>(
+   private val repository: FreeBeeRepository<Id, *, GameWithWords>,
    private val gameID: Id,
    private val multiplatformSettings: Settings = Settings(),
-) : ViewModel()
+) : ViewModel(), IGameViewModel<GameWithWords>
 {
    private val gameWithWordsMutable = mutableStateOf<GameWithWords?>(null, policy = neverEqualPolicy())
    /**
@@ -30,30 +30,30 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
     */
    private var joinedEnteredWords = ""
    
-   val gameWithWords: State<GameWithWords?>
+   override val gameWithWords: State<GameWithWords?>
       get() = gameWithWordsMutable
-   val entryNotAcceptedEvents = Channel<String>()
+   override val entryNotAcceptedEvents = Channel<String>()
    
-   val gameProgress: Float
+   override val gameProgress: Float
       get() = gameWithWords.value?.run { (0f + enteredWords.size) / game.allowedWords.size } ?: 0f
    
-   val enterEnabled: Boolean
+   override val enterEnabled: Boolean
       get() = gameWithWords.value?.game?.let { 
          it.currentWord.length >= minWordLength && it.currentWord.contains(it.centerLetterCharacter)
       } ?: false
    
    // Remember the enteredWords are stored oldest first, but display most recent first here.
-   val enteredWordSummary: String
+   override val enteredWordSummary: String
       get() = 
          if (gameWithWords.value?.enteredWords?.isEmpty() == true) "No words yet" 
       else joinedEnteredWords
    
-   val enteredWordSummaryColor: Color
+   override val enteredWordSummaryColor: Color
       get() = if (gameWithWords.value?.enteredWords.isNullOrEmpty())
          secondaryTextColor
       else Color.Black
    
-   val currentWordDisplay: String 
+   override val currentWordDisplay: String 
       get() = gameWithWords.value?.game?.let {
          if (it.isComplete) "" else it.currentWordDisplay
       } ?: ""
@@ -68,7 +68,7 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
       }
    }
    
-   suspend fun enter() {
+   override suspend fun enter() {
       var committed = false
       var errored = false
       val gameWithWords = gameWithWords.value ?: return
@@ -108,7 +108,7 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
       }
    }
    
-   fun backspace() {
+   override fun backspace() {
       val gameWithWords = gameWithWords.value ?: return
       gameWithWords.game.apply {
          currentWord = currentWord.dropLast(1)
@@ -116,7 +116,7 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
       gameWithWordsMutable.value = gameWithWords
    }
    
-   fun append(letter: Char) {
+   override fun append(letter: Char) {
       gameWithWords.value?.game?.currentWord?.let {
          if (it.length < maxWordLength) {
             gameWithWords.value?.game?.currentWord = it + letter

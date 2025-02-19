@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.letstwinkle.freebee.compose.LetterHexagon
@@ -25,7 +26,7 @@ private const val floatPi = PI.toFloat()
    if (otherLetters.size != 6)
       throw AssertionError("A game must have 6 other letters")
    val hexPadding = 10.dp
-   val modifier1 = modifier.fillMaxWidth().aspectRatio(0.6f*sqrt(3f))
+   val modifier1 = modifier.fillMaxWidth().aspectRatio(0.6f*sqrt(3f)).testTag("honeycomb")
    
    BoxWithConstraints(modifier1, Alignment.Center) {
       val hexLength = ((if (maxWidth < maxHeight) maxWidth else maxHeight) - 4*hexPadding) / 3
