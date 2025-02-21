@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -59,7 +60,10 @@ import kotlinx.datetime.atStartOfDayIn
          Modifier.align(Alignment.CenterHorizontally),
          horizontalArrangement = Arrangement.spacedBy(16.dp)
       ) { 
-         iOSStyleFilledButton({ isDatePickerOpen.value = true }) {
+         iOSStyleFilledButton(
+            { isDatePickerOpen.value = true },
+            Modifier.testTag("openpicker")
+         ) {
             Text(formatGameDateToDisplay(viewModel.selectedDate.value), style = bodyStyle)
          }
          iOSStyleFilledButton(
@@ -70,7 +74,11 @@ import kotlinx.datetime.atStartOfDayIn
             Text("Go!", style = bodyStyle)
          }
       }
-      Text("At this time, we can't preview the game for you before you open it. Maybe in the future!", Modifier.padding(top = 8.dp, bottom = 40.dp), style = footnoteStyle)
+      Text(
+         "At this time, we can't preview the game for you before you open it. Maybe in the future!",
+         Modifier.padding(top = 8.dp, bottom = 40.dp),
+         style = footnoteStyle
+      )
       Text("Or…", Modifier.align(Alignment.CenterHorizontally), style = headlineStyle)
       iOSStyleFilledButton({ 
          viewModel.viewModelScope.launch { 
@@ -101,7 +109,7 @@ import kotlinx.datetime.atStartOfDayIn
             Button(closeDatePicker) { Text("OK") }
          },
       ) {
-         DatePicker(datePickerState)
+         DatePicker(datePickerState, Modifier.testTag("datepicker"))
       }
    }
 }

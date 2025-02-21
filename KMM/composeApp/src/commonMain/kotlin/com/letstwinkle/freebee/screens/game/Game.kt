@@ -38,6 +38,8 @@ import org.lighthousegames.logging.logging
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
+@Composable inline fun <Id, GameWithWords: IGameWithWords<Id>> GameScreen(
+   repository: FreeBeeRepository<Id, *, GameWithWords>,
    game: IGame<Id>,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),

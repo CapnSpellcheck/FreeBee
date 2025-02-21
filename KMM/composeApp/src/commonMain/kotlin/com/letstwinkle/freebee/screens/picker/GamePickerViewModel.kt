@@ -22,6 +22,7 @@ private val log = logging()
 class GamePickerViewModel(
    private val repository: AnyFreeBeeRepository,
    private val httpClientProvider: HttpClientProvider = DefaultHttpClientProvider,
+   private val systemClock: Clock = Clock.System
 ) : ViewModel() {
    private val selectedDateMutable: MutableState<LocalDate>
    private val isChoosingRandomDateMutable = mutableStateOf(false)
@@ -34,7 +35,7 @@ class GamePickerViewModel(
       get() = isChoosingRandomDateMutable
    
    init {
-      val todaysDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+      val todaysDate = systemClock.todayIn(TimeZone.currentSystemDefault())
       latestAvailableDate = todaysDate
       selectedDateMutable = mutableStateOf(todaysDate)
       viewModelScope.launch {
@@ -46,7 +47,7 @@ class GamePickerViewModel(
    @OptIn(ExperimentalMaterial3Api::class)
    // Below init for the reference to 'latestAvailableDate'
    val selectableDates = object : SelectableDates {
-      val thisYear = Clock.System.todayIn(TimeZone.currentSystemDefault()).year
+      val thisYear = systemClock.todayIn(TimeZone.currentSystemDefault()).year
       
       override fun isSelectableDate(utcTimeMillis: Long): Boolean {
          log.d { "isSelectableDate($utcTimeMillis) "}
@@ -90,13 +91,10 @@ class GamePickerViewModel(
          if (!isGameLoaded(checkDate)) {
             // check whether the website responds with 404 for the date.
             try {
-               println("***** 1")
                val gameURL = gameURL(checkDate)
                // NOTE: this should call HEAD, but the service seems to be misconfigured/flawed:
                // it returns a nonempty body. Okhttp can't be configured to ignore it
-               println("***** 2")
                val response = httpClient.get(gameURL)
-               println("***** 3")
                if (response.status.isSuccess()) {
                   log.d { "determineLatestAvailableDate(): HEAD success" }
                   latestAvailableDate = checkDate
@@ -105,7 +103,6 @@ class GamePickerViewModel(
                   log.d { "determineLatestAvailableDate(): FAIL: $response" }
                }
             } catch (throwable: Throwable) {
-               println("***** throw")
                throwable.printStackTrace()
                log.i { "httpClient threw: ${throwable.message}" }
             }

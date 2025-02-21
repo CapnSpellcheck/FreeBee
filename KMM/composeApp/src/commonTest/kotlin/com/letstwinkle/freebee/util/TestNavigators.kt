@@ -3,7 +3,9 @@
 package com.letstwinkle.freebee.util
 
 import com.letstwinkle.freebee.screens.BackNavigator
+import com.letstwinkle.freebee.screens.picker.GamePickerNavigator
 import com.letstwinkle.freebee.screens.root.GameListNavigator
+import kotlinx.datetime.LocalDate
 
 class MockGameListNavigator : GameListNavigator<MockGame> {
    var showStatisticsCount = 0; private set
@@ -48,6 +50,17 @@ class MockBackNavigator : BackNavigator {
    
    override fun goBack() {
       goBackCount++
+   }
+   
+}
+
+class MockPickerNavigator : GamePickerNavigator {
+   var openGameLoaderCount = 0; private set
+   var lastGameDate: LocalDate? = null
+   
+   override fun openGameLoader(gameDate: LocalDate) {
+      openGameLoaderCount++
+      lastGameDate = gameDate
    }
    
 }
