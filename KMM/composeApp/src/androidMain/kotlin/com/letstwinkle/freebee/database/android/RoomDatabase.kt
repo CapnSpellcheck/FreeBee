@@ -74,7 +74,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean {
       val enteredWord = EnteredWord(gameId = gameWithWords.game.uniqueID, value = word)
       enteredWordDAO().addEnteredWord(enteredWord)
-      gameWithWords.enteredWords
+      gameWithWords.add(enteredWord)
       return true
    }
    

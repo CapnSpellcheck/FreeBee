@@ -37,7 +37,7 @@ interface GameDAO {
    suspend fun fetchGame(gameID: Long): Game
    
    @Query("SELECT * FROM Game WHERE date = :date")
-   suspend fun fetchGame(date: LocalDate): Game
+   suspend fun fetchGame(date: LocalDate): Game?
    
    @Query("SELECT COUNT(*) FROM Game WHERE score > 0")
    suspend fun getStartedCount(): Int

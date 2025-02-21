@@ -14,6 +14,7 @@ interface FreeBeeRepository<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<I
    ): Id
    
    fun fetchGamesLive(): Flow<List<Game>>
+   
    suspend fun fetchGame(date: LocalDate): Game?
    
    suspend fun fetchGameWithWords(gameID: Id): GameWithWords
