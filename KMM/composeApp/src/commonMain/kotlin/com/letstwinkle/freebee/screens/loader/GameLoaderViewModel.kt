@@ -9,7 +9,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.utils.io.core.use
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.datetime.LocalDate
 import org.lighthousegames.logging.logging
 
@@ -61,41 +61,46 @@ class GameLoaderViewModel<Id>(
    }
    
    suspend fun parse(html: String): GameData {
-      delay(10000)
-      statusMutable.value = LoadingStatus.Parsing
-      val document = createHTMLDocument(html)
-      val root = document.rootElement
-      val answerNodes = root.xpathNodes("//*[@id='main-answer-list'][1]/ul/li//text()[not(parent::a)]")
-      val puzzleNotes = root.xpathNode("//*[@id='puzzle-notes'][1]")
-      val maximumPuzzleScore = puzzleNotes.xpathNode(".//*[contains(., 'Maximum Puzzle Score')][1]")
-      val neededForGenius = puzzleNotes.xpathNode(".//*[contains(., 'Needed for Genius')][1]")
-      
-      val allowedWords = answerNodes.mapNotNull { 
-         it.textContent().trim().let { it.ifEmpty { null } }
+      return withContext(Dispatchers.Default) {
+         statusMutable.value = LoadingStatus.Parsing
+         val document = createHTMLDocument(html)
+         val root = document.rootElement
+         val answerNodes =
+            root.xpathNodes("//*[@id='main-answer-list'][1]/ul/li//text()[not(parent::a)]")
+         val puzzleNotes = root.xpathNode("//*[@id='puzzle-notes'][1]")
+         val maximumPuzzleScore =
+            puzzleNotes.xpathNode(".//*[contains(., 'Maximum Puzzle Score')][1]")
+         val neededForGenius = puzzleNotes.xpathNode(".//*[contains(., 'Needed for Genius')][1]")
+         
+         val allowedWords = answerNodes.mapNotNull {
+            it.textContent().trim().let { it.ifEmpty { null } }
+         }
+         val maximumScore =
+            endingNumberRegex.find(maximumPuzzleScore.textContent())?.value?.toShort()
+               ?: throw ParseError("Couldn't extract 'Maximum Puzzle Score' (text content was: ${maximumPuzzleScore.textContent()})")
+         val geniusScore = endingNumberRegex.find(neededForGenius.textContent())?.value?.toShort()
+            ?: throw ParseError("Couldn't extract 'Needed for Genius' (text content was: ${neededForGenius.textContent()})")
+         
+         var lettersResult = determineLetters(allowedWords)
+         if (lettersResult is DetermineLettersResult.NotUnique) {
+            val centerLetter =
+               onCenterLetterNotUnique?.invoke(lettersResult.centerLetterPossibilities)
+            lettersResult = determineLetters(allowedWords, centerLetter)
+         }
+         if (lettersResult is DetermineLettersResult.Irreconcilable) {
+            throw ParseError("Couldn't identify the game letters")
+         }
+         
+         lettersResult as DetermineLettersResult.Unique
+         GameData(
+            gameDate,
+            allowedWords.toSet(),
+            lettersResult.centerLetter.code,
+            lettersResult.otherLetters,
+            geniusScore,
+            maximumScore
+         )
       }
-      val maximumScore = endingNumberRegex.find(maximumPuzzleScore.textContent())?.value?.toShort()
-         ?: throw ParseError("Couldn't extract 'Maximum Puzzle Score' (text content was: ${maximumPuzzleScore.textContent()})")
-      val geniusScore = endingNumberRegex.find(neededForGenius.textContent())?.value?.toShort()
-         ?: throw ParseError("Couldn't extract 'Needed for Genius' (text content was: ${neededForGenius.textContent()})")
-      
-      var lettersResult = determineLetters(allowedWords)
-      if (lettersResult is DetermineLettersResult.NotUnique) {
-         val centerLetter = onCenterLetterNotUnique?.invoke(lettersResult.centerLetterPossibilities)
-         lettersResult = determineLetters(allowedWords, centerLetter)
-      }
-      if (lettersResult is DetermineLettersResult.Irreconcilable) {
-         throw ParseError("Couldn't identify the game letters")
-      }
-      
-      lettersResult as DetermineLettersResult.Unique
-      return GameData(
-         gameDate,
-         allowedWords.toSet(),
-         lettersResult.centerLetter.code,
-         lettersResult.otherLetters,
-         geniusScore,
-         maximumScore
-      )
    }
    
    private fun determineLetters(words: List<String>, centerLetter: Char? = null): 
