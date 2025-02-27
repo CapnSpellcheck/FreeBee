@@ -63,4 +63,7 @@ interface EnteredWordDAO {
    @Insert
    suspend fun addEnteredWord(word: EnteredWord)
    
+   @Query("SELECT date FROM Game LEFT JOIN EnteredWord ew ON Game.id = ew.gameId WHERE value = :word LIMIT 1")
+   suspend fun findGameDateForEnteredWord(word: String): LocalDate?
+   
 }

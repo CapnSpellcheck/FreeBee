@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
 import com.letstwinkle.freebee.database.IGameWithWords
 import kotlinx.coroutines.channels.Channel
+import kotlinx.datetime.LocalDate
 
 interface IGameViewModel<GameWithWords: IGameWithWords<*>> {
    val gameProgress: Float
@@ -16,5 +17,5 @@ interface IGameViewModel<GameWithWords: IGameWithWords<*>> {
    fun append(letter: Char)
    suspend fun enter()
    val enterEnabled: Boolean
-   
+   val wordHints: State<Map<String, LocalDate>>
 }

@@ -163,6 +163,9 @@ class CoreDataDatabase private constructor(
       return container.viewContext.countForFetchRequest(request, null).convert()
    }
    
+   // TODO
+   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? = null
+   
    override suspend fun updateGameScore(game: GameWithWords, score: Short) {
       game.game.score = score
       game.game.cdGame.setDirtyTrigger(0) // needed to refresh this game in the app root

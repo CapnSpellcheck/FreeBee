@@ -49,6 +49,11 @@ class TestRepository : ITestRepository {
    
    override suspend fun getEnteredWordCount(): Int = games.sumOf { it.enteredWords.size }
    
+   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? =
+      games.firstOrNull { 
+         it.enteredWords.contains(MockWord(word))
+      }?.date
+   
    override suspend fun addEnteredWord(gameWithWords: MockGame, word: String): Boolean {
       gameWithWords.add(MockWord(value = word))
       return true

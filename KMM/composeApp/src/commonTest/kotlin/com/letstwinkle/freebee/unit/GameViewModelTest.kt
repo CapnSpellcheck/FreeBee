@@ -31,7 +31,7 @@ class GameViewModelTest {
       Dispatchers.setMain(testDispatcher)
       repository = TestRepository()
       val gameID = runBlocking {
-         repository.createGame(
+         val gameID = repository.createGame(
             date = LocalDate.fromEpochDays(0),
             allowedWords = setOf("zabc", "zdef", "zabcdef"),
             centerLetterCode = 'z'.code,
@@ -39,8 +39,25 @@ class GameViewModelTest {
             geniusScore = 100,
             maximumScore = 200,
          )
+         // 2nd game for referencing entered words
+         repository.createGame(
+            date = LocalDate.fromEpochDays(1),
+            allowedWords = setOf("zggg", "zdef", "zhhh"),
+            centerLetterCode = 'z'.code,
+            otherLetters = "defghi",
+            geniusScore = 100,
+            maximumScore = 200,
+         )
+         val otherGame = repository.games.last()
+         repository.addEnteredWord(otherGame, "zdef")
+         gameID
       }
-      viewModel = GameViewModel(repository, gameID, multiplatformSettings = MapSettings())
+      viewModel = GameViewModel(
+         repository = repository,
+         gameID = gameID,
+         multiplatformSettings = MapSettings(),
+         backgroundContext = Dispatchers.Main
+      )
    }
    
    @AfterTest fun tearDown() {
@@ -133,7 +150,6 @@ class GameViewModelTest {
       assertEquals("", gameWithWords.game.currentWord, "testEnter: word not accepted, repeat: currentWord reset")
    }
    
-   @OptIn(ExperimentalCoroutinesApi::class)
    @Test fun testEntryNotAcceptedEvent() = runTest {
       launch {
          val event = viewModel.entryNotAcceptedEvents.receive()
@@ -145,5 +161,20 @@ class GameViewModelTest {
       gameWithWords.game.currentWord = "zabc"
       viewModel.enter()
       assertTrue(viewModel.entryNotAcceptedEvents.isEmpty, "currentWord valid - no event")
+   }
+   
+   @Test fun testWordHintsWhenNotEnoughWordsEntered() = runTest {
+      advanceUntilIdle() // makes sure that success not coincidence
+      assertTrue(viewModel.wordHints.value.isEmpty(), "wordHints - not enough words entered")
+   }
+   
+   @Test fun testWordHintsWhenEnoughWordsEntered() = runTest {
+      repository.addEnteredWord(repository.games.first(), "zabc")
+      repository.addEnteredWord(repository.games.first(), "zabcdef")
+      viewModel.initialize()
+      advanceUntilIdle()
+      
+      val expectedHints = mapOf("zdef" to repository.games.last().date)
+      assertEquals(expectedHints, viewModel.wordHints.value, "wordHints - enough words entered")
    }
 }

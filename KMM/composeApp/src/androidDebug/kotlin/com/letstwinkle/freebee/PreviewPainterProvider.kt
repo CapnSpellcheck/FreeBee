@@ -18,6 +18,7 @@ class PreviewPainterProvider : PainterProvider {
          PainterProvider.Resource.Rules -> R.drawable.questionmark_circle
          PainterProvider.Resource.ChevronBack -> R.drawable.chevron_back
          PainterProvider.Resource.Brain -> R.drawable.brain
+         PainterProvider.Resource.Hint -> R.drawable.light_bulb_max
       }
       return painterResource(id)
    }

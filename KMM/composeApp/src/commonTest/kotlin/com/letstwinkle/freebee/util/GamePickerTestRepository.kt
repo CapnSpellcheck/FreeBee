@@ -26,6 +26,8 @@ class GamePickerTestRepository : FreeBeeRepository<Int, MockGame, MockGame> {
    
    override suspend fun getEnteredWordCount(): Int = 0
    
+   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? = null
+   
    override fun hasGameForDate(date: LocalDate): Boolean = date.dayOfMonth % 2 == 1
    
    override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository<Int, MockGame, MockGame>) -> Unit): Boolean = false

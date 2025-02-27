@@ -20,6 +20,7 @@ interface PainterProvider {
       Rules(Res.drawable.questionmark_circle),
       ChevronBack(Res.drawable.chevron_back),
       Brain(Res.drawable.brain),
+      Hint(Res.drawable.light_bulb_max),
       ;
    }
 }

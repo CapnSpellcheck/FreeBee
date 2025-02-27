@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.screens.game.IGameViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.datetime.LocalDate
 
 class MockGameViewModel(private val game: MockGame) : IGameViewModel<MockGame> {
    private val gameWithWordsMutable = mutableStateOf(game, policy = neverEqualPolicy())
@@ -34,4 +35,6 @@ class MockGameViewModel(private val game: MockGame) : IGameViewModel<MockGame> {
    
    override val enterEnabled: Boolean
       get() = game.currentWord.length >= 4
+   override val wordHints: State<Map<String, LocalDate>>
+      get() = mutableStateOf(emptyMap())
 }

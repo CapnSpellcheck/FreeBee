@@ -84,13 +84,13 @@ data class GameWithWords(
 }
 
 @Entity(
-   foreignKeys = [ForeignKey(Game::class, arrayOf("id"), arrayOf("gameId"), ForeignKey.RESTRICT)],
+   foreignKeys = [ForeignKey(Game::class, ["id"], ["gameId"], ForeignKey.RESTRICT)],
    indices = [Index("gameId", "value", unique=true)]
 )
 data class EnteredWord(
    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-   @ColumnInfo(index = true) val gameId: Long,
-   override val value: String,
+   val gameId: Long,
+   @ColumnInfo(index = true) override val value: String,
 ) : IEnteredWord
 
 data class GameScore(

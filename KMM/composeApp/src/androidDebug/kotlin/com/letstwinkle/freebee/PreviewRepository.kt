@@ -161,6 +161,7 @@ class PreviewRepository : AndroidRepository {
    override suspend fun getStartedGameCount(): Int = 255
    override suspend fun getGeniusGameCount(): Int = 188
    override suspend fun getEnteredWordCount(): Int = 999
+   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? = null
    
    override suspend fun executeAndSave(transaction: suspend (AndroidRepository) -> Unit): Boolean {
       transaction(this)

@@ -27,6 +27,7 @@ interface DefaultAndroidRepository : AndroidRepository {
    override suspend fun getGeniusGameCount(): Int { throw NotImplementedError() }
    override suspend fun getEnteredWordCount(): Int { throw NotImplementedError() }
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean { throw NotImplementedError() }
+   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? { throw NotImplementedError() }
    override suspend fun updateGameScore(game: GameWithWords, score: Short) { throw NotImplementedError() }
    override fun hasGameForDate(date: LocalDate): Boolean { throw NotImplementedError() }
    override suspend fun executeAndSave(
@@ -34,7 +35,7 @@ interface DefaultAndroidRepository : AndroidRepository {
    ): Boolean { throw NotImplementedError() }
 }
 
-@Database(entities = [Game::class, EnteredWord::class], version = 6)
+@Database(entities = [Game::class, EnteredWord::class], version = 7)
 @TypeConverters(RoomConverters::class)
 abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidRepository {
    abstract fun gameDAO(): GameDAO
@@ -78,6 +79,9 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
       return true
    }
    
+   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? =
+      enteredWordDAO().findGameDateForEnteredWord(word)
+   
    override suspend fun updateGameScore(game: GameWithWords, score: Short) {
       gameDAO().saveGameScore(GameScore(game.game.uniqueID, score))
       game.game.score = score
@@ -106,6 +110,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
             instance = Room.databaseBuilder(context, RoomDatabase::class.java, "game.db")
                // allowed for GamePickerViewModel#selectableDates ONLY!
                .allowMainThreadQueries()
+               .addMigrations(MigrationChangingEnteredWordIndexes())
                .apply {
                   if (BuildConfig.DEBUG) {
                      fallbackToDestructiveMigration()
@@ -226,6 +231,54 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
                   score = 0
                )
                gameDAO.createGame(game)
+               
+               game = Game(
+                  id = 4,
+                  date = LocalDate(2012, 2, 1),
+                  allowedWords = setOf(),
+                  centerLetterCode = 'x'.code,
+                  otherLetters = "qwerty",
+                  geniusScore = 9,
+                  maximumScore = 9,
+                  score = 0
+               )
+               gameDAO.createGame(game)
+               
+               game = Game(
+                  id = 5,
+                  date = LocalDate(2012, 3, 1),
+                  allowedWords = setOf(),
+                  centerLetterCode = 'x'.code,
+                  otherLetters = "qwerty",
+                  geniusScore = 9,
+                  maximumScore = 9,
+                  score = 0
+               )
+               gameDAO.createGame(game)
+               
+               game = Game(
+                  id = 6,
+                  date = LocalDate(2012, 4, 1),
+                  allowedWords = setOf(),
+                  centerLetterCode = 'x'.code,
+                  otherLetters = "qwerty",
+                  geniusScore = 9,
+                  maximumScore = 9,
+                  score = 0
+               )
+               gameDAO.createGame(game)
+               
+               val enteredWordDAO = getDatabase(context).enteredWordDAO()
+               
+               listOf("cart", "taut", "tact", "curl", "nene", "meme").map {
+                  enteredWordDAO.addEnteredWord(EnteredWord(gameId = 4, value = it))
+               }
+               listOf("tact", "curl", "charm", "rich", "tutu").map {
+                  enteredWordDAO.addEnteredWord(EnteredWord(gameId = 5, value = it))
+               }
+               listOf( "charm", "arch", "mama", "papa", "loll").map {
+                  enteredWordDAO.addEnteredWord(EnteredWord(gameId = 6, value = it))
+               }
             }
          }
       }

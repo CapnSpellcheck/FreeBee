@@ -145,7 +145,9 @@ compose.resources {
 
 ksp {
    arg("room.generateKotlin", "true")
+   arg("room.schemaLocation", "$projectDir/schemas")
 }
+
 /**
  * NOTE: this is disabled because there is an issue with the unreleased version 0.7.0-SNAPSHOT
  * which need an unreleased feature (remote package dep)

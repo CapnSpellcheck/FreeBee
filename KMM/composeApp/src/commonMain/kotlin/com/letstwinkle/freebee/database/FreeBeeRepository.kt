@@ -27,6 +27,8 @@ interface FreeBeeRepository<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<I
    
    suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean
    
+   suspend fun findGameDateForEnteredWord(word: String): LocalDate?
+   
    suspend fun updateGameScore(game: GameWithWords, score: Short)
    
    // Not 'suspend' so can be used for synchronous SelectedDates

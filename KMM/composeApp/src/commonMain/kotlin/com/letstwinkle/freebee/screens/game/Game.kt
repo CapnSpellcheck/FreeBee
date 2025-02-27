@@ -28,7 +28,6 @@ import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
 import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.screens.BackNavigator
-import com.letstwinkle.freebee.screens.root.GameListViewModel
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
 import kotlinx.coroutines.launch
@@ -79,6 +78,8 @@ private val positionProvider = object : PopupPositionProvider {
       val rulesState =
          rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
       val coroutineScope = rememberCoroutineScope()
+      val wordHints = viewModel.wordHints.value
+      val showHintDialog = rememberSaveable { mutableStateOf(false) }
       
       Scaffold(topBar = {
          CenterAlignedTopAppBar(
@@ -111,6 +112,12 @@ private val positionProvider = object : PopupPositionProvider {
                      }
                   }
                }
+               if (wordHints.isNotEmpty()) {
+                  iOSStyleIconButton({ showHintDialog.value = true }) {
+                     val hintPaint = painterProvider.provide(PainterProvider.Resource.Hint)
+                     AccentIcon(hintPaint, "hint")
+                  }
+               }
                iOSStyleIconButton({ coroutineScope.launch { rulesState.show() } }) {
                   val rulesPaint = painterProvider.provide(PainterProvider.Resource.Rules)
                   AccentIcon(rulesPaint, "rules")
@@ -120,6 +127,24 @@ private val positionProvider = object : PopupPositionProvider {
          )
       }) {
          GameWithSheets(viewModel, rulesState, Modifier.padding(it), painterProvider)
+         
+         if (showHintDialog.value) {
+            val showTheWords = rememberSaveable{ mutableStateOf(false) }
+            val dismiss = { showHintDialog.value = false }
+            val hintContent = if (showTheWords.value)
+               HashSet(wordHints.keys).joinToString(separator = "\n")
+            else
+               HashSet(wordHints.values).joinToString(separator = "\n") { date ->
+                  formatGameDateToDisplay(date)
+               }
+            AlertDialog(
+               dismiss,
+               confirmButton = { Button(dismiss) { Text("OK") } },
+               dismissButton = { Button({ showTheWords.value = true }) { Text("Show the words!" ) } },
+               title = { Text("Words from other Games") },
+               text = { Text("There are ${wordHints.size} words you entered for other games that match this game.${if (showTheWords.value) "" else " Game dates:"}\n$hintContent") }
+            )
+         }
       }
    }
 }
