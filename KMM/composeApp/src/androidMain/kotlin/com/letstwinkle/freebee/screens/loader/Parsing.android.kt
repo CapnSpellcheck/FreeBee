@@ -24,9 +24,9 @@ private class W3CDocumentWrapper(private val document: Document) : HTMLDocument 
          return W3CNodeListWrapper(w3cList)
       }
       
-      override fun xpathNode(expr: String): Node {
-         val w3cNode = xpath.evaluate(expr, node, XPathConstants.NODE) as org.w3c.dom.Node
-         return W3CNodeWrapper(w3cNode)
+      override fun xpathNode(expr: String): Node? {
+         val w3cNode = xpath.evaluate(expr, node, XPathConstants.NODE) as org.w3c.dom.Node?
+         return w3cNode?.let {W3CNodeWrapper(it) }
       }
       
       override fun xpathStr(expr: String): String {

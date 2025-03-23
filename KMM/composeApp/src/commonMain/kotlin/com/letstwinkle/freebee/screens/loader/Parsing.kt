@@ -6,7 +6,7 @@ interface HTMLDocument {
 
 interface Node {
    fun xpathNodes(expr: String): NodeList
-   fun xpathNode(expr: String): Node
+   fun xpathNode(expr: String): Node?
    fun xpathStr(expr: String): String
    
    fun textContent(): String

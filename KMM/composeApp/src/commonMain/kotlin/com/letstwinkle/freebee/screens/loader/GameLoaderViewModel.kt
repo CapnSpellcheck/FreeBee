@@ -65,21 +65,36 @@ class GameLoaderViewModel<Id>(
          statusMutable.value = LoadingStatus.Parsing
          val document = createHTMLDocument(html)
          val root = document.rootElement
-         val answerNodes =
-            root.xpathNodes("//*[@id='main-answer-list'][1]/ul/li//text()[not(parent::a)]")
-         val puzzleNotes = root.xpathNode("//*[@id='puzzle-notes'][1]")
-         val maximumPuzzleScore =
-            puzzleNotes.xpathNode(".//*[contains(., 'Maximum Puzzle Score')][1]")
-         val neededForGenius = puzzleNotes.xpathNode(".//*[contains(., 'Needed for Genius')][1]")
+         var answerList = root.xpathNode("//*[@id='main-answer-list'][1]")
+         val puzzleNotes: Node?
+         if (answerList != null) {
+            puzzleNotes = root.xpathNode("//*[@id='puzzle-notes'][1]")
+         } else {
+            answerList = root.xpathNode("//*[@class='answer-list'][1]")
+            puzzleNotes = answerList?.xpathNode("./following-sibling::div[1]")
+         }
          
+         if (answerList == null) 
+            throw ParseError("Couldn't find answer list")
+         if (puzzleNotes == null)
+            throw ParseError("Couldn't find scoring information")
+
+         val answerNodes = answerList.xpathNodes("./ul/li//text()[not(parent::a)]")
          val allowedWords = answerNodes.mapNotNull {
             it.textContent().trim().let { it.ifEmpty { null } }
          }
+         
+         val maximumPuzzleScore =
+            puzzleNotes.xpathNode(".//*[contains(., 'Maximum Puzzle Score')][1]")
+               ?: throw ParseError("Couldn't find Maximum Puzzle Score")
+         val neededForGenius = puzzleNotes.xpathNode(".//*[contains(., 'Needed for Genius')][1]")
+            ?: throw ParseError("Couldn't find Needed for Genius")
+         
          val maximumScore =
             endingNumberRegex.find(maximumPuzzleScore.textContent())?.value?.toShort()
-               ?: throw ParseError("Couldn't extract 'Maximum Puzzle Score' (text content was: ${maximumPuzzleScore.textContent()})")
+               ?: throw ParseError("Couldn't extract Maximum Puzzle Score (text content was: ${maximumPuzzleScore.textContent()})")
          val geniusScore = endingNumberRegex.find(neededForGenius.textContent())?.value?.toShort()
-            ?: throw ParseError("Couldn't extract 'Needed for Genius' (text content was: ${neededForGenius.textContent()})")
+            ?: throw ParseError("Couldn't extract Needed for Genius (text content was: ${neededForGenius.textContent()})")
          
          var lettersResult = determineLetters(allowedWords)
          if (lettersResult is DetermineLettersResult.NotUnique) {
@@ -103,8 +118,8 @@ class GameLoaderViewModel<Id>(
       }
    }
    
-   private fun determineLetters(words: List<String>, centerLetter: Char? = null): 
-      DetermineLettersResult 
+   private fun determineLetters(words: List<String>, centerLetter: Char? = null)
+      : DetermineLettersResult 
    {
       val foundLetters = HashSet<Char>(7)
       val centerCandidates = HashSet<Char>(7).apply {
