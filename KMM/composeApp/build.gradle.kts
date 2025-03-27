@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 //import io.github.ttypic.swiftklib.gradle.api.ExperimentalSwiftklibApi
 
 plugins {
@@ -8,6 +10,7 @@ plugins {
 //    alias(libs.plugins.swiftklib)
     alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
+    id("com.goncalossilva.resources") version "0.9.0"
 }
 
 kotlin {
@@ -90,12 +93,19 @@ kotlin {
              implementation(libs.kotlinx.coroutines.test)
              implementation(libs.multiplatform.settings.test)
              implementation(libs.ktor.client.mock)
+             implementation("com.goncalossilva:resources:0.9.0")
+          }
+       }
+       
+       listOf(androidUnitTest, iosTest).forEach {
+          it.dependencies {
+             implementation(libs.kotlinx.datetime) // Parsing.kt unit tests
           }
        }
        
        commonTest.dependencies {
           @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-          implementation(compose.uiTest)
+          implementation(compose.uiTest) // Multiplatform UI tests
        }
     }
 }
@@ -146,6 +156,15 @@ compose.resources {
 ksp {
    arg("room.generateKotlin", "true")
    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+allprojects {
+   // https://slack-chats.kotlinlang.org/t/16633408/the-release-notes-did-say-that-runcomposeuitest-can-be-writt
+   tasks.withType<KotlinCompile> {
+      if (name.startsWith( "compileDebugUnitTest")) {
+         exclude("**/ui/*")
+      }
+   }
 }
 
 /**

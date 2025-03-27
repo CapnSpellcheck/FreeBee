@@ -1,0 +1,2 @@
+I haven't set up the buildscript to support running UI tests through the Android emulator, so choose
+'iosX(Arm)64' when running these.
