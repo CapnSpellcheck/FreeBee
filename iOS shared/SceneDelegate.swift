@@ -5,8 +5,9 @@
 //
 
 import UIKit
-// TODO: put this back into "iOS shared" directory, and add #ifdef for line below
+#if KMM
 import ComposeApp
+#endif
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
    var window: UIWindow?
@@ -84,8 +85,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
    }
    
    private func handleShortcutItem(item: UIApplicationShortcutItem) {
+#if KMM
       if item.type == "Today" {
          Router.shared.openToday()
       }
+#endif
    }
 }

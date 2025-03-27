@@ -104,7 +104,7 @@
 		06AEE4AA2CA4CE7700AF8077 /* GamePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePickerViewModel.swift; sourceTree = "<group>"; };
 		06B094172CA767CD00A6CF66 /* GameLoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLoaderView.swift; sourceTree = "<group>"; };
 		06B094192CA78E0E00A6CF66 /* UINavigationControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationControllerExtension.swift; sourceTree = "<group>"; };
-		06B0943F2CA7958E00A6CF66 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		06B0943F2CA7958E00A6CF66 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "../../iOS shared/SceneDelegate.swift"; sourceTree = "<group>"; };
 		06B094412CA7993400A6CF66 /* EnvironmentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentValues.swift; sourceTree = "<group>"; };
 		06B094432CA79A4400A6CF66 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../iOS shared/AppDelegate.swift"; sourceTree = "<group>"; };
 		06B094462CA7A42E00A6CF66 /* ActionNavigationLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionNavigationLink.swift; sourceTree = "<group>"; };

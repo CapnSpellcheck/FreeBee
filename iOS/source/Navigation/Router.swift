@@ -24,11 +24,11 @@ final class Router: ObservableObject {
    static let shared = Router()
    
    
-   let navController = OrientationNavigationController()
+   let navigationController = OrientationNavigationController()
    var currentActivity: NSUserActivity
    
    private init() {
-      navController.navigationBar.prefersLargeTitles = true
+      navigationController.navigationBar.prefersLargeTitles = true
       currentActivity = NSUserActivity(activityType: SceneActivity.gameIndex.activityType)
       installRootController()
    }
@@ -65,30 +65,30 @@ final class Router: ObservableObject {
       default:
          return false
       }
-      navController.viewControllers = navController.viewControllers + viewControllersToPush
+      navigationController.viewControllers += viewControllersToPush
       return true
    }
 
    func showGamePicker() {
       let viewController = createHostingController(view: GamePicker())
-      navController.pushViewController(viewController, animated: true)
+      navigationController.pushViewController(viewController, animated: true)
       currentActivity = NSUserActivity(activityType: SceneActivity.gamePicker.activityType)
    }
    
    func showGameLoader(date: Date) {
       let viewController = createHostingController(view: GameLoaderView(gameDate: date))
-      navController.replaceTopmost(with: viewController)
+      navigationController.replaceTopmost(with: viewController)
       currentActivity = NSUserActivity(activityType: SceneActivity.gameLoader.activityType)
       currentActivity.userInfo = [SceneActivityKeys.gameDate: date as NSDate]
    }
    
    func showStatistics() {
       let viewController = createHostingController(view: StatisticsView())
-      navController.pushViewController(viewController, animated: true)
+      navigationController.pushViewController(viewController, animated: true)
    }
    
    func pop() {
-      navController.popViewController(animated: true)
+      navigationController.popViewController(animated: true)
    }
    
    func showGame(date: Date, replacingTopmost: Bool = false) {
@@ -99,9 +99,9 @@ final class Router: ObservableObject {
       let viewController = createHostingController(view: gameView, orientations: [.portrait])
       
       if replacingTopmost {
-         navController.replaceTopmost(with: viewController, animated: false)
+         navigationController.replaceTopmost(with: viewController, animated: false)
       } else {
-         navController.pushViewController(viewController, animated: true)
+         navigationController.pushViewController(viewController, animated: true)
       }
       currentActivity = NSUserActivity(activityType: SceneActivity.game.activityType)
       currentActivity.userInfo = [SceneActivityKeys.gameDate: date as NSDate]
@@ -113,7 +113,7 @@ final class Router: ObservableObject {
          .environmentObject(self)
       let rootVC = OrientationHostingController(rootView: gameView)
       
-      navController.viewControllers = [rootVC]
+      navigationController.viewControllers = [rootVC]
    }
    
    private func createGameView(gameDate: Date) -> GameView? {
