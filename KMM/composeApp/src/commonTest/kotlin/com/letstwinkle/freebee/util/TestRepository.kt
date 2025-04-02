@@ -38,8 +38,8 @@ class TestRepository : ITestRepository {
    override fun fetchGamesLive(): Flow<List<MockGame>> =
       flowOf(games.sortedByDescending { it.date })
    
-   override suspend fun fetchGame(date: LocalDate): MockGame {
-      return games.first { it.date == date }
+   override suspend fun fetchGame(date: LocalDate): MockGame? {
+      return games.firstOrNull { it.date == date }
    }
    
    override suspend fun getStartedGameCount(): Int = games.count { it.score > 0 }

@@ -51,7 +51,7 @@ import kotlinx.datetime.LocalDate
 @Composable fun <Id> GameLoader(
    repository: FreeBeeRepository<Id, *, *>,
    gameDate: LocalDate,
-   viewModel: GameLoaderViewModel<Id> = viewModel { GameLoaderViewModel(gameDate, repository) },
+   viewModel: GameLoaderViewModel<Id> = viewModel { GameLoaderViewModel(gameDate, repository = repository) },
    navigator: GameLoaderNavigator<Id>?,
    backNavigator: BackNavigator,
    modifier: Modifier = Modifier,
