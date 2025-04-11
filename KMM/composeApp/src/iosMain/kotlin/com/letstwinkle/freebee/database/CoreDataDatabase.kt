@@ -34,6 +34,7 @@ class CoreDataDatabase private constructor(
                .containerURLForSecurityApplicationGroupIdentifier(groupID)
                ?.URLByAppendingPathComponent(filename)
             if (sharedStoreURL != null) {
+               NSLog("%@", sharedStoreURL.absoluteString() as NSString)
                val sharedStoreDescription = NSPersistentStoreDescription(uRL = sharedStoreURL)
                container.persistentStoreDescriptions = listOf(sharedStoreDescription)
             } else {
@@ -163,8 +164,19 @@ class CoreDataDatabase private constructor(
       return container.viewContext.countForFetchRequest(request, null).convert()
    }
    
-   // TODO
-   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? = null
+   override suspend fun findGameDateForEnteredWord(word: String): LocalDate? {
+      val request = CDGameProgress.fetchRequest()
+      request.resultType = NSDictionaryResultType
+      request.propertiesToFetch = listOf("game.date")
+      request.predicate = NSPredicate.predicateWithFormat("ANY enteredWords.value = %@", word as NSString)
+      request.fetchLimit = 1U
+      return container.viewContext.executeFetchRequest(request, null)
+         ?.firstOrNull()?.let {
+            NSLog("[CoreDataDatabase] findGameDateForEnteredWord(%@): result=%@", word as NSString, it)
+            val nsDate = (it as NSDictionary).objectForKey("game.date") as NSDate
+            nsDate.toKotlinInstant().toLocalDateTime(TimeZone.UTC).date
+         }
+   }
    
    override suspend fun updateGameScore(game: GameWithWords, score: Short) {
       game.game.score = score

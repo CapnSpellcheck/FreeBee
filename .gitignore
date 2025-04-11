@@ -5,3 +5,4 @@ Package.pins
 Package.resolved
 *.xcuserstate
 KMM/composeApp/release/composeApp-release.apk
+KMM/iosApp/iosApp.xcodeproj/xcshareddata/xcschemes/iosApp.xcscheme

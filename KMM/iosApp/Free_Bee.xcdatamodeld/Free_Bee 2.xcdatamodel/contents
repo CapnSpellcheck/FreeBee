@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="22H420" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="EnteredWord" representedClassName="FreeBeeData.CDEnteredWord" syncable="YES">
+        <attribute name="value" attributeType="String" minValueString="4"/>
+        <fetchIndex name="byValueIndex">
+            <fetchIndexElement property="value" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="Game" representedClassName="FreeBeeData.CDGame" syncable="YES">
+        <attribute name="allowedWords" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="Set&lt;String&gt;"/>
+        <attribute name="centerLetterCode" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dirtyTrigger" optional="YES" transient="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="geniusScore" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="maximumScore" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="otherLetters" attributeType="String" valueTransformerName="NSSecureUnarchiveFromDataTransformer" minValueString="6" maxValueString="6" customClassName="Array&lt;Int32&gt;"/>
+        <relationship name="progress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GameProgress" inverseName="game" inverseEntity="GameProgress"/>
+        <fetchIndex name="byDateIndex">
+            <fetchIndexElement property="date" type="Binary" order="descending"/>
+        </fetchIndex>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="date"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="GameProgress" representedClassName="FreeBeeData.CDGameProgress" syncable="YES">
+        <attribute name="currentWord" optional="YES" transient="YES" attributeType="String" defaultValueString=""/>
+        <attribute name="score" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="enteredWords" optional="YES" toMany="YES" deletionRule="Deny" ordered="YES" destinationEntity="EnteredWord"/>
+        <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="progress" inverseEntity="Game"/>
+    </entity>
+</model>
