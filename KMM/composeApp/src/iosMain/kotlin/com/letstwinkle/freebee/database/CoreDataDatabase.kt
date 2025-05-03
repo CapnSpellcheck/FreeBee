@@ -178,6 +178,11 @@ class CoreDataDatabase private constructor(
          }
    }
    
+   override suspend fun updateOtherLetters(game: GameWithWords, otherLetters: String): GameWithWords {
+      game.game.otherLetters = otherLetters
+      return game
+   }
+   
    override suspend fun updateGameScore(game: GameWithWords, score: Short) {
       game.game.score = score
       game.game.cdGame.setDirtyTrigger(0) // needed to refresh this game in the app root

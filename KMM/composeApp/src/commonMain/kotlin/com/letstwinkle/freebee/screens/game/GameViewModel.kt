@@ -20,8 +20,8 @@ private const val minWordLength = 4
 private const val maxWordLength = 19
 private const val enteredWordSpacer = "\u2003"
 
-class GameViewModel<Id, GameWithWords: IGameWithWords<Id>>(
-   private val repository: FreeBeeRepository<Id, *, GameWithWords>,
+class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
+   private val repository: FreeBeeRepository<Id, Game, GameWithWords>,
    private val gameID: Id,
    private val multiplatformSettings: Settings = Settings(),
    private val backgroundContext: CoroutineContext = Dispatchers.Default,
@@ -144,6 +144,19 @@ class GameViewModel<Id, GameWithWords: IGameWithWords<Id>>(
             gameWithWordsMutable.value = gameWithWords.value
          }
       }
+   }
+   
+   override suspend fun shuffleHoneycomb() {
+      var gameWithWords = gameWithWords.value ?: return
+      val shuffledOtherLetters = gameWithWords.game.otherLetters.toCharArray().run {
+         shuffle()
+         concatToString()
+      }
+      
+      repository.executeAndSave {
+         gameWithWords = repository.updateOtherLetters(gameWithWords, shuffledOtherLetters)
+      }
+      gameWithWordsMutable.value = gameWithWords
    }
    
    private fun scoreWord(word: String): Short {

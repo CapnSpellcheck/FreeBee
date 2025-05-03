@@ -29,7 +29,7 @@ class GameTest {
    
    private fun ComposeUiTest.setContent() {
       setContent {
-         GameScreen(viewModel, viewModel.gameWithWords.value!!.game.date, backNavigator)
+         GameScreen(viewModel, viewModel.gameWithWords.value.game.date, backNavigator)
       }
    }
    
@@ -49,7 +49,7 @@ class GameTest {
    
    // TODO: doesn't pass
    @Test fun testClickingEnteredWordBar() = runComposeUiTest {
-      viewModel.gameWithWords.value!!.game.enteredWords +=
+      viewModel.gameWithWords.value.game.enteredWords +=
          listOf("abbbbbbb", "accccccc", "addddddd", "aeeeeee", "affffff", "agggggg").map { MockWord(it) }
       setContent()
       
@@ -76,7 +76,7 @@ class GameTest {
       onNodeWithContentDescription("you earned Genius").assertDoesNotExist()
       
       // change the game to genius score
-      viewModel.gameWithWords.value!!.let { it.score = it.geniusScore }
+      viewModel.gameWithWords.value.let { it.score = it.geniusScore }
       // reload the screen so the VM gets genius status
       setContent()
       
@@ -90,5 +90,13 @@ class GameTest {
       
       onNodeWithText("Back", substring = true).performClick()
       assertEquals(1, backNavigator.goBackCount)
+   }
+   
+   @Test fun testShuffle() = runComposeUiTest {
+      setContent()
+      val otherLetters = viewModel.gameWithWords.value.game.otherLetters
+      
+      onNodeWithContentDescription("shuffle honeycomb").performClick()
+      assertNotEquals(otherLetters, viewModel.gameWithWords.value.game.otherLetters, "shuffle otherLetters")
    }
 }

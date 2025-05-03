@@ -54,6 +54,11 @@ class TestRepository : ITestRepository {
          it.enteredWords.contains(MockWord(word))
       }?.date
    
+   override suspend fun updateOtherLetters(game: MockGame, otherLetters: String): MockGame {
+      game.otherLetters = otherLetters
+      return game
+   }
+   
    override suspend fun addEnteredWord(gameWithWords: MockGame, word: String): Boolean {
       gameWithWords.add(MockWord(value = word))
       return true

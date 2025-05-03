@@ -87,6 +87,11 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
       game.game.score = score
    }
    
+   override suspend fun updateOtherLetters(game: GameWithWords, otherLetters: String): GameWithWords {
+      gameDAO().saveOtherLetters(GameOtherLetters(game.game.uniqueID, otherLetters))
+      return game.copy(game = game.game.copy(otherLetters = otherLetters))
+   }
+   
    override fun hasGameForDate(date: LocalDate): Boolean = gameDAO().hasDate(date)
    
    // TODO: to match iOS, model revert should be implemented on failure, somehow…

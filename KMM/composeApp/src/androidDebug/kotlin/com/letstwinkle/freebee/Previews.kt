@@ -8,8 +8,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.letstwinkle.freebee.database.Game
-import com.letstwinkle.freebee.database.IGame
+import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.model.StatisticsModel
 import com.letstwinkle.freebee.screens.BackNavigator
 import com.letstwinkle.freebee.screens.Statistics

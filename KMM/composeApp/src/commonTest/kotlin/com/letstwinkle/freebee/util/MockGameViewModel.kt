@@ -12,7 +12,7 @@ class MockGameViewModel(private val game: MockGame) : IGameViewModel<MockGame> {
    
    override val gameProgress: Float
       get() = 0.5f
-   override val gameWithWords: State<MockGame?>
+   override val gameWithWords: State<MockGame>
       get() = gameWithWordsMutable
    override val entryNotAcceptedEvents = Channel<String>()
    override val enteredWordSummary: String
@@ -31,6 +31,12 @@ class MockGameViewModel(private val game: MockGame) : IGameViewModel<MockGame> {
    }
    
    override suspend fun enter() {
+   }
+   
+   override suspend fun shuffleHoneycomb() {
+      gameWithWordsMutable.value.game.let { game ->
+         game.otherLetters = game.otherLetters.reversed()
+      }
    }
    
    override val enterEnabled: Boolean

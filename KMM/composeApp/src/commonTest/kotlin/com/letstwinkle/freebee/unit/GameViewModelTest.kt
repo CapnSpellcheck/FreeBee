@@ -14,7 +14,7 @@ import org.lighthousegames.logging.KmLogging
 import org.lighthousegames.logging.LogLevel
 import kotlin.test.*
 
-private typealias TestGameViewModel = GameViewModel<Int, MockGame>
+private typealias TestGameViewModel = GameViewModel<Int, MockGame, MockGame>
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameViewModelTest {
@@ -176,5 +176,14 @@ class GameViewModelTest {
       
       val expectedHints = mapOf("zdef" to repository.games.last().date)
       assertEquals(expectedHints, viewModel.wordHints.value, "wordHints - enough words entered")
+   }
+   
+   @Test fun testShuffleHoneycomb() = runTest {
+      val game = repository.games.first()
+      val otherLetters = game.otherLetters
+      
+      viewModel.shuffleHoneycomb()
+      assertNotEquals(otherLetters, game.otherLetters, "otherLetters different")
+      assertTrue(game.otherLetters.toSet().containsAll(otherLetters.toList()), "otherLetters has same letters")
    }
 }

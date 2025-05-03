@@ -18,8 +18,11 @@ class Game(val cdGame: CDGame) : IGame<NSManagedObjectID> {
       get() = cdGame.allowedWords() as Set<String>
    override val centerLetterCode: Int
       get() = cdGame.centerLetterCode()
-   override val otherLetters: String
+   override var otherLetters: String
       get() = cdGame.otherLetters()
+      set(value) {
+         cdGame.setOtherLetters(value)
+      }
    override val geniusScore: Short
       get() = cdGame.geniusScore()
    override val maximumScore: Short

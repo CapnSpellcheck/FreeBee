@@ -37,8 +37,8 @@ import org.lighthousegames.logging.logging
 private val log = logging()
 const val entryNotAcceptedMessageVisibleDuration = 3000
 
-@Composable inline fun <Id, GameWithWords: IGameWithWords<Id>> GameScreen(
-   repository: FreeBeeRepository<Id, *, GameWithWords>,
+@Composable inline fun <Id, Game:  IGame<Id>, GameWithWords: IGameWithWords<Id>> GameScreen(
+   repository: FreeBeeRepository<Id, Game, GameWithWords>,
    game: IGame<Id>,
    backNavigator: BackNavigator,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -47,8 +47,8 @@ const val entryNotAcceptedMessageVisibleDuration = 3000
    GameScreen(viewModel, game.date, backNavigator, painterProvider)
 }
 
-@Composable inline fun <Id, GameWithWords: IGameWithWords<Id>> GameScreen(
-   repository: FreeBeeRepository<Id, *, GameWithWords>,
+@Composable inline fun <Id, Game:  IGame<Id>, GameWithWords: IGameWithWords<Id>> GameScreen(
+   repository: FreeBeeRepository<Id, Game, GameWithWords>,
    gameID: Id,
    gameDate: LocalDate,
    backNavigator: BackNavigator,
@@ -216,7 +216,7 @@ private val positionProvider = object : PopupPositionProvider {
          verticalAlignment = Alignment.CenterVertically
       ) {
          Text(
-            scoreString(gameWithWords?.game?.score),
+            viewModel.scoreText,
             Modifier.padding(end = 8.dp),
             style = bodyStyle
          )
@@ -299,6 +299,15 @@ private val positionProvider = object : PopupPositionProvider {
                   .alpha(if (gameIsCompleteOrNull) 0.4f else 1f)
             )
          }
+         iOSStyleIconButton(
+            { coroutineScope.launch { viewModel.shuffleHoneycomb() } },
+            Modifier.align(Alignment.TopEnd),
+            enabled = !gameIsCompleteOrNull,
+            placement = IconButtonPlacement.Content
+         ) {
+            val paint = painterProvider.provide(PainterProvider.Resource.Shuffle)
+            PressIcon(paint, "shuffle honeycomb", Color.Gray)
+         }
          if (gameIsCompleteOrNull && gameWithWords != null) {
             Text("\uD83D\uDCAF", fontSize = (150f / LocalDensity.current.fontScale).sp)
          }
@@ -363,12 +372,3 @@ private val positionProvider = object : PopupPositionProvider {
       }
    }
 }
-
-private fun scoreString(score: Short?): AnnotatedString =
-   buildAnnotatedString {
-      append("Score:  ")
-      score?.let {
-         pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-         append(score.toString())
-      }
-   }

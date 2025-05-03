@@ -19,6 +19,7 @@ class PreviewPainterProvider : PainterProvider {
          PainterProvider.Resource.ChevronBack -> R.drawable.chevron_back
          PainterProvider.Resource.Brain -> R.drawable.brain
          PainterProvider.Resource.Hint -> R.drawable.light_bulb_max
+         PainterProvider.Resource.Shuffle -> R.drawable.shuffle
       }
       return painterResource(id)
    }

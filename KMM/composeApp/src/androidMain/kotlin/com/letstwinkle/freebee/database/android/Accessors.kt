@@ -50,6 +50,9 @@ interface GameDAO {
    
    @Update(entity = Game::class)
    suspend fun saveGameScore(gameScore: GameScore)
+   
+   @Update(entity = Game::class)
+   suspend fun saveOtherLetters(game: GameOtherLetters)
 }
 
 @Dao

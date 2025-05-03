@@ -7,7 +7,7 @@ data class MockGame(
    override val date: LocalDate,
    override val allowedWords: Set<String>,
    override val centerLetterCode: Int,
-   override val otherLetters: String,
+   override var otherLetters: String,
    override val geniusScore: Short,
    override val maximumScore: Short,
    override val enteredWords: LinkedHashSet<MockWord>,

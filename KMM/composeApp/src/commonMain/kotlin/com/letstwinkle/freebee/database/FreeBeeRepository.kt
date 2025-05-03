@@ -31,6 +31,8 @@ interface FreeBeeRepository<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<I
    
    suspend fun updateGameScore(game: GameWithWords, score: Short)
    
+   suspend fun updateOtherLetters(game: GameWithWords, otherLetters: String): GameWithWords
+   
    // Not 'suspend' so can be used for synchronous SelectedDates
    fun hasGameForDate(date: LocalDate): Boolean
    

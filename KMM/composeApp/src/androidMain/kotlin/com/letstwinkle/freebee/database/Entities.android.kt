@@ -95,5 +95,10 @@ data class EnteredWord(
 
 data class GameScore(
    @ColumnInfo("id") val gameId: Long,
-   val score: Short
+   val score: Short,
+)
+
+data class GameOtherLetters(
+   @ColumnInfo("id") val gameId: Long,
+   val otherLetters: String,
 )
