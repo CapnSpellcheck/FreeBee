@@ -320,7 +320,7 @@ SWIFT_CLASS("_TtC12KannaWrapper22SearchableNodeListObjc")
 SWIFT_CLASS("_TtC12KannaWrapper18SearchableNodeObjc")
 @interface SearchableNodeObjc : NSObject
 - (SearchableNodeListObjc * _Nonnull)xpathNodesWithExpr:(NSString * _Nonnull)expr SWIFT_WARN_UNUSED_RESULT;
-- (SearchableNodeObjc * _Nonnull)xpathNodeWithExpr:(NSString * _Nonnull)expr SWIFT_WARN_UNUSED_RESULT;
+- (SearchableNodeObjc * _Nullable)xpathNodeWithExpr:(NSString * _Nonnull)expr SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nonnull)xpathStrWithExpr:(NSString * _Nonnull)expr SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nonnull)textContent SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;

@@ -30,10 +30,8 @@ import Kanna
       }
    }
    
-   // TODO: change the return to an optional
-   // need to rebuild the swift module then… I need to document the swiftbuild commands…
-   @objc public func xpathNode(expr: String) -> SearchableNodeObjc {
-      SearchableNodeObjc(node: node.at_xpath(expr)!)
+   @objc public func xpathNode(expr: String) -> SearchableNodeObjc? {
+      node.at_xpath(expr).map { SearchableNodeObjc(node: $0) }
    }
    
    @objc public func xpathStr(expr: String) -> String {

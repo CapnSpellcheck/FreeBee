@@ -19,10 +19,8 @@ private class SearchableNodeWrapper(private val searchableNode: SearchableNodeOb
    override fun xpathNodes(expr: String): NodeList = 
       SearchableNodeListWrapper(searchableNode.xpathNodesWithExpr(expr))
    
-   override fun xpathNode(expr: String): Node? {
-      val nodeListWrapper = xpathNodes(expr)
-      return if (nodeListWrapper.size > 0) nodeListWrapper.item(0) else null
-   }
+   override fun xpathNode(expr: String): Node? =
+      searchableNode.xpathNodeWithExpr(expr)?.let { SearchableNodeWrapper(it) }
    
    override fun xpathStr(expr: String): String = searchableNode.xpathStrWithExpr(expr)
    
