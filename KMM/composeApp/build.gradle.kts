@@ -93,7 +93,7 @@ kotlin {
              implementation(libs.kotlinx.coroutines.test)
              implementation(libs.multiplatform.settings.test)
              implementation(libs.ktor.client.mock)
-             implementation("com.goncalossilva:resources:0.9.0")
+             implementation(libs.test.resources)
           }
        }
        
@@ -118,7 +118,7 @@ android {
         applicationId = "com.letstwinkle.freebee"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 7
+        versionCode = 8
         versionName = "1.0"
     }
     packaging {
