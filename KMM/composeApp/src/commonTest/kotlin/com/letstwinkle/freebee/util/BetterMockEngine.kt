@@ -6,7 +6,7 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockEngineConfig
 import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
-import io.ktor.util.InternalAPI
+import io.ktor.utils.io.InternalAPI
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.coroutines.CoroutineContext
 
