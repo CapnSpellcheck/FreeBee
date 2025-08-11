@@ -5,9 +5,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.letstwinkle.freebee.SettingKeys
+import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.database.*
-import com.letstwinkle.freebee.secondaryTextColor
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -65,8 +64,26 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
          if (it.isComplete) "" else it.currentWordDisplay
       } ?: ""
    
-   override val wordHints: State<Map<String, LocalDate>>
+   val wordHints: State<Map<String, LocalDate>>
       get() = otherGamesEnteredWordsMatchingThisGame
+   
+   override val hasWordHints: Boolean
+      get() = wordHints.value.isNotEmpty()
+   
+   override val wordHintSummary: String
+      get() {
+         val wordDates = HashSet(wordHints.value.values).joinToString(separator = "\n") { date ->
+            formatGameDateToDisplay(date)
+         }
+         return "There are ${wordHints.value.size} words you entered for other games that match this game. Game dates:\n$wordDates"
+      }
+   
+   override val wordHintRevealed: String
+      get() = HashSet(wordHints.value.keys).joinToString(separator = "\n").let { words ->
+         "There are ${wordHints.value.size} words you entered for other games that match this game.\n$words"
+      }
+   
+   override val earnedPointsEvents = Channel<IGameViewModel.EarnedPointsEvent>()
    
    init {
       initialize()
@@ -95,9 +112,11 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
       val enteredWord = gameWithWords.game.currentWord
       val wordIsAllowed = gameWithWords.isAllowed(enteredWord)
       val wordIsEntered = gameWithWords.hasEntered(enteredWord)
+      val wordScore: Short
       
       if (wordIsAllowed && !wordIsEntered) {
-         val updatedScore = (gameWithWords.game.score + scoreWord(enteredWord)).toShort()
+         wordScore = scoreWord(enteredWord)
+         val updatedScore = (gameWithWords.game.score + wordScore).toShort()
          committed = repository.executeAndSave {
             repository.updateGameScore(gameWithWords, updatedScore)
             repository.addEnteredWord(gameWithWords, enteredWord)
@@ -108,10 +127,12 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
             if (wordIsEntered) "Word is already entered"
             else "Entry isn't accepted"
          )
+         wordScore = 0
       }
       
       if (committed) {
-         if (gameWithWords.game.isPangram(enteredWord)) {
+         val isPangram = gameWithWords.game.isPangram(enteredWord)
+         if (isPangram) {
             log.d { "Pangram entered: $enteredWord" }
             recordPangram()
          }
@@ -119,6 +140,8 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
          joinedEnteredWords = enteredWordCapitalized +
             if (joinedEnteredWords.isNotEmpty()) enteredWordSpacer + joinedEnteredWords
             else ""
+         val earnedPointsEvent = IGameViewModel.EarnedPointsEvent(wordScore, if (isPangram) "Pangram!" else "Nice!")
+         earnedPointsEvents.send(earnedPointsEvent)
       }
       if (!errored) {
          gameWithWords.game.currentWord = ""
@@ -200,4 +223,12 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
          otherGamesEnteredWordsMatchingThisGame.value = wordsAndDates
       }
    }
+   
+   // region ViewModel override
+   override fun onCleared() {
+      entryNotAcceptedEvents.close()
+      earnedPointsEvents.close()
+   }
+   
+   // endregion
 }

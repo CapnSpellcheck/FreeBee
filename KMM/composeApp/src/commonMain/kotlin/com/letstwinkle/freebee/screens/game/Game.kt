@@ -13,11 +13,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -75,10 +76,8 @@ private val positionProvider = object : PopupPositionProvider {
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
    MyAppTheme {
-      val rulesState =
-         rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
+      val rulesState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
       val coroutineScope = rememberCoroutineScope()
-      val wordHints = viewModel.wordHints.value
       val showHintDialog = rememberSaveable { mutableStateOf(false) }
       
       Scaffold(topBar = {
@@ -99,7 +98,7 @@ private val positionProvider = object : PopupPositionProvider {
                         Popup(positionProvider, { geniusPopupOpen.value = false }, properties = props) {
                            val geniusStr = "You reached genius level. Smarty!"
                            val popupShape = RoundedCornerShape(8.dp)
-                           // TODO: find constant for elevation
+                           // TODO: find library-provided constant for elevation
                            Surface(Modifier.widthIn(max = 120.dp), elevation = 3.dp, shape = popupShape) {
                               Text(
                                  geniusStr,
@@ -112,7 +111,7 @@ private val positionProvider = object : PopupPositionProvider {
                      }
                   }
                }
-               if (wordHints.isNotEmpty()) {
+               if (viewModel.hasWordHints) {
                   iOSStyleIconButton({ showHintDialog.value = true }) {
                      val hintPaint = painterProvider.provide(PainterProvider.Resource.Hint)
                      AccentIcon(hintPaint, "hint")
@@ -131,18 +130,13 @@ private val positionProvider = object : PopupPositionProvider {
          if (showHintDialog.value) {
             val showTheWords = rememberSaveable{ mutableStateOf(false) }
             val dismiss = { showHintDialog.value = false }
-            val hintContent = if (showTheWords.value)
-               HashSet(wordHints.keys).joinToString(separator = "\n")
-            else
-               HashSet(wordHints.values).joinToString(separator = "\n") { date ->
-                  formatGameDateToDisplay(date)
-               }
+            val dialogText = if (showTheWords.value) viewModel.wordHintRevealed else viewModel.wordHintSummary
             AlertDialog(
                dismiss,
                confirmButton = { Button(dismiss) { Text("OK") } },
                dismissButton = { Button({ showTheWords.value = true }) { Text("Show the words!" ) } },
                title = { Text("Words from other Games") },
-               text = { Text("There are ${wordHints.size} words you entered for other games that match this game.${if (showTheWords.value) "" else " Game dates:"}\n$hintContent") }
+               text = { Text(dialogText) }
             )
          }
       }
@@ -187,6 +181,11 @@ private val positionProvider = object : PopupPositionProvider {
    val coroutineScope = rememberCoroutineScope()
    val entryNotAcceptedAnimator = remember { Animatable(0f, Float.VectorConverter) }
    val entryNotAcceptedMessage = remember { mutableStateOf("") }
+   val pointsEarnedEvent = remember { mutableStateOf(IGameViewModel.EarnedPointsEvent(0, "")) }
+   val pointsEarnedAlphaAnimator = remember { Animatable(0f, Float.VectorConverter) }
+   val pointsEarnedSourceCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
+   val pointsEarnedDestCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
+   val pointsEarnedOffsetAnimator = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
    val gameWithWords = viewModel.gameWithWords.value
    val isEnteredWordOverflow = remember { mutableStateOf(false) }
    
@@ -205,21 +204,59 @@ private val positionProvider = object : PopupPositionProvider {
       }
    }
    
+   LaunchedEffect(Unit) {
+      for (event in viewModel.earnedPointsEvents) {
+         pointsEarnedEvent.value = event
+            launch {
+               pointsEarnedAlphaAnimator.animateTo(1f, animationSpec = tween(
+                  200,
+                  easing = LinearEasing
+               ))
+               pointsEarnedAlphaAnimator.animateTo(0f, animationSpec = tween(
+                  100,
+                  1000,
+                  easing = LinearEasing
+               ))
+            }
+         launch {
+            pointsEarnedOffsetAnimator.snapTo(Offset.Zero)
+            pointsEarnedSourceCoordinates.value?.let { source ->
+               pointsEarnedDestCoordinates.value?.let { dest ->
+                  val offset = source.localPositionOf(dest, Offset(0f, dest.size.height + 0f))
+                  pointsEarnedOffsetAnimator.animateTo(offset, animationSpec = tween(
+                     250,
+                     800,
+                     CubicBezierEasing(0.42f, 0f, 0.58f, 1.0f)
+                  ))
+               }
+            }
+         }
+      }
+   }
+   
    Column(
       modifier.fillMaxSize()
          .padding(WindowInsets.safeContent.only(WindowInsetsSides.Bottom).asPaddingValues())
          .padding(vertical = 12.dp, horizontal = 16.dp),
       horizontalAlignment = Alignment.CenterHorizontally
    ) {
+      // score and progressbar
       Row(
          Modifier.fillMaxWidth().padding(bottom = 16.dp),
          verticalAlignment = Alignment.CenterVertically
       ) {
-         Text(
-            viewModel.scoreText,
-            Modifier.padding(end = 8.dp),
-            style = bodyStyle
-         )
+         val scoreStyle = TextStyle(fontSize = 20.sp)
+         Text("Score:  ", style = scoreStyle)
+         gameWithWords?.game?.let { game ->
+            TickerNumberView(
+               game.score.toInt(),
+               Modifier.padding(end = 8.dp).onGloballyPositioned {
+                  pointsEarnedDestCoordinates.value = it
+               },
+               textStyle = scoreStyle.copy(fontWeight = FontWeight.Bold),
+               animationDelayMsec = 1100,
+            )
+         }
          LinearProgressIndicator(
             viewModel.gameProgress,
             Modifier.height(2.dp).fillMaxWidth(),
@@ -227,6 +264,7 @@ private val positionProvider = object : PopupPositionProvider {
          )
       }
       
+      // entered word bar
       Row(
          Modifier.fillMaxWidth()
             .clickable(isEnteredWordOverflow.value, "expand entered words") {
@@ -263,20 +301,46 @@ private val positionProvider = object : PopupPositionProvider {
       
       Spacer(Modifier.weight(1f))
       
-      Row(
-         Modifier.padding(bottom = 16.dp).alpha(entryNotAcceptedAnimator.value),
-         horizontalArrangement = Arrangement.spacedBy(8.dp),
-         verticalAlignment = Alignment.CenterVertically
-      ) {
-         Image(
-            painterProvider.provide(PainterProvider.Resource.XCircleFill),
-            "entry not accepted",
-            Modifier.size(16.dp, 16.dp),
-            colorFilter = ColorFilter.tint(Color.Red)
-         )
-         Text(entryNotAcceptedMessage.value, style = subheadStyle)
+      // Entry not accepted and earned points feedback (they overlap)
+      Box(Modifier.padding(bottom = 16.dp)) {
+         // entry not accepted
+         Row(
+            Modifier.alpha(entryNotAcceptedAnimator.value),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+         ) {
+            Image(
+               painterProvider.provide(PainterProvider.Resource.XCircleFill),
+               "entry not accepted",
+               Modifier.size(16.dp, 16.dp),
+               colorFilter = ColorFilter.tint(Color.Red)
+            )
+            Text(entryNotAcceptedMessage.value, style = subheadStyle)
+         }
+         // earned points feedback
+         Row(Modifier.align(Alignment.Center)) {
+            Text(
+               pointsEarnedEvent.value.toastText,
+               Modifier.padding(end = 40.dp).alpha(pointsEarnedAlphaAnimator.value),
+               style = bodyStyle
+            )
+            Text(
+               "+${pointsEarnedEvent.value.points}",
+               Modifier
+                  .onGloballyPositioned {
+                     pointsEarnedSourceCoordinates.value = it
+                  }
+                  .graphicsLayer {
+                     alpha = pointsEarnedAlphaAnimator.value
+                     translationX = pointsEarnedOffsetAnimator.value.x
+                     translationY = pointsEarnedOffsetAnimator.value.y
+                  },
+               style = bodyStyle.copy(fontWeight = FontWeight.Bold)
+            )
+         }
       }
       
+      // the entered letters
       AutoSizeText(
          viewModel.currentWordDisplay, 
          Modifier.testTag("currentWord"),
@@ -289,6 +353,7 @@ private val positionProvider = object : PopupPositionProvider {
       
       val gameIsCompleteOrNull = gameWithWords?.game?.isComplete != false
       
+      // letter honeycomb
       Box(contentAlignment = Alignment.Center) {
          gameWithWords?.let {
             LetterHoneycomb(
@@ -315,6 +380,7 @@ private val positionProvider = object : PopupPositionProvider {
       
       Spacer(Modifier.weight(1f))
       
+      // buttons
       Row(
          Modifier.alpha(if (gameIsCompleteOrNull) 0f else 1f).padding(bottom = 8.dp),
          horizontalArrangement = Arrangement.spacedBy(44.dp)

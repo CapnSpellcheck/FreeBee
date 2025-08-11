@@ -2,6 +2,7 @@
 
 package com.letstwinkle.freebee.unit
 
+import com.letstwinkle.freebee.formatGameDateToDisplay
 import com.letstwinkle.freebee.screens.game.GameViewModel
 import com.letstwinkle.freebee.util.MockGame
 import com.letstwinkle.freebee.util.TestRepository
@@ -68,6 +69,10 @@ class GameViewModelTest {
       get() = viewModel.gameWithWords.value!!
    
    @Test fun testEnteredWordSummary() = runTest {
+      backgroundScope.launch {
+         viewModel.earnedPointsEvents.consumeEach {}
+      }
+      
       assertEquals("No words yet", viewModel.enteredWordSummary, "Entered word summary when enteredWordCount = 0")
       
       gameWithWords.game.currentWord = "zabc"
@@ -130,6 +135,9 @@ class GameViewModelTest {
       backgroundScope.launch { 
          viewModel.entryNotAcceptedEvents.consumeEach {}
       }
+      backgroundScope.launch {
+         viewModel.earnedPointsEvents.consumeEach {}
+      }
       
       gameWithWords.game.currentWord = "abcde"
       viewModel.enter()
@@ -151,6 +159,9 @@ class GameViewModelTest {
    }
    
    @Test fun testEntryNotAcceptedEvent() = runTest {
+      backgroundScope.launch {
+         viewModel.earnedPointsEvents.consumeEach {}
+      }
       launch {
          val event = viewModel.entryNotAcceptedEvents.receive()
          assertEquals("Entry isn't accepted", event, "currentWord invalid - receive event")
@@ -176,6 +187,12 @@ class GameViewModelTest {
       
       val expectedHints = mapOf("zdef" to repository.games.last().date)
       assertEquals(expectedHints, viewModel.wordHints.value, "wordHints - enough words entered")
+      
+      assertTrue(viewModel.wordHintSummary.startsWith("There are 1 words you entered for other games that match this game. Game dates:"), "wordHintSummary - prefix")
+      assertTrue(viewModel.wordHintSummary.endsWith(formatGameDateToDisplay(repository.games.last().date)), "wordHintSummary - contains game date")
+      
+      assertTrue(viewModel.wordHintRevealed.startsWith("There are 1 words you entered for other games that match this game."), "wordHintRevealed - prefix")
+      assertTrue(viewModel.wordHintRevealed.endsWith("zdef"), "wordHintRevealed - reveals word")
    }
    
    @Test fun testShuffleHoneycomb() = runTest {

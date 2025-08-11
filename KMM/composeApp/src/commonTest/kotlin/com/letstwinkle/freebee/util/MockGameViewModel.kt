@@ -2,10 +2,12 @@ package com.letstwinkle.freebee.util
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.screens.game.IGameViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.datetime.LocalDate
+import kotlinx.coroutines.launch
 
 class MockGameViewModel(private val game: MockGame) : IGameViewModel<MockGame> {
    private val gameWithWordsMutable = mutableStateOf(game, policy = neverEqualPolicy())
@@ -31,6 +33,15 @@ class MockGameViewModel(private val game: MockGame) : IGameViewModel<MockGame> {
    }
    
    override suspend fun enter() {
+      if (gameWithWords.value.isAllowed(gameWithWords.value.currentWord)) {
+         if (gameWithWords.value.game.isPangram(gameWithWords.value.currentWord)) {
+            earnedPointsEvents.send(IGameViewModel.EarnedPointsEvent(10, "PANGRAM"))
+         } else {
+            earnedPointsEvents.send(IGameViewModel.EarnedPointsEvent(1, "WORD"))
+         }
+      }
+      gameWithWords.value.game.currentWord = ""
+      gameWithWordsMutable.value = gameWithWords.value
    }
    
    override suspend fun shuffleHoneycomb() {
@@ -41,6 +52,9 @@ class MockGameViewModel(private val game: MockGame) : IGameViewModel<MockGame> {
    
    override val enterEnabled: Boolean
       get() = game.currentWord.length >= 4
-   override val wordHints: State<Map<String, LocalDate>>
-      get() = mutableStateOf(emptyMap())
+   override val hasWordHints: Boolean = false
+   override val wordHintRevealed: String = ""
+   override val wordHintSummary: String = ""
+   // channel events not tested yet.
+   override val earnedPointsEvents = Channel<IGameViewModel.EarnedPointsEvent>()
 }

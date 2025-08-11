@@ -2,11 +2,8 @@ package com.letstwinkle.freebee.screens.game
 
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.font.FontWeight
 import com.letstwinkle.freebee.database.IGameWithWords
 import kotlinx.coroutines.channels.Channel
-import kotlinx.datetime.LocalDate
 
 interface IGameViewModel<GameWithWords: IGameWithWords<*>> {
    val gameProgress: Float
@@ -20,14 +17,10 @@ interface IGameViewModel<GameWithWords: IGameWithWords<*>> {
    suspend fun enter()
    suspend fun shuffleHoneycomb()
    val enterEnabled: Boolean
-   val wordHints: State<Map<String, LocalDate>>
+   val hasWordHints: Boolean
+   val wordHintRevealed: String
+   val wordHintSummary: String
+   val earnedPointsEvents: Channel<EarnedPointsEvent>
+   
+   data class EarnedPointsEvent(val points: Short, val toastText: String)
 }
-
-val IGameViewModel<*>.scoreText: AnnotatedString
-   get() = buildAnnotatedString {
-      append("Score:  ")
-      gameWithWords.value?.game?.let {
-         pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-         append(it.score.toString())
-      }
-   }

@@ -97,7 +97,8 @@ class PreviewRepository : AndroidRepository {
             "mimic",
             "rich",
             "tactic",
-            "tract"
+            "tract",
+            "matriarch",
          ),
          centerLetterCode = 'c'.code,
          otherLetters = "mihatr",
