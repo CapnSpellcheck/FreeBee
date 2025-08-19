@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.database.AnyFreeBeeRepository
-import com.letstwinkle.freebee.database.FreeBeeRepository
 import io.ktor.client.request.get
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.launch

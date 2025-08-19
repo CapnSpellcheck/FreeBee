@@ -15,8 +15,7 @@ import com.letstwinkle.freebee.screens.Statistics
 import com.letstwinkle.freebee.screens.game.*
 import com.letstwinkle.freebee.screens.loader.GameLoader
 import com.letstwinkle.freebee.screens.picker.GamePicker
-import com.letstwinkle.freebee.screens.root.GameList
-import com.letstwinkle.freebee.screens.root.GameListNavigator
+import com.letstwinkle.freebee.screens.root.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinLocalDate
 import java.time.LocalDate
@@ -28,12 +27,13 @@ import java.time.LocalDate
    device = "id:pixel_8"
 )
 fun GameListPreview() {
+   val gameListViewModel = GameListViewModel(PreviewRepository())
    Scaffold(topBar = {
       TopAppBar(
          title = { Text("Games") },
       )}) {
       GameList(
-         PreviewRepository(),
+         gameListViewModel,
          painterProvider = PreviewPainterProvider(),
          navigator = object : GameListNavigator<Game> {
             override fun showStatistics() {

@@ -1,6 +1,7 @@
 package com.letstwinkle.freebee.database
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 interface FreeBeeRepository<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>> {
@@ -13,7 +14,7 @@ interface FreeBeeRepository<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<I
       maximumScore: Short,
    ): Id
    
-   fun fetchGamesLive(): Flow<List<Game>>
+   fun fetchGamesLive(orderByScored: Boolean = false): Flow<List<Game>>
    
    suspend fun fetchGame(date: LocalDate): Game?
    
@@ -29,7 +30,7 @@ interface FreeBeeRepository<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<I
    
    suspend fun findGameDateForEnteredWord(word: String): LocalDate?
    
-   suspend fun updateGameScore(game: GameWithWords, score: Short)
+   suspend fun updateGameScore(game: GameWithWords, score: Short, scoredAt: Instant)
    
    suspend fun updateOtherLetters(game: GameWithWords, otherLetters: String): GameWithWords
    

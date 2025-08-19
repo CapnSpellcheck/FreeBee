@@ -37,6 +37,10 @@ class Game(val cdGame: CDGame) : IGame<NSManagedObjectID> {
       set(value) {
          cdGame.progress().setScore(value)
       }
+   override var scoredAt: Instant?
+      // TODO: add to CDGame
+      get() = null
+      set(value) {}
    override val uniqueID: NSManagedObjectID
       get() = cdGame.objectID()
    

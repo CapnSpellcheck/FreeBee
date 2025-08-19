@@ -101,7 +101,8 @@ class CoreDataDatabase private constructor(
       }
    }
    
-   override fun fetchGamesLive(): Flow<List<Game>> {
+   override fun fetchGamesLive(orderByScore: Boolean): Flow<List<Game>> {
+      // TODO: orderByScore
       if (gameListFetchResultsController != null)
          return emptyFlow()
       
@@ -183,7 +184,8 @@ class CoreDataDatabase private constructor(
       return game
    }
    
-   override suspend fun updateGameScore(game: GameWithWords, score: Short) {
+   override suspend fun updateGameScore(game: GameWithWords, score: Short, scoredAt: Instant) {
+      // TODO: scoredAt
       game.game.score = score
       game.game.cdGame.setDirtyTrigger(0) // needed to refresh this game in the app root
    }

@@ -4,6 +4,7 @@ import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.database.android.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 class PreviewRepository : AndroidRepository {
@@ -146,7 +147,7 @@ class PreviewRepository : AndroidRepository {
       return games.size + 0L
    }
    
-   override fun fetchGamesLive(): Flow<List<Game>> {
+   override fun fetchGamesLive(orderByScored: Boolean): Flow<List<Game>> {
       return flowOf(games.sortedByDescending { it.date })
    }
    
@@ -171,8 +172,9 @@ class PreviewRepository : AndroidRepository {
       return true
    }
    
-   override suspend fun updateGameScore(game: GameWithWords, score: Short) {
+   override suspend fun updateGameScore(game: GameWithWords, score: Short, instant: Instant) {
       game.game.score = score
+      game.game.scoredAt = instant
    }
    
    override fun hasGameForDate(date: LocalDate): Boolean = games.find { it.date == date } != null

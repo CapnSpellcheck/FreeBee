@@ -10,16 +10,17 @@ import com.russhwolf.settings.MapSettings
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.test.*
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import org.lighthousegames.logging.KmLogging
 import org.lighthousegames.logging.LogLevel
 import kotlin.test.*
 
-private typealias TestGameViewModel = GameViewModel<Int, MockGame, MockGame>
+private typealias MockGameViewModel = GameViewModel<Int, MockGame, MockGame>
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameViewModelTest {
-   lateinit var viewModel: TestGameViewModel
+   lateinit var viewModel: MockGameViewModel
    lateinit var repository: TestRepository
    
    val testDispatcher: TestDispatcher = StandardTestDispatcher()
@@ -146,8 +147,11 @@ class GameViewModelTest {
       assertEquals("", gameWithWords.game.currentWord, "testEnter: word not accepted: currentWord reset")
       
       gameWithWords.game.currentWord = "zabcdef"
+      val nowBefore = Clock.System.now().toEpochMilliseconds()
       viewModel.enter()
+      val nowAfter = Clock.System.now().toEpochMilliseconds()
       assertEquals(14, gameWithWords.game.score, "testEnter: word accepted (pangram): score")
+      assertContains(nowBefore .. nowAfter, gameWithWords.game.scoredAt?.toEpochMilliseconds(), "testEnter: word accepted: scoredAt")
       assertEquals(1, gameWithWords.enteredWords.size, "testEnter: word accepted (pangram): enteredWords")
       assertEquals("", gameWithWords.game.currentWord, "testEnter: word not accepted: currentWord reset")
       

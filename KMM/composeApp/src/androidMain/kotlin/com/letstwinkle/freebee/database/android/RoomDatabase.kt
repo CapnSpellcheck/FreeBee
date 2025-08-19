@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 interface DefaultAndroidRepository : AndroidRepository {
@@ -20,7 +21,7 @@ interface DefaultAndroidRepository : AndroidRepository {
       geniusScore: Short,
       maximumScore: Short,
    ): Long { throw NotImplementedError() }
-   override fun fetchGamesLive(): Flow<List<Game>> { throw NotImplementedError() }
+   override fun fetchGamesLive(orderByScored: Boolean): Flow<List<Game>> { throw NotImplementedError() }
    override suspend fun fetchGame(date: LocalDate): Game? { throw NotImplementedError() }
    override suspend fun fetchGameWithWords(gameID: Long): GameWithWords { throw NotImplementedError() }
    override suspend fun getStartedGameCount(): Int { throw NotImplementedError() }
@@ -28,14 +29,16 @@ interface DefaultAndroidRepository : AndroidRepository {
    override suspend fun getEnteredWordCount(): Int { throw NotImplementedError() }
    override suspend fun addEnteredWord(gameWithWords: GameWithWords, word: String): Boolean { throw NotImplementedError() }
    override suspend fun findGameDateForEnteredWord(word: String): LocalDate? { throw NotImplementedError() }
-   override suspend fun updateGameScore(game: GameWithWords, score: Short) { throw NotImplementedError() }
+   override suspend fun updateGameScore(game: GameWithWords, score: Short, instant: Instant) { throw NotImplementedError() }
    override fun hasGameForDate(date: LocalDate): Boolean { throw NotImplementedError() }
    override suspend fun executeAndSave(
       transaction: suspend (FreeBeeRepository<Long, Game, GameWithWords>) -> Unit
    ): Boolean { throw NotImplementedError() }
 }
 
-@Database(entities = [Game::class, EnteredWord::class], version = 7)
+@Database(entities = [Game::class, EnteredWord::class], version = 8, autoMigrations = [
+   AutoMigration (from = 7, to = 8),
+])
 @TypeConverters(RoomConverters::class)
 abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidRepository {
    abstract fun gameDAO(): GameDAO
@@ -52,8 +55,8 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
       gameDAO().createGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore)
    
    
-   override fun fetchGamesLive(): Flow<List<Game>> {
-      return gameDAO().fetchGamesLive()
+   override fun fetchGamesLive(orderByScored: Boolean): Flow<List<Game>> {
+      return if (orderByScored) gameDAO().fetchGamesLiveByScoredAt() else gameDAO().fetchGamesLive()
    }
    
    override suspend fun fetchGame(date: LocalDate): Game? = gameDAO().fetchGame(date)
@@ -82,8 +85,8 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
    override suspend fun findGameDateForEnteredWord(word: String): LocalDate? =
       enteredWordDAO().findGameDateForEnteredWord(word)
    
-   override suspend fun updateGameScore(game: GameWithWords, score: Short) {
-      gameDAO().saveGameScore(GameScore(game.game.uniqueID, score))
+   override suspend fun updateGameScore(game: GameWithWords, score: Short, instant: Instant) {
+      gameDAO().saveGameScore(GameScore(game.game.uniqueID, score, instant))
       game.game.score = score
    }
    
@@ -118,7 +121,7 @@ abstract class RoomDatabase : androidx.room.RoomDatabase(), DefaultAndroidReposi
                .addMigrations(MigrationChangingEnteredWordIndexes())
                .apply {
                   if (BuildConfig.DEBUG) {
-                     fallbackToDestructiveMigration()
+                     fallbackToDestructiveMigrationOnDowngrade()
                   }
                }
                .build()

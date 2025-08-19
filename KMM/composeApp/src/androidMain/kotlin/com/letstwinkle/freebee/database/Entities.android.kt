@@ -2,13 +2,16 @@ package com.letstwinkle.freebee.database
 
 import android.os.Parcelable
 import androidx.room.*
+import com.letstwinkle.freebee.InstantClassParceler
 import com.letstwinkle.freebee.LocalDateClassParceler
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.*
 
 @Entity(indices = [Index("date", unique=true, orders=[Index.Order.DESC])])
 @Parcelize
 @TypeParceler<LocalDate, LocalDateClassParceler>
+@TypeParceler<Instant?, InstantClassParceler>
 data class Game(
    @PrimaryKey(autoGenerate = true) val id: Long,
    override val date: LocalDate,
@@ -18,6 +21,7 @@ data class Game(
    override val geniusScore: Short,
    override val maximumScore: Short,
    override var score: Short = 0,
+   override var scoredAt: Instant? = null,
 ) : IGame<Long>, Parcelable {
    @Ignore @IgnoredOnParcel
    override var currentWord: String = currentWordStore.getOrDefault(id, "")
@@ -42,18 +46,20 @@ data class Game(
       if (geniusScore != other.geniusScore) return false
       if (maximumScore != other.maximumScore) return false
       if (score != other.score) return false
+      if (scoredAt != other.scoredAt) return false
       
       return true
    }
    
    override fun hashCode(): Int {
       var result = date.hashCode()
-      result = 31*result + allowedWords.hashCode()
-      result = 31*result + centerLetterCode
-      result = 31*result + otherLetters.hashCode()
-      result = 31*result + geniusScore
-      result = 31*result + maximumScore
-      result = 31*result + score
+      result = 31 * result + allowedWords.hashCode()
+      result = 31 * result + centerLetterCode
+      result = 31 * result + otherLetters.hashCode()
+      result = 31 * result + geniusScore
+      result = 31 * result + maximumScore
+      result = 31 * result + score
+      result = 31 * result + (scoredAt?.hashCode() ?: 0)
       return result
    }
    
@@ -96,6 +102,7 @@ data class EnteredWord(
 data class GameScore(
    @ColumnInfo("id") val gameId: Long,
    val score: Short,
+   val scoredAt: Instant,
 )
 
 data class GameOtherLetters(

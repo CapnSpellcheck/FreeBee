@@ -3,6 +3,7 @@ package com.letstwinkle.freebee.util
 import com.letstwinkle.freebee.database.FreeBeeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlin.random.Random
 
@@ -16,7 +17,7 @@ class GamePickerTestRepository : FreeBeeRepository<Int, MockGame, MockGame> {
       maximumScore: Short,
    ): Int = Random.nextInt()
    
-   override fun fetchGamesLive(): Flow<List<MockGame>> = flowOf()
+   override fun fetchGamesLive(orderByScored: Boolean): Flow<List<MockGame>> = flowOf()
    
    override suspend fun fetchGame(date: LocalDate): MockGame? = null
    
@@ -27,6 +28,7 @@ class GamePickerTestRepository : FreeBeeRepository<Int, MockGame, MockGame> {
    override suspend fun getEnteredWordCount(): Int = 0
    
    override suspend fun findGameDateForEnteredWord(word: String): LocalDate? = null
+   
    override suspend fun updateOtherLetters(game: MockGame, otherLetters: String): MockGame {
       throw NotImplementedError()
    }
@@ -35,7 +37,7 @@ class GamePickerTestRepository : FreeBeeRepository<Int, MockGame, MockGame> {
    
    override suspend fun executeAndSave(transaction: suspend (FreeBeeRepository<Int, MockGame, MockGame>) -> Unit): Boolean = false
    
-   override suspend fun updateGameScore(game: MockGame, score: Short) {
+   override suspend fun updateGameScore(game: MockGame, score: Short, scoredAt: Instant) {
       throw NotImplementedError()
    }
    

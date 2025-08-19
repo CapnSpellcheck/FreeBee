@@ -22,12 +22,12 @@ interface PainterProvider {
       Brain(Res.drawable.brain),
       Hint(Res.drawable.light_bulb_max),
       Shuffle(Res.drawable.shuffle),
+      Sort(Res.drawable.sort),
       ;
    }
 }
 
 class ResourcePainterProvider : PainterProvider {
-   @OptIn(ExperimentalResourceApi::class)
    @Composable
    override fun provide(r: PainterProvider.Resource): Painter {
       return painterResource(r.resource)

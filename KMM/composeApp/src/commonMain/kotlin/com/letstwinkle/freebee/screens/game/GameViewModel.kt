@@ -10,6 +10,7 @@ import com.letstwinkle.freebee.database.*
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import org.lighthousegames.logging.logging
 import kotlin.coroutines.CoroutineContext
@@ -115,10 +116,11 @@ class GameViewModel<Id, Game: IGame<Id>, GameWithWords: IGameWithWords<Id>>(
       val wordScore: Short
       
       if (wordIsAllowed && !wordIsEntered) {
+         val now = Clock.System.now()
          wordScore = scoreWord(enteredWord)
          val updatedScore = (gameWithWords.game.score + wordScore).toShort()
          committed = repository.executeAndSave {
-            repository.updateGameScore(gameWithWords, updatedScore)
+            repository.updateGameScore(gameWithWords, updatedScore, now)
             repository.addEnteredWord(gameWithWords, enteredWord)
          }
          errored = !committed

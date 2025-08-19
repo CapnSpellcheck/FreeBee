@@ -3,7 +3,7 @@ package com.letstwinkle.freebee.util
 import com.letstwinkle.freebee.database.FreeBeeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.*
 
 private typealias ITestRepository = FreeBeeRepository<Int, MockGame, MockGame>
 
@@ -26,17 +26,23 @@ class TestRepository : ITestRepository {
       otherLetters: String,
       geniusScore: Short,
       maximumScore: Short,
-      currentScore: Short
+      currentScore: Short,
+      scoredAt: Instant? = null
    ): Int {
-      val game = MockGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore,
-         maximumScore, linkedSetOf(), games.size)
+      val game = MockGame(date, allowedWords, centerLetterCode, otherLetters, geniusScore, maximumScore, linkedSetOf(), games.size, scoredAt)
       game.score = currentScore
       games.add(game)
       return game.uniqueID
    }
    
-   override fun fetchGamesLive(): Flow<List<MockGame>> =
-      flowOf(games.sortedByDescending { it.date })
+   override fun fetchGamesLive(orderByScored: Boolean): Flow<List<MockGame>> =
+      if (orderByScored)
+         flowOf(games.sortedWith { a, b ->
+            a.scoredAt?.toEpochMilliseconds()?.let {
+               (b.scoredAt ?: Instant.DISTANT_PAST).toEpochMilliseconds().compareTo(it)
+            } ?: b.date.compareTo(a.date)
+         })
+      else flowOf(games.sortedByDescending { it.date })
    
    override suspend fun fetchGame(date: LocalDate): MockGame? {
       return games.firstOrNull { it.date == date }
@@ -54,6 +60,11 @@ class TestRepository : ITestRepository {
          it.enteredWords.contains(MockWord(word))
       }?.date
    
+   override suspend fun updateGameScore(game: MockGame, score: Short, scoredAt: Instant) {
+      game.game.score = score
+      game.game.scoredAt = scoredAt
+   }
+   
    override suspend fun updateOtherLetters(game: MockGame, otherLetters: String): MockGame {
       game.otherLetters = otherLetters
       return game
@@ -62,10 +73,6 @@ class TestRepository : ITestRepository {
    override suspend fun addEnteredWord(gameWithWords: MockGame, word: String): Boolean {
       gameWithWords.add(MockWord(value = word))
       return true
-   }
-   
-   override suspend fun updateGameScore(game: MockGame, score: Short) {
-      game.game.score = score
    }
    
    override fun hasGameForDate(date: LocalDate): Boolean =

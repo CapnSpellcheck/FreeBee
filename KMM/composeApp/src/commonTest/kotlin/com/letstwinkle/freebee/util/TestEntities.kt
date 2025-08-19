@@ -1,6 +1,7 @@
 package com.letstwinkle.freebee.util
 
 import com.letstwinkle.freebee.database.*
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 data class MockGame(
@@ -12,6 +13,7 @@ data class MockGame(
    override val maximumScore: Short,
    override val enteredWords: LinkedHashSet<MockWord>,
    override val uniqueID: Int = 0,
+   override var scoredAt: Instant? = null,
 ) : IGame<Int>, IGameWithWords<Int>
 {
    override var currentWord = ""

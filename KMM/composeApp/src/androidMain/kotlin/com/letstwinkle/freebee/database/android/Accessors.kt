@@ -33,6 +33,9 @@ interface GameDAO {
    @Query("SELECT * FROM Game ORDER BY date DESC")
    fun fetchGamesLive(): Flow<List<Game>>
    
+   @Query("SELECT * FROM Game ORDER BY scoredAt DESC, date DESC")
+   fun fetchGamesLiveByScoredAt(): Flow<List<Game>>
+   
    @Query("SELECT * FROM Game WHERE id = :gameID")
    suspend fun fetchGame(gameID: Long): Game
    

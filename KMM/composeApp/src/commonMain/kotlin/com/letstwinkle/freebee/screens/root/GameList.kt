@@ -5,9 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +29,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.*
 import com.letstwinkle.freebee.database.*
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 private val TableHorizontalPadding = 16.dp
 
@@ -41,33 +45,52 @@ enum class GameListHeader(val label: String) {
    navigator: GameListNavigator<Game>?,
    painterProvider: PainterProvider = ResourcePainterProvider(),
 ) {
+   val viewModel = viewModel { GameListViewModel(repository) }
+   
    MyAppTheme {
-      val painter = painterProvider.provide(PainterProvider.Resource.ChartBarXaxis)
       
       Scaffold(topBar = {
          CenterAlignedTopAppBar(
             { Text("Games") },
             windowInsets = AppBarDefaults.topAppBarWindowInsets,
             actions = {
+               var expanded by rememberSaveable { mutableStateOf(false) }
                iOSStyleIconButton( { navigator?.showStatistics() }) {
+                  val painter = painterProvider.provide(PainterProvider.Resource.ChartBarXaxis)
                   AccentIcon(contentDescription = "Statistics", painter = painter)
+               }
+               iOSStyleIconButton( { expanded = true }) {
+                  val painter = painterProvider.provide(PainterProvider.Resource.Sort)
+                  AccentIcon(contentDescription = "Sort by", painter = painter)
+                  DropdownMenu(expanded, { expanded = false }) {
+                     val checkmark = @Composable {
+                        Icon(
+                           imageVector = Icons.Default.Check,
+                           contentDescription = "this sort method is selected"
+                        )
+                     }
+                     val placeholder = @Composable { Box(Modifier) }
+                     DropdownMenuItem(
+                        { Text("Recently played") },
+                        { viewModel.orderByScored = true },
+                        trailingIcon = if (viewModel.orderByScored) checkmark else placeholder
+                     )
+                     DropdownMenuItem(
+                        { Text("Game date") },
+                        { viewModel.orderByScored = false },
+                        trailingIcon = if (viewModel.orderByScored) placeholder else checkmark
+                     )
+                  }
                }
             })
       }) {
-         GameList(
-            repository,
-            navigator = navigator,
-            modifier = Modifier.padding(it),
-            painterProvider = painterProvider
-         )
+         GameList(viewModel, navigator, Modifier.padding(it), painterProvider)
       }
    }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable fun <Id, Game: IGame<Id>> GameList(
-   repository: FreeBeeRepository<Id, Game, *>,
-   viewModel: GameListViewModel<Id, Game> = viewModel { GameListViewModel(repository) },
+   viewModel: GameListViewModel<Id, Game>,
    navigator: GameListNavigator<Game>?,
    modifier: Modifier = Modifier,
    painterProvider: PainterProvider = ResourcePainterProvider(),
@@ -121,6 +144,7 @@ enum class GameListHeader(val label: String) {
    )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 private fun <Game : IGame<*>> LazyListScope.GameGroup(games: List<Game>, onClick: (Game) -> Unit, chevron: Painter) {
    if (games.isNotEmpty()) {
       item {
@@ -128,7 +152,7 @@ private fun <Game : IGame<*>> LazyListScope.GameGroup(games: List<Game>, onClick
       }
    }
    itemsIndexed(games, { _, game -> game.uniqueID as Any }) { index, game ->
-      GameRow(game, onClick, chevron = chevron)
+      GameRow(game, onClick, Modifier.animateItemPlacement(), chevron)
       if (index < games.size - 1) {
          indentedDivider(TableHorizontalPadding)
       }
@@ -196,6 +220,11 @@ private fun <Game : IGame<*>> LazyListScope.GameGroup(games: List<Game>, onClick
    }
 }
 
+private val rowBaseModifier = Modifier.fillMaxWidth()
+   .heightIn(44.dp)
+   .background(Color.White)
+   .padding(TableHorizontalPadding, 0.dp)
+
 @Composable private fun SponsorMe(openPayPal: () -> Unit) {
    val showPaypalAlert = remember { mutableStateOf(false) }
    Column(
@@ -222,11 +251,6 @@ private fun <Game : IGame<*>> LazyListScope.GameGroup(games: List<Game>, onClick
    }
 }
 
-private val rowBaseModifier = Modifier.fillMaxWidth()
-   .heightIn(44.dp)
-   .background(Color.White)
-   .padding(TableHorizontalPadding, 0.dp)
-
-@Composable fun fullBleedDivider() {
+@Composable private fun fullBleedDivider() {
    Divider(Modifier.testTag("divider"), color = rowDividerColor)
 }

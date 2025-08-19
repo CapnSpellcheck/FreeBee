@@ -180,4 +180,16 @@ class GameListTest {
       onNodeWithContentDescription("Statistics").performClick()
       assertEquals(1, navigator.showStatisticsCount)
    }
+   
+   @Test fun testSortMenu() = runComposeUiTest {
+      setContent {
+         CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
+            GameListScreen(repository, navigator)
+         }
+      }
+      
+      onNodeWithContentDescription("Sort by").performClick()
+      onNodeWithText("Recently played").assertIsDisplayed()
+      onNodeWithText("Game date").assertIsDisplayed()
+   }
 }

@@ -1,5 +1,6 @@
 package com.letstwinkle.freebee.database
 
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 interface IGame<Identifier> {
@@ -11,6 +12,7 @@ interface IGame<Identifier> {
    val maximumScore: Short
    var currentWord: String
    var score: Short
+   var scoredAt: Instant?
    
    val uniqueID: Identifier
 }

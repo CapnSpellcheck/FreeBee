@@ -20,6 +20,7 @@ class PreviewPainterProvider : PainterProvider {
          PainterProvider.Resource.Brain -> R.drawable.brain
          PainterProvider.Resource.Hint -> R.drawable.light_bulb_max
          PainterProvider.Resource.Shuffle -> R.drawable.shuffle
+         PainterProvider.Resource.Sort -> R.drawable.sort
       }
       return painterResource(id)
    }
