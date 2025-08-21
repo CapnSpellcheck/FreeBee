@@ -2,7 +2,7 @@ package = com.letstwinkle.freebee.database.swift
 language = Objective-C
 modules = FreeBeeData
 
-# md5 62b6f0e68be70ed4bfb9857f43615c50
+# md5 d83c47bf6d13d603d89af269725038cc
 staticLibraries = libFreeBeeData.a
 
 linkerOpts = -L/usr/lib/swift -platform_version ios-simulator 13.0 13.0 -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator

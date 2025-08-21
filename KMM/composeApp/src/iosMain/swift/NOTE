@@ -1,6 +1,7 @@
 These Swift files were compiled into static libraries with swift-klib-plugin. I was using a pre-release version
 for a new feature, so I inserted the output of that - Kotlin interop files - into this repo and
-turned off the plugin for now. So, editing the swift files here will not result in anything.
+turned off the plugin for now. So, editing the swift files here will not result in anything, unless you rebuild the
+static lib.
 
 Example commands to produce a static Swift lib:
 (note: first make a staging directory, put the Package.swift there and put the source e.g. KannaObjc.swift into KannaWrapper)
@@ -9,3 +10,5 @@ iosArm64: xcrun swift build -c release -Xswiftc -target -Xswiftc arm64-apple-ios
 iosX64: xcrun swift build -c release -Xswiftc -target -Xswiftc x86_64-apple-ios15.6-simulator --sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator17.2.sdk -Xcc -isysroot -Xcc /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator17.2.sdk
 
 DO NOT USE --triple LIKE swiftklib PLUGIN!
+
+In the module.modulemap, change the header reference path to be "./"

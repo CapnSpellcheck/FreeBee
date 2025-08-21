@@ -27,24 +27,24 @@ class Game(val cdGame: CDGame) : IGame<NSManagedObjectID> {
       get() = cdGame.geniusScore()
    override val maximumScore: Short
       get() = cdGame.maximumScore()
-   override var currentWord: String
-      get() = cdGame.progress().currentWord()
-      set(value) {
-         cdGame.progress().setCurrentWord(value)
-      }
+   override var currentWord: String = ""
    override var score: Short
       get() = cdGame.progress().score()
       set(value) {
          cdGame.progress().setScore(value)
       }
    override var scoredAt: Instant?
-      // TODO: add to CDGame
-      get() = null
-      set(value) {}
+      get() = cdGame.progress().scoredAt()?.toKotlinInstant()
+      set(value) {
+         cdGame.progress().setScoredAt(value?.toNSDate())
+      }
    override val uniqueID: NSManagedObjectID
       get() = cdGame.objectID()
    
    fun withWords(): GameWithWords = GameWithWords(this)
+   override fun toString(): String {
+      return "Game(date=$date, allowedWords=$allowedWords, centerLetterCode=$centerLetterCode, otherLetters='$otherLetters', geniusScore=$geniusScore, maximumScore=$maximumScore, currentWord='$currentWord', score=$score, scoredAt=$scoredAt, uniqueID=$uniqueID)"
+   }
 }
 
 class GameWithWords(override val game: Game) : IGameWithWords<NSManagedObjectID> {

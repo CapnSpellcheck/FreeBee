@@ -322,7 +322,6 @@ SWIFT_CLASS("_TtC11FreeBeeData6CDGame")
 @property (nonatomic, copy) NSSet<NSString *> * _Nonnull allowedWords;
 @property (nonatomic) int32_t centerLetterCode;
 @property (nonatomic, copy) NSDate * _Nullable date;
-@property (nonatomic) int16_t dirtyTrigger;
 @property (nonatomic) int16_t geniusScore;
 @property (nonatomic) int16_t maximumScore;
 @property (nonatomic, copy) NSString * _Nonnull otherLetters;
@@ -339,6 +338,7 @@ SWIFT_CLASS("_TtC11FreeBeeData14CDGameProgress")
 @property (nonatomic) int16_t score;
 @property (nonatomic, strong) NSOrderedSet * _Nonnull enteredWords;
 @property (nonatomic, strong) CDGame * _Nonnull game;
+@property (nonatomic, copy) NSDate * _Nullable scoredAt;
 - (void)awakeFromInsert;
 - (void)addEnteredWordsObject:(CDEnteredWord * _Nonnull)value;
 - (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;

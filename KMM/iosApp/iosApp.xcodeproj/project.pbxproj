@@ -27,6 +27,7 @@
 		069D3FFC2D0263D9005F8274 /* Lexend-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lexend-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		069D40022D05386B005F8274 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../../iOS shared/AppDelegate.swift"; sourceTree = "<group>"; };
 		06AA0A142CFE65F40075EEF1 /* IBMPlexSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBMPlexSans-Medium.ttf"; sourceTree = "<group>"; };
+		14E48D1F2E552F13009D58F0 /* Free_Bee 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Free_Bee 3.xcdatamodel"; sourceTree = "<group>"; };
 		14EFE00B2DA8908A00854033 /* Free_Bee 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Free_Bee 2.xcdatamodel"; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* Free Bee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Free Bee.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
@@ -439,10 +440,11 @@
 		0657D6762CD721A200510DF7 /* Free_Bee.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				14E48D1F2E552F13009D58F0 /* Free_Bee 3.xcdatamodel */,
 				14EFE00B2DA8908A00854033 /* Free_Bee 2.xcdatamodel */,
 				0657D6772CD721A200510DF7 /* Free_Bee.xcdatamodel */,
 			);
-			currentVersion = 14EFE00B2DA8908A00854033 /* Free_Bee 2.xcdatamodel */;
+			currentVersion = 14E48D1F2E552F13009D58F0 /* Free_Bee 3.xcdatamodel */;
 			name = Free_Bee.xcdatamodeld;
 			path = ../Free_Bee.xcdatamodeld;
 			sourceTree = "<group>";

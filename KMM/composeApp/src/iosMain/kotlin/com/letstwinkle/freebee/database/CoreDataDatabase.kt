@@ -62,6 +62,7 @@ class CoreDataDatabase private constructor(
       }
    }
    
+   @OptIn(BetaInteropApi::class)
    override suspend fun createGame(
       date: LocalDate,
       allowedWords: Set<String>,
@@ -88,34 +89,42 @@ class CoreDataDatabase private constructor(
       return gameManagedObject.objectID
    }
    
-   // TODO: improve this
    // The fetched results controller doesn't continue running if constructed inside the callbackFlow.
    private var gameListFetchResultsController: NSFetchedResultsController? = null
+   
    private class FetchedResultsControllerDelegate : NSObject(), NSFetchedResultsControllerDelegateProtocol {
       var onSendResults: (List<Game>) -> Unit = {}
       override fun controllerDidChangeContent(controller: NSFetchedResultsController) {
          NSLog("[CoreDataDatabase] NSFetchedResultsControllerDelegate received controllerDidChangeContent")
          val wrappedGames = (controller.fetchedObjects ?: emptyList<NSManagedObject>())
-            .map { gameManagedObject -> Game(gameManagedObject as CDGame) }
+            .map { gameProgressManagedObject ->
+               (gameProgressManagedObject as CDGameProgress).let { Game(it.game())}
+            }
          onSendResults(wrappedGames)
       }
    }
    
-   override fun fetchGamesLive(orderByScore: Boolean): Flow<List<Game>> {
-      // TODO: orderByScore
-      if (gameListFetchResultsController != null)
-         return emptyFlow()
+   override fun fetchGamesLive(orderByScored: Boolean): Flow<List<Game>> {
+      if (gameListFetchResultsController == null) {
+         val fetchRequest = CDGameProgress.fetchRequest()
+         // requires nonempty descriptors else crashes - provide a dummy one
+         fetchRequest.sortDescriptors = listOf(NSSortDescriptor("scoredAt", false))
+         gameListFetchResultsController = NSFetchedResultsController(
+            fetchRequest = fetchRequest,
+            managedObjectContext = container.viewContext,
+            sectionNameKeyPath = null,
+            cacheName = null
+         )
+      }
       
-      val fetchRequest = CDGame.fetchRequest()
-      fetchRequest.sortDescriptors = listOf(NSSortDescriptor(key = "date", ascending = false))
-      gameListFetchResultsController = NSFetchedResultsController(
-         fetchRequest = fetchRequest,
-         managedObjectContext = container.viewContext,
-         sectionNameKeyPath = null,
-         cacheName = null
-      )
-      val localFetchResultsController = gameListFetchResultsController!!
+      val sortDescriptors = mutableListOf<NSSortDescriptor>()
+      if (orderByScored)
+         sortDescriptors.add(NSSortDescriptor("scoredAt", false))
+      sortDescriptors.add(NSSortDescriptor("game.date", false))
+      gameListFetchResultsController!!.fetchRequest.sortDescriptors = sortDescriptors
+      
       val delegate = FetchedResultsControllerDelegate()
+      val localFetchResultsController = gameListFetchResultsController!!
       localFetchResultsController.delegate = delegate
       
       return callbackFlow {
@@ -130,8 +139,8 @@ class CoreDataDatabase private constructor(
          delegate.controllerDidChangeContent(localFetchResultsController)
          
          awaitClose {
+            NSLog("[CoreDataDatabase] awaitClose")
             localFetchResultsController.delegate = null
-            gameListFetchResultsController = null
          }
       }.buffer(2)
    }
@@ -185,9 +194,8 @@ class CoreDataDatabase private constructor(
    }
    
    override suspend fun updateGameScore(game: GameWithWords, score: Short, scoredAt: Instant) {
-      // TODO: scoredAt
       game.game.score = score
-      game.game.cdGame.setDirtyTrigger(0) // needed to refresh this game in the app root
+      game.game.scoredAt = scoredAt
    }
    
    override fun hasGameForDate(date: LocalDate): Boolean {
