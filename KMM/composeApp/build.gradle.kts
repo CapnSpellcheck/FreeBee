@@ -1,13 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-//import io.github.ttypic.swiftklib.gradle.api.ExperimentalSwiftklibApi
 
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.ksp)
-//    alias(libs.plugins.swiftklib)
     alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
     id("com.goncalossilva.resources") version "0.9.0"
@@ -46,8 +44,6 @@ kotlin {
                    extraOpts("-libraryPath", "$projectDir/src/nativeInterop/KannaWrapper/${iosTarget.name}")
                    compilerOpts("-fmodules", "-I$projectDir/src/nativeInterop/KannaWrapper/${iosTarget.name}/KannaWrapper.build")
                 }
-//                create("FreeBeeData")
-//                create("KannaWrapper")
              }
           }
        }
@@ -115,7 +111,7 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.letstwinkle.freebee"
+        applicationId = "com.letstwinkle.freebee.fuck"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 11
@@ -139,9 +135,6 @@ android {
         buildConfig = true
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
 }
 
 dependencies { 
@@ -158,6 +151,11 @@ ksp {
    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
+composeCompiler {
+   reportsDestination = layout.buildDirectory.dir("compose_compiler")
+   metricsDestination = layout.buildDirectory.dir("compose_compiler")
+}
+
 allprojects {
    // https://slack-chats.kotlinlang.org/t/16633408/the-release-notes-did-say-that-runcomposeuitest-can-be-writt
    tasks.withType<KotlinCompile> {
@@ -166,37 +164,3 @@ allprojects {
       }
    }
 }
-
-/**
- * NOTE: this is disabled because there is an issue with the unreleased version 0.7.0-SNAPSHOT
- * which need an unreleased feature (remote package dep)
- * I manually changed the code, built the plugin and used that to build
- * these libraries, then added the kotlin interop output to the repo
-swiftklib {
-    create("FreeBeeData") {
-      path = file("src/iosMain/swift/data")
-      packageName("com.letstwinkle.freebee.database.swift")
-      minIos = "15.6"
-      minMacos = ""
-      minWatchos = ""
-      minTvos = ""
-      toolsVersion = "5.9"
-   }
-   create("KannaWrapper") {
-      path = file("src/iosMain/swift/parsing")
-      packageName("com.letstwinkle.freebee.screens.loader")
-      minIos = "15.6"
-      minMacos = ""
-      minWatchos = ""
-      minTvos = ""
-      toolsVersion = "5.9"
-      @OptIn(ExperimentalSwiftklibApi::class)
-      dependencies {
-         remote("Kanna") {
-            url("https://github.com/tid-kijyun/Kanna")
-            exactVersion("5.3.0")
-         }
-      }
-   }
-}
- **/

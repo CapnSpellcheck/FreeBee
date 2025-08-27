@@ -248,13 +248,14 @@ private val positionProvider = object : PopupPositionProvider {
          val scoreStyle = TextStyle(fontSize = 20.sp)
          Text("Score:  ", style = scoreStyle)
          gameWithWords?.game?.let { game ->
-            TickerNumberView(
-               game.score.toInt(),
+            AnimatedCounter(
+               game.score.toUInt(),
                Modifier.padding(end = 8.dp).onGloballyPositioned {
                   pointsEarnedDestCoordinates.value = it
                },
                textStyle = scoreStyle.copy(fontWeight = FontWeight.Bold),
                animationDelayMsec = 1100,
+               digitSpacing = 1.dp
             )
          }
          LinearProgressIndicator(
