@@ -11,4 +11,4 @@ This is a Kotlin Multiplatform project targeting Android, iOS.
   you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
 
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+**NEW Sep 2 2025!** This project uses a Github package server, which requires you to set up a **classic** PAT. (See the information on GitHub Docs)[https://docs.github.com/en/packages/learn-github-packages/introduction-to-github-packages#authenticating-to-github-packages]. See ```settings.gradle.kts``` in this folder for the names of the environment variables or Gradle properties you must set with the credentials.

@@ -6,6 +6,5 @@ plugins {
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.ksp) apply false
-//   alias(libs.plugins.swiftklib) apply false
-   alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }

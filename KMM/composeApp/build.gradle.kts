@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             api(libs.multiplatform.logging)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.animated.counter)
         }
        
        iosMain.dependencies {

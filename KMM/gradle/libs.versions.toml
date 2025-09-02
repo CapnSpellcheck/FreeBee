@@ -24,6 +24,7 @@ ktor = "3.0.3"
 androidx-work = "2.9.0"
 multiplatformSettingsTest = "1.2.0"
 test-resources = "0.9.0"
+cmp-animatedCounter = "1.0.0"
 
 [libraries]
 kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
@@ -55,6 +56,7 @@ ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-test", version.ref = "multiplatformSettingsTest" }
 test-resources = { module = "com.goncalossilva:resources", version.ref = "test-resources" }
+animated-counter = { module = "com.letstwinkle:cmp-animatedcounter", version.ref = "cmp-animatedCounter" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -62,5 +64,4 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version = "2.0.21-1.0.28" }
-swiftklib = { id = "io.github.ttypic.swiftklib", version = "0.6.4" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
