@@ -14,7 +14,6 @@ androidx-test-junit = "1.2.1"
 androidx-room = "2.6.1"
 compose-multiplatform = "1.6.11"
 junit = "4.13.2"
-kamelImage = "0.9.5"
 kotlin = "2.0.21"
 kotlinx-datetime = "0.6.0"
 kotlinx-coroutines = "1.9.0"
@@ -25,10 +24,9 @@ androidx-work = "2.9.0"
 multiplatformSettingsTest = "1.2.0"
 test-resources = "0.9.0"
 cmp-animatedCounter = "1.0.0"
+coil = "3.0.0-alpha09"
 
 [libraries]
-kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
-kamel-decoder-image-bitmap = { module = "media.kamel:kamel-decoder-image-bitmap", version.ref = "kamelImage" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -57,6 +55,8 @@ androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "andr
 multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-test", version.ref = "multiplatformSettingsTest" }
 test-resources = { module = "com.goncalossilva:resources", version.ref = "test-resources" }
 animated-counter = { module = "com.letstwinkle:cmp-animatedcounter", version.ref = "cmp-animatedCounter" }
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

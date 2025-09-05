@@ -12,15 +12,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import com.letstwinkle.freebee.*
 import com.letstwinkle.freebee.compose.MyAppTheme
 import com.letstwinkle.freebee.database.FreeBeeRepository
 import com.letstwinkle.freebee.screens.BackNavigator
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.lighthousegames.logging.logging
+
+private val log = logging()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun <Id> GameLoaderScreen(
@@ -76,7 +79,7 @@ import kotlinx.datetime.LocalDate
       }
    }
    
-   Column(modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) { 
+   Column(modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
       Text(status.statusText, Modifier.padding(bottom = 8.dp), style = bodyStyle)
       if (status.showProgress) {
          CircularProgressIndicator(
@@ -96,8 +99,8 @@ import kotlinx.datetime.LocalDate
       )
    }
    if (centerLetterCandidates.value.isNotEmpty()) {
-      AlertDialog({}, { 
-         Column { 
+      AlertDialog({}, {
+         Column {
             for (candidate in centerLetterCandidates.value) {
                Button(
                   { scope.launch { centerLetterResultChannel.send(candidate) } }
@@ -105,10 +108,15 @@ import kotlinx.datetime.LocalDate
             }
          }
       }, text = {
-         KamelImage(
-            asyncPainterResource(gameImageURL(gameDate)),
+         AsyncImage(
+            gameImageURL(gameDate),
             "game image",
             Modifier.requiredSize(330.dp, 330.dp).padding(horizontal = 12.dp),
+            onState = {
+               (it as? AsyncImagePainter.State.Error)?.let {
+                  log.error(it.result.throwable) { "Coil" }
+               }
+            }
          )
       }, title = { Text("Which letter is at the center of the image?") })
    }

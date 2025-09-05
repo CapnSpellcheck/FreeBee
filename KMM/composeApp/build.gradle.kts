@@ -73,11 +73,12 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.multiplatform.settings)
             implementation(libs.ktor.client.core)
-            implementation(libs.kamel.image)
             implementation(libs.kotlinx.coroutines.core)
             api(libs.multiplatform.logging)
             implementation(libs.kotlinx.datetime)
             implementation(libs.animated.counter)
+            implementation(libs.coil)
+            implementation(libs.coil.network)
         }
        
        iosMain.dependencies {
@@ -115,7 +116,7 @@ android {
         applicationId = "com.letstwinkle.freebee.fuck"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 11
+        versionCode = 12
         versionName = "1.0"
     }
     packaging {

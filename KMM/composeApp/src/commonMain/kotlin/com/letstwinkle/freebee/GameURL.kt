@@ -11,7 +11,7 @@ fun gameURL(gameDate: LocalDate): Url {
    return gameURLBuilder.build()
 }
 
-fun gameImageURL(gameDate: LocalDate): Url {
+fun gameImageURL(gameDate: LocalDate): String {
    gameURLBuilder.set(path = "/pics/${gameDate.format(LocalDate.Formats.ISO_BASIC)}.png")
-   return gameURLBuilder.build()
+   return gameURLBuilder.buildString()
 }
