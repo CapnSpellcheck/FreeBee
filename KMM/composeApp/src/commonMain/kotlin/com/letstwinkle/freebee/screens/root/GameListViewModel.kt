@@ -62,8 +62,4 @@ class GameListViewModel<Id, Game: IGame<Id>>(
       uriHandler.openUri("https://www.paypal.com/myaccount/transfer/homepage")
    }
    
-   override fun onCleared() {
-      super.onCleared()
-      viewModelScope.cancel()
-   }
 }

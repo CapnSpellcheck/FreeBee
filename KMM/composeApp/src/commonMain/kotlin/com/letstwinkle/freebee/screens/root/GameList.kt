@@ -152,7 +152,12 @@ private fun <Game : IGame<*>> LazyListScope.GameGroup(games: List<Game>, onClick
       }
    }
    itemsIndexed(games, { _, game -> game.uniqueID as Any }) { index, game ->
-      GameRow(game, onClick, Modifier.animateItemPlacement(), chevron)
+      GameRow(
+         game,
+         onClick,
+//         Modifier.animateItemPlacement(), // try it in compose 1.7
+         chevron = chevron
+      )
       if (index < games.size - 1) {
          indentedDivider(TableHorizontalPadding)
       }

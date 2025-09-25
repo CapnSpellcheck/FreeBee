@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
+import androidx.compose.ui.unit.*
 import com.letstwinkle.freebee.compose.LetterHexagon
 import com.letstwinkle.freebee.compose.polarOffset
 import kotlin.math.PI
@@ -29,7 +28,7 @@ private const val floatPi = PI.toFloat()
    val modifier1 = modifier.fillMaxWidth().aspectRatio(0.6f*sqrt(3f)).testTag("honeycomb")
    
    BoxWithConstraints(modifier1, Alignment.Center) {
-      val hexLength = ((if (maxWidth < maxHeight) maxWidth else maxHeight) - 4*hexPadding) / 3
+      val hexLength = (min(maxWidth, maxHeight)- 4*hexPadding) / 3
       val hexHeightAndPadding = hexLength + hexPadding
       val baseModifier = Modifier.requiredSize(hexLength, hexLength) 
       LetterHexagon(centerLetter, true, onLetterTap, baseModifier)
