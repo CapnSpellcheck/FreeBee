@@ -23,7 +23,7 @@ ktor = "3.0.3"
 androidx-work = "2.9.0"
 multiplatformSettingsTest = "1.2.0"
 test-resources = "0.9.0"
-cmp-animatedCounter = "1.0.1"
+cmp-animatedCounter = "1.0.2"
 coil = "3.0.0-alpha09"
 
 [libraries]
