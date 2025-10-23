@@ -79,6 +79,7 @@ kotlin {
             implementation(libs.animated.counter)
             implementation(libs.coil)
             implementation(libs.coil.network)
+            implementation(libs.immutable.collections)
         }
        
        iosMain.dependencies {

@@ -32,6 +32,7 @@ data class Game(
    
    override val uniqueID: Long
       get() = id
+   @Ignore @IgnoredOnParcel override val otherLettersList: List<Char> = otherLetters.toList()
    
    override fun equals(other: Any?): Boolean {
       if (this === other) return true

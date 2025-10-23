@@ -15,6 +15,7 @@ interface IGame<Identifier> {
    var scoredAt: Instant?
    
    val uniqueID: Identifier
+   val otherLettersList: List<Char>
 }
 
 interface IGameWithWords<GameIdentifier> {
@@ -45,7 +46,7 @@ fun IGame<*>.isPangram(word: String): Boolean {
       return false
    val letters = word.toHashSet()
    val centerChar = Char(centerLetterCode)
-   return letters.contains(centerChar) && letters.containsAll(otherLetters.toList())
+   return letters.contains(centerChar) && letters.containsAll(otherLettersList)
 }
 
 inline fun IGameWithWords<*>.hasEntered(word: String): Boolean =

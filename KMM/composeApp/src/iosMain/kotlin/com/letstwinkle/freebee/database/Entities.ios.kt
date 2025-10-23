@@ -40,6 +40,7 @@ class Game(val cdGame: CDGame) : IGame<NSManagedObjectID> {
       }
    override val uniqueID: NSManagedObjectID
       get() = cdGame.objectID()
+   override val otherLettersList: List<Char> = otherLetters.toList()
    
    fun withWords(): GameWithWords = GameWithWords(this)
    override fun toString(): String {

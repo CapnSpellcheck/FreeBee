@@ -33,6 +33,8 @@ import com.letstwinkle.freebee.database.*
 import com.letstwinkle.freebee.screens.BackNavigator
 import io.woong.compose.grid.SimpleGridCells
 import io.woong.compose.grid.VerticalGrid
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.lighthousegames.logging.logging
@@ -163,7 +165,11 @@ private val positionProvider = object : PopupPositionProvider {
       sheetShape = RoundedCornerShape(8.dp),
    ) {
       ModalBottomSheetLayout(
-         { EnteredWordsSheet(viewModel.gameWithWords.value?.enteredWords.orEmpty().toList()) },
+         {
+            viewModel.gameWithWords.value?.let {
+               EnteredWordsSheet(it.enteredWords.toImmutableList(), it.game)
+            } ?: Box(modifier)
+         },
          sheetState = enteredWordsSheetState,
          sheetShape = RoundedCornerShape(8.dp),
          scrimColor = Color.Transparent
@@ -422,8 +428,9 @@ private val positionProvider = object : PopupPositionProvider {
    }
 }
 
-@Composable fun EnteredWordsSheet(words: List<IEnteredWord>) {
+@Composable fun EnteredWordsSheet(words: ImmutableList<IEnteredWord>, game: IGame<*>) {
    log.d { "Entered words: ${words.map { it.value }}" }
+   val boldStyle = bodyStyle.copy(fontWeight = FontWeight.Bold)
    val modifier = Modifier.fillMaxWidth()
       .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom).asPaddingValues())
       .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -434,9 +441,13 @@ private val positionProvider = object : PopupPositionProvider {
          Modifier.padding(top = 12.dp)
       ) {
          val sortedWords = words.sortedBy { it.value }
-            .map { it.value.replaceFirstChar(Char::titlecaseChar) }
+            .map { it.value }
          for (word in sortedWords) {
-            Text(word, Modifier.padding(bottom = 4.dp), style = bodyStyle)
+            Text(
+               word.replaceFirstChar(Char::titlecaseChar),
+               Modifier.padding(bottom = 4.dp),
+               style = if (game.isPangram(word)) boldStyle else bodyStyle
+            )
          }
       }
    }
